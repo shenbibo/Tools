@@ -15,7 +15,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
-import cn.trinea.android.common.util.ShellUtils.CommandResult;
+import com.sky.tools.utils.ShellUtils.CommandResult;
+
 
 /**
  * PackageUtils

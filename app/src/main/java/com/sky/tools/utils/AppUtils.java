@@ -53,7 +53,6 @@ public class AppUtils {
                 return true;
             }
         }
-        isApplicationInBackground(context);
         return false;
     }
 

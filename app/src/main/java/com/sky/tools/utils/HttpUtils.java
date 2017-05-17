@@ -12,10 +12,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.os.AsyncTask;
-import cn.trinea.android.common.constant.HttpConstants;
-import cn.trinea.android.common.entity.HttpRequest;
-import cn.trinea.android.common.entity.HttpResponse;
-import cn.trinea.android.common.service.HttpCache;
+
+import com.sky.tools.constant.HttpConstants;
+import com.sky.tools.utils.entity.HttpRequest;
+import com.sky.tools.utils.entity.HttpResponse;
+
 
 /**
  * HttpUtils

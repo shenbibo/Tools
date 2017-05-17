@@ -6,15 +6,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
-import cn.trinea.android.common.entity.CacheObject;
-import cn.trinea.android.common.entity.FailedReason;
-import cn.trinea.android.common.service.impl.FileNameRuleImageUrl;
-import cn.trinea.android.common.service.impl.ImageCache;
-import cn.trinea.android.common.service.impl.ImageMemoryCache.OnImageCallbackListener;
-import cn.trinea.android.common.service.impl.ImageSDCardCache;
-import cn.trinea.android.common.service.impl.ImageSDCardCache.OnImageSDCallbackListener;
-import cn.trinea.android.common.service.impl.PreloadDataCache.OnGetDataListener;
-import cn.trinea.android.common.service.impl.RemoveTypeLastUsedTimeFirst;
+
+import com.sky.tools.utils.entity.CacheObject;
+import com.sky.tools.utils.entity.FailedReason;
+import com.sky.tools.utils.impl.FileNameRuleImageUrl;
+import com.sky.tools.utils.impl.ImageCache;
+import com.sky.tools.utils.impl.ImageMemoryCache.OnImageCallbackListener;
+import com.sky.tools.utils.impl.ImageSDCardCache;
+import com.sky.tools.utils.impl.ImageSDCardCache.OnImageSDCallbackListener;
+import com.sky.tools.utils.impl.PreloadDataCache;
+import com.sky.tools.utils.impl.PreloadDataCache.OnGetDataListener;
+import com.sky.tools.utils.impl.RemoveTypeLastUsedTimeFirst;
+
 
 /**
  * ImageCacheManager
@@ -24,7 +27,7 @@ import cn.trinea.android.common.service.impl.RemoveTypeLastUsedTimeFirst;
 public class ImageCacheManager {
 
     public static final String      TAG              = "ImageCacheManager";
-    private static ImageCache       imageCache       = null;
+    private static ImageCache imageCache       = null;
     private static ImageSDCardCache imageSDCardCache = null;
 
     private ImageCacheManager() {
@@ -169,7 +172,7 @@ public class ImageCacheManager {
      * 
      * @return
      */
-    public static OnGetDataListener<String, Bitmap> getImageFromSdcardListener() {
+    public static PreloadDataCache.OnGetDataListener<String, Bitmap> getImageFromSdcardListener() {
         return new OnGetDataListener<String, Bitmap>() {
 
             private static final long serialVersionUID = 1L;

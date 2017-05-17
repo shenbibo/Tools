@@ -3,6 +3,8 @@ package com.sky.tools.main;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.sky.tools.R;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

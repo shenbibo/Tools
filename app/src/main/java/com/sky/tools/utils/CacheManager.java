@@ -2,9 +2,10 @@ package com.sky.tools.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import cn.trinea.android.common.service.HttpCache;
-import cn.trinea.android.common.service.impl.ImageCache;
-import cn.trinea.android.common.service.impl.ImageSDCardCache;
+
+import com.sky.tools.utils.impl.ImageCache;
+import com.sky.tools.utils.impl.ImageSDCardCache;
+import com.sky.tools.utils.service.HttpCache;
 
 /**
  * CacheManager
