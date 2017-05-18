@@ -1,11 +1,7 @@
 package com.sky.tools.utils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Random Utils
@@ -216,15 +212,18 @@ public class RandomUtils {
      * min 和 max 都在可取范围之内
      * size < 0 || min < 0 || max < 0 || max <= min || (size > (max - min)) 时 返回 new int[0];
      */
-    public static int[] randomMutexArray(int min, int max, int size) {
+    public static int[] createMutexRandomArray(int min, int max, int size) {
         if (size <= 0 || min < 0 || max < 0 || max < min || (size > (max - min))) {
             return new int[0];
         }
 
-        int[] result = new int[size];
+        int[] result;
         int randomLen = max - min;
+        // 当可取随机数的范围小于等于10W时使用生成随机数组方式
         if (randomLen <= 100000) {
-            getRandomBySourceArray(min, max, size, result, randomLen);
+            result = getMutexRandomBySourceArray(min, max, size, randomLen);
+        }else{
+            result = getMutexRandomByHashSet(min, max, size);
         }
 
         return result;
@@ -234,7 +233,8 @@ public class RandomUtils {
      * 将随机数取值范围设置为一个数组，通过生成随机数取出数据源中的数据作为返回结果中的随机数
      * 当max - min 非常大时存在性能问题，甚至出现OOM
      * */
-    private static void getRandomBySourceArray(int min, int max, int size, int[] result, int randomLen) {
+    private static int[] getMutexRandomBySourceArray(int min, int max, int size, int randomLen) {
+        int[] result = new int[size];
         int[] randomSource = new int[randomLen];
         // 当max和min之差很大时，此处存在性能问题，甚至出现OOM
         for (int i = min; i < max; i++) {
@@ -249,6 +249,34 @@ public class RandomUtils {
             index = d.nextInt(swapIndex--);
             result[i] = randomSource[index];
             randomSource[index] = randomSource[swapIndex];
+        }
+
+        return result;
+    }
+
+    private static int[] getMutexRandomByHashSet(int min, int max, int size) {
+        HashSet<Integer> randSet = new HashSet<>();
+        createMutexRandomToHashSet(min, max, size, randSet);
+
+        Integer[] tempResult = randSet.toArray(new Integer[0]);
+        int[] result = new int[tempResult.length];
+        System.arraycopy(tempResult, 0, result, 0, tempResult.length);
+
+        return result;
+    }
+
+    /**
+     * 利用hashSet的不可重复性，存储随机元素，直到最后存满
+     * */
+    private static void createMutexRandomToHashSet(int min, int max, int size, HashSet<Integer> randSet) {
+        Random r = new Random();
+        for (int i = 0; i < size; i++){
+            int random = min + r.nextInt(max - min);
+            randSet.add(random);
+        }
+
+        if(randSet.size() < size){
+            createMutexRandomToHashSet(min, max, size - randSet.size(), randSet);
         }
     }
 
