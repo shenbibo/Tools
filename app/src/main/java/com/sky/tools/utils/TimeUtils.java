@@ -6,8 +6,6 @@ import java.util.Date;
 /**
  * TimeUtils
  * <br>默认时间显示yyyy-MM-dd HH:mm:ss, 日期显示格式yyyy-MM-dd
- * 
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-8-24
  */
 public class TimeUtils {
 

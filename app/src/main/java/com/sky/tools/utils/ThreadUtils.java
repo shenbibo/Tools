@@ -1,16 +1,18 @@
 package com.sky.tools.utils;
 
 /**
- * SystemUtils
- * 
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-5-15
+ * ThreadUtils
+ *
  */
-public class SystemUtils {
+public class ThreadUtils {
+
 
     /** recommend default thread pool size according to system available processors, {@link #getDefaultThreadPoolSize()} **/
     public static final int DEFAULT_THREAD_POOL_SIZE = getDefaultThreadPoolSize();
 
-    private SystemUtils() {
+    public static final int DEFAULT_MAX_THREAD_POOL_SIZE = 8;
+
+    private ThreadUtils() {
         throw new AssertionError();
     }
 
@@ -21,17 +23,17 @@ public class SystemUtils {
      * @see {@link #getDefaultThreadPoolSize(int)} max is 8
      */
     public static int getDefaultThreadPoolSize() {
-        return getDefaultThreadPoolSize(8);
+        return getDefaultThreadPoolSize(DEFAULT_MAX_THREAD_POOL_SIZE);
     }
 
     /**
      * get recommend default thread pool size
      * 
      * @param max
-     * @return if 2 * availableProcessors + 1 less than max, return it, else return max;
+     * @return if availableProcessors + 1 less than max, return it, else return max;
      */
     public static int getDefaultThreadPoolSize(int max) {
-        int availableProcessors = 2 * Runtime.getRuntime().availableProcessors() + 1;
+        int availableProcessors = Runtime.getRuntime().availableProcessors() + 1;
         return availableProcessors > max ? max : availableProcessors;
     }
 }
