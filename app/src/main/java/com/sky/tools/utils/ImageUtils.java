@@ -24,14 +24,6 @@ import android.graphics.drawable.Drawable;
  * <li>{@link #byteToDrawable(byte[])}</li>
  * <li>{@link #drawableToBitmap(Drawable)}</li>
  * <li>{@link #drawableToByte(Drawable)}</li>
- * </ul>
- * <ul>
- * get image
- * <li>{@link #getInputStreamFromUrl(String, int)}</li>
- * <li>{@link #getBitmapFromUrl(String, int)}</li>
- * <li>{@link #getDrawableFromUrl(String, int)}</li>
- * </ul>
- * <ul>
  * scale image
  * <li>{@link #scaleImageTo(Bitmap, int, int)}</li>
  * <li>{@link #scaleImage(Bitmap, float, float)}</li>
@@ -109,103 +101,6 @@ public class ImageUtils {
      */
     public static Drawable byteToDrawable(byte[] b) {
         return bitmapToDrawable(byteToBitmap(b));
-    }
-
-    /**
-     * get input stream from network by imageurl, you need to close inputStream yourself
-     * 
-     * @param imageUrl
-     * @param readTimeOutMillis
-     * @return
-     * @see ImageUtils#getInputStreamFromUrl(String, int, boolean)
-     */
-    public static InputStream getInputStreamFromUrl(String imageUrl, int readTimeOutMillis) {
-        return getInputStreamFromUrl(imageUrl, readTimeOutMillis, null);
-    }
-
-    /**
-     * get input stream from network by imageurl, you need to close inputStream yourself
-     * 
-     * @param imageUrl
-     * @param readTimeOutMillis read time out, if less than 0, not set, in mills
-     * @param requestProperties http request properties
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    public static InputStream getInputStreamFromUrl(String imageUrl, int readTimeOutMillis,
-            Map<String, String> requestProperties) {
-        InputStream stream = null;
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            HttpUtils.setURLConnection(requestProperties, con);
-            if (readTimeOutMillis > 0) {
-                con.setReadTimeout(readTimeOutMillis);
-            }
-            stream = con.getInputStream();
-        } catch (MalformedURLException e) {
-            IOUtils.close(stream);
-            throw new RuntimeException("MalformedURLException occurred. ", e);
-        } catch (IOException e) {
-            IOUtils.close(stream);
-            throw new RuntimeException("IOException occurred. ", e);
-        }
-        return stream;
-    }
-
-    /**
-     * get drawable by imageUrl
-     * 
-     * @param imageUrl
-     * @param readTimeOutMillis
-     * @return
-     * @see ImageUtils#getDrawableFromUrl(String, int, boolean)
-     */
-    public static Drawable getDrawableFromUrl(String imageUrl, int readTimeOutMillis) {
-        return getDrawableFromUrl(imageUrl, readTimeOutMillis, null);
-    }
-
-    /**
-     * get drawable by imageUrl
-     * 
-     * @param imageUrl
-     * @param readTimeOutMillis read time out, if less than 0, not set, in mills
-     * @param requestProperties http request properties
-     * @return
-     */
-    public static Drawable getDrawableFromUrl(String imageUrl, int readTimeOutMillis,
-            Map<String, String> requestProperties) {
-        InputStream stream = getInputStreamFromUrl(imageUrl, readTimeOutMillis, requestProperties);
-        Drawable d = Drawable.createFromStream(stream, "src");
-        IOUtils.close(stream);
-        return d;
-    }
-
-    /**
-     * get Bitmap by imageUrl
-     * 
-     * @param imageUrl
-     * @param readTimeOut
-     * @return
-     * @see ImageUtils#getBitmapFromUrl(String, int, boolean)
-     */
-    public static Bitmap getBitmapFromUrl(String imageUrl, int readTimeOut) {
-        return getBitmapFromUrl(imageUrl, readTimeOut, null);
-    }
-
-    /**
-     * get Bitmap by imageUrl
-     * 
-     * @param imageUrl
-     * @param requestProperties http request properties
-     * @return
-     */
-    public static Bitmap getBitmapFromUrl(String imageUrl, int readTimeOut, Map<String, String> requestProperties) {
-        InputStream stream = getInputStreamFromUrl(imageUrl, readTimeOut, requestProperties);
-        Bitmap b = BitmapFactory.decodeStream(stream);
-        IOUtils.close(stream);
-        return b;
     }
 
     /**
