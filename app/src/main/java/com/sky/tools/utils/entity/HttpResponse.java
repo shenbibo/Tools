@@ -188,7 +188,7 @@ public class HttpResponse {
      * @return
      */
     public boolean isExpired() {
-        return TimeUtils.getCurrentTimeInLong() > expiredTime;
+        return TimeUtils.getCurrentTimeMillis() > expiredTime;
     }
 
     /**

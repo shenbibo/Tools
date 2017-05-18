@@ -144,7 +144,7 @@ public class HttpCacheDaoImpl implements HttpCacheDao {
         values.put(DbConstants.HTTP_CACHE_TABLE_URL, httpResponse.getUrl());
         values.put(DbConstants.HTTP_CACHE_TABLE_RESPONSE, httpResponse.getResponseBody());
         values.put(DbConstants.HTTP_CACHE_TABLE_EXPIRES, httpResponse.getExpiredTime());
-        values.put(DbConstants.HTTP_CACHE_TABLE_CREATE_TIME, TimeUtils.getCurrentTimeInString());
+        values.put(DbConstants.HTTP_CACHE_TABLE_CREATE_TIME, TimeUtils.getCurrentTime());
         values.put(DbConstants.HTTP_CACHE_TABLE_TYPE, httpResponse.getType());
         return values;
     }
