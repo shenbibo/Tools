@@ -17,31 +17,16 @@ public class IOUtils {
 
 
     /**
-     * Close closable object and wrap {@link IOException} with {@link RuntimeException}
+     * Close closable object and catch {@link Exception}
      * @param closeable closeable object
      */
     public static void close(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (IOException e) {
-                throw new RuntimeException("IOException occurred. ", e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
-
-    /**
-     * Close closable and hide possible {@link IOException}
-     * @param closeable closeable object
-     */
-    public static void closeQuietly(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                // Ignored
-            }
-        }
-    }
-
 }

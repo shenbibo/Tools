@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 
 /**
  * Serialize Utils
- * 
+ *
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2012-5-14
  */
 public class SerializeUtils {
@@ -19,47 +19,38 @@ public class SerializeUtils {
     }
 
     /**
-     * Deserialization object from file.
-     * 
+     * 反序列化，从文件恢复为对象
+     *
      * @param filePath file path
      * @return de-serialized object
-     * @throws RuntimeException if an error occurs
      */
     public static Object deserialization(String filePath) {
         ObjectInputStream in = null;
+        Object o = null;
         try {
             in = new ObjectInputStream(new FileInputStream(filePath));
-            Object o = in.readObject();
-            in.close();
-            return o;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("FileNotFoundException occurred. ", e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("ClassNotFoundException occurred. ", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+            o = in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             IOUtils.close(in);
+            return o;
         }
     }
 
     /**
      * Serialize object to file.
-     * 
+     *
      * @param filePath file path
-     * @param obj object
-     * @throws RuntimeException if an error occurs
+     * @param obj      object
      */
     public static void serialization(String filePath, Object obj) {
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(new FileOutputStream(filePath));
             out.writeObject(obj);
-            out.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("FileNotFoundException occurred. ", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             IOUtils.close(out);
         }
