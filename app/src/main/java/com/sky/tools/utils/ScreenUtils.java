@@ -9,8 +9,6 @@ import android.content.Context;
  * <li>{@link ScreenUtils#dpToPx(Context, float)}</li>
  * <li>{@link ScreenUtils#pxToDp(Context, float)}</li>
  * </ul>
- * 
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2014-2-14
  */
 public class ScreenUtils {
 
@@ -19,24 +17,26 @@ public class ScreenUtils {
     }
 
     public static float dpToPx(Context context, float dp) {
-        if (context == null) {
-            return -1;
-        }
+        NullUtils.checkContextNull(context);
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
     public static float pxToDp(Context context, float px) {
-        if (context == null) {
-            return -1;
-        }
+        NullUtils.checkContextNull(context);
         return px / context.getResources().getDisplayMetrics().density;
     }
 
+    /**
+     * 转换为整形的dp，向上取整（+0.5f）
+     */
     public static int dpToPxInt(Context context, float dp) {
-        return (int)(dpToPx(context, dp) + 0.5f);
+        return (int) (dpToPx(context, dp) + 0.5f);
     }
 
-    public static int pxToDpCeilInt(Context context, float px) {
-        return (int)(pxToDp(context, px) + 0.5f);
+    /**
+     * 转换为整形的px，向上取整（+0.5f）
+     */
+    public static int pxToDpInt(Context context, float px) {
+        return (int) (pxToDp(context, px) + 0.5f);
     }
 }

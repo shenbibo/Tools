@@ -9,9 +9,9 @@ import java.io.IOException;
  * @author Vladislav Bauer
  */
 
-public class IOUtils {
+public class IoUtils {
 
-    private IOUtils() {
+    private IoUtils() {
         throw new AssertionError();
     }
 

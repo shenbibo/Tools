@@ -1,16 +1,13 @@
 package com.sky.tools.utils;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
  * Serialize Utils
  *
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2012-5-14
  */
 public class SerializeUtils {
 
@@ -26,15 +23,15 @@ public class SerializeUtils {
      */
     public static Object deserialization(String filePath) {
         ObjectInputStream in = null;
-        Object o = null;
         try {
             in = new ObjectInputStream(new FileInputStream(filePath));
-            o = in.readObject();
+            Object o = in.readObject();
+            return o;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         } finally {
-            IOUtils.close(in);
-            return o;
+            IoUtils.close(in);
         }
     }
 
@@ -52,8 +49,7 @@ public class SerializeUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            IOUtils.close(out);
+            IoUtils.close(out);
         }
     }
-
 }

@@ -30,12 +30,12 @@ public class ToastUtils {
     }
 
     public static void showShort(int resId){
-        NullUitls.checkContextNull(context);
+        NullUtils.checkContextNull(context);
         showShort(context, resId);
     }
 
     public static void showShort(CharSequence text){
-        NullUitls.checkContextNull(context);
+        NullUtils.checkContextNull(context);
         showShort(context, text);
     }
 
@@ -44,7 +44,7 @@ public class ToastUtils {
     }
 
     public static void showLong(int resId){
-        NullUitls.checkContextNull(context);
+        NullUtils.checkContextNull(context);
         showLong(context, resId);
     }
 

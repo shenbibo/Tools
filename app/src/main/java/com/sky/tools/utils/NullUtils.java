@@ -8,7 +8,7 @@ import android.content.Context;
  * Created by Sky on 2017/5/18.
  */
 
-public class NullUitls {
+public class NullUtils {
     public static void checkNull(Object object){
         if(object == null){
             throw new NullPointerException("object is null");
