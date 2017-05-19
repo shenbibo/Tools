@@ -49,7 +49,7 @@ public class MapUtils {
      *         </ul>
      */
     public static boolean putMapNotEmptyKey(Map<String, String> map, String key, String value) {
-        if (map == null || StringUtils.isEmpty(key)) {
+        if (map == null || TextUtil.isEmpty(key)) {
             return false;
         }
 
@@ -71,7 +71,7 @@ public class MapUtils {
      *         </ul>
      */
     public static boolean putMapNotEmptyKeyAndValue(Map<String, String> map, String key, String value) {
-        if (map == null || StringUtils.isEmpty(key) || StringUtils.isEmpty(value)) {
+        if (map == null || TextUtil.isEmpty(key) || TextUtil.isEmpty(value)) {
             return false;
         }
 
@@ -95,11 +95,11 @@ public class MapUtils {
      */
     public static boolean putMapNotEmptyKeyAndValue(Map<String, String> map, String key, String value,
             String defaultValue) {
-        if (map == null || StringUtils.isEmpty(key)) {
+        if (map == null || TextUtil.isEmpty(key)) {
             return false;
         }
 
-        map.put(key, StringUtils.isEmpty(value) ? defaultValue : value);
+        map.put(key, TextUtil.isEmpty(value) ? defaultValue : value);
         return true;
     }
 
@@ -199,14 +199,14 @@ public class MapUtils {
      */
     public static Map<String, String> parseKeyAndValueToMap(String source, String keyAndValueSeparator,
             String keyAndValuePairSeparator, boolean ignoreSpace) {
-        if (StringUtils.isEmpty(source)) {
+        if (TextUtil.isEmpty(source)) {
             return null;
         }
 
-        if (StringUtils.isEmpty(keyAndValueSeparator)) {
+        if (TextUtil.isEmpty(keyAndValueSeparator)) {
             keyAndValueSeparator = DEFAULT_KEY_AND_VALUE_SEPARATOR;
         }
-        if (StringUtils.isEmpty(keyAndValuePairSeparator)) {
+        if (TextUtil.isEmpty(keyAndValuePairSeparator)) {
             keyAndValuePairSeparator = DEFAULT_KEY_AND_VALUE_PAIR_SEPARATOR;
         }
         Map<String, String> keyAndValueMap = new HashMap<String, String>();
@@ -217,7 +217,7 @@ public class MapUtils {
 
         int seperator;
         for (String valueEntity : keyAndValueArray) {
-            if (!StringUtils.isEmpty(valueEntity)) {
+            if (!TextUtil.isEmpty(valueEntity)) {
                 seperator = valueEntity.indexOf(keyAndValueSeparator);
                 if (seperator != -1) {
                     if (ignoreSpace) {

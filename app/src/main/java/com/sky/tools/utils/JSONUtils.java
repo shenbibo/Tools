@@ -37,7 +37,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Long getLong(JSONObject jsonObject, String key, Long defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -64,7 +64,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Long getLong(String jsonData, String key, Long defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -115,7 +115,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Integer getInt(JSONObject jsonObject, String key, Integer defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -142,7 +142,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Integer getInt(String jsonData, String key, Integer defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -193,7 +193,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Double getDouble(JSONObject jsonObject, String key, Double defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -220,7 +220,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Double getDouble(String jsonData, String key, Double defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -271,7 +271,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static String getString(JSONObject jsonObject, String key, String defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -298,7 +298,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static String getString(String jsonData, String key, String defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -355,7 +355,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static String getStringCascade(String jsonData, String defaultValue, String... keyArray) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -384,7 +384,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static String[] getStringArray(JSONObject jsonObject, String key, String[] defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -419,7 +419,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static String[] getStringArray(String jsonData, String key, String[] defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -449,7 +449,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static List<String> getStringList(JSONObject jsonObject, String key, List<String> defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -484,7 +484,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static List<String> getStringList(String jsonData, String key, List<String> defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -513,7 +513,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static JSONObject getJSONObject(JSONObject jsonObject, String key, JSONObject defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -540,7 +540,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static JSONObject getJSONObject(String jsonData, String key, JSONObject defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -597,7 +597,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static JSONObject getJSONObjectCascade(String jsonData, JSONObject defaultValue, String... keyArray) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -626,7 +626,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static JSONArray getJSONArray(JSONObject jsonObject, String key, JSONArray defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -653,7 +653,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static JSONArray getJSONArray(String jsonData, String key, JSONArray defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -681,7 +681,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static boolean getBoolean(JSONObject jsonObject, String key, Boolean defaultValue) {
-        if (jsonObject == null || StringUtils.isEmpty(key)) {
+        if (jsonObject == null || TextUtil.isEmpty(key)) {
             return defaultValue;
         }
 
@@ -708,7 +708,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static boolean getBoolean(String jsonData, String key, Boolean defaultValue) {
-        if (StringUtils.isEmpty(jsonData)) {
+        if (TextUtil.isEmpty(jsonData)) {
             return defaultValue;
         }
 
@@ -804,7 +804,7 @@ public class JSONUtils {
      *         </ul>
      */
     public static Map<String, String> parseKeyAndValueToMap(String source) {
-        if (StringUtils.isEmpty(source)) {
+        if (TextUtil.isEmpty(source)) {
             return null;
         }
 

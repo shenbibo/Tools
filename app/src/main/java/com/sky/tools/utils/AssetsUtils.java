@@ -25,7 +25,7 @@ public class AssetsUtils {
      * @return
      */
     public static String geFileFromAssets(Context context, String fileName) {
-        if (context == null || StringUtils.isEmpty(fileName)) {
+        if (context == null || TextUtil.isEmpty(fileName)) {
             return null;
         }
 
@@ -52,7 +52,7 @@ public class AssetsUtils {
      * @return
      */
     public static List<String> geFileToListFromAssets(Context context, String fileName) {
-        if (context == null || StringUtils.isEmpty(fileName)) {
+        if (context == null || TextUtil.isEmpty(fileName)) {
             return null;
         }
 

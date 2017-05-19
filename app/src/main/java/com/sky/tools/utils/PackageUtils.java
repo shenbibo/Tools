@@ -437,7 +437,7 @@ public class PackageUtils {
      *         stack
      */
     public static Boolean isTopActivity(Context context, String packageName) {
-        if (context == null || StringUtils.isEmpty(packageName)) {
+        if (context == null || TextUtil.isEmpty(packageName)) {
             return null;
         }
 

@@ -103,7 +103,7 @@ public class RandomUtils {
      * </ul>
      */
     public static String getRandom(String source, int length) {
-        return StringUtils.isEmpty(source) ? null : getRandom(source.toCharArray(), length);
+        return TextUtil.isEmpty(source) ? null : getRandom(source.toCharArray(), length);
     }
 
     /**
