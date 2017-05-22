@@ -44,7 +44,7 @@ public class MapUtils {
      * @param value
      * @return <ul>
      *         <li>if map is null, return false</li>
-     *         <li>if key is null or empty, return false</li>
+     *         <li>if key is null or "", return false</li>
      *         <li>return {@link Map#put(Object, Object)}</li>
      *         </ul>
      */
@@ -65,8 +65,8 @@ public class MapUtils {
      * @param value
      * @return <ul>
      *         <li>if map is null, return false</li>
-     *         <li>if key is null or empty, return false</li>
-     *         <li>if value is null or empty, return false</li>
+     *         <li>if key is null or "", return false</li>
+     *         <li>if value is null or "", return false</li>
      *         <li>return {@link Map#put(Object, Object)}</li>
      *         </ul>
      */
@@ -88,8 +88,8 @@ public class MapUtils {
      * @param defaultValue
      * @return <ul>
      *         <li>if map is null, return false</li>
-     *         <li>if key is null or empty, return false</li>
-     *         <li>if value is null or empty, put defaultValue, return true</li>
+     *         <li>if key is null or "", return false</li>
+     *         <li>if value is null or "", put defaultValue, return true</li>
      *         <li>if value is neither null nor empty，put value, return true</li>
      *         </ul>
      */
@@ -159,7 +159,7 @@ public class MapUtils {
      * @return <ul>
      *         <li>if map is null, return null</li>
      *         <li>if value exist, return key</li>
-     *         <li>return null</li>
+     *         <li>else return null</li>
      *         </ul>
      */
     public static <K, V> K getKeyByValue(Map<K, V> map, V value) {
@@ -177,7 +177,8 @@ public class MapUtils {
 
     /**
      * parse key-value pairs to map, ignore empty key
-     * 
+     * <p>
+     * 默认键值分割符":"，默认键值对之间分割符","
      * <pre>
      * parseKeyAndValueToMap("","","",true)=null
      * parseKeyAndValueToMap(null,"","",true)=null
@@ -190,7 +191,7 @@ public class MapUtils {
      * parseKeyAndValueToMap("a=b; c=d","=", ";", false)={(a,b),( c,d)}
      * parseKeyAndValueToMap("a=b, c=d", ",", ";", false)={(a=b, c=d)}
      * </pre>
-     * 
+     *
      * @param source key-value pairs
      * @param keyAndValueSeparator separator between key and value
      * @param keyAndValuePairSeparator separator between key-value pairs
@@ -209,23 +210,20 @@ public class MapUtils {
         if (TextUtil.isEmpty(keyAndValuePairSeparator)) {
             keyAndValuePairSeparator = DEFAULT_KEY_AND_VALUE_PAIR_SEPARATOR;
         }
-        Map<String, String> keyAndValueMap = new HashMap<String, String>();
+        Map<String, String> keyAndValueMap = new HashMap<>();
         String[] keyAndValueArray = source.split(keyAndValuePairSeparator);
-        if (keyAndValueArray == null) {
-            return null;
-        }
 
-        int seperator;
+        int separator;
         for (String valueEntity : keyAndValueArray) {
             if (!TextUtil.isEmpty(valueEntity)) {
-                seperator = valueEntity.indexOf(keyAndValueSeparator);
-                if (seperator != -1) {
+                separator = valueEntity.indexOf(keyAndValueSeparator);
+                if (separator != -1) {
                     if (ignoreSpace) {
-                        MapUtils.putMapNotEmptyKey(keyAndValueMap, valueEntity.substring(0, seperator).trim(),
-                                valueEntity.substring(seperator + 1).trim());
+                        MapUtils.putMapNotEmptyKey(keyAndValueMap, valueEntity.substring(0, separator).trim(),
+                                valueEntity.substring(separator + 1).trim());
                     } else {
-                        MapUtils.putMapNotEmptyKey(keyAndValueMap, valueEntity.substring(0, seperator),
-                                valueEntity.substring(seperator + 1));
+                        MapUtils.putMapNotEmptyKey(keyAndValueMap, valueEntity.substring(0, separator),
+                                valueEntity.substring(separator + 1));
                     }
                 }
             }
@@ -239,7 +237,7 @@ public class MapUtils {
      * @param source key-value pairs
      * @param ignoreSpace whether ignore space at the begging or end of key and value
      * @return
-     * @see {@link MapUtils#parseKeyAndValueToMap(String, String, String, boolean)}, keyAndValueSeparator is
+     * @see {@link #parseKeyAndValueToMap(String, String, String, boolean)}, keyAndValueSeparator is
      *      {@link #DEFAULT_KEY_AND_VALUE_SEPARATOR}, keyAndValuePairSeparator is
      *      {@link #DEFAULT_KEY_AND_VALUE_PAIR_SEPARATOR}
      */
@@ -264,10 +262,11 @@ public class MapUtils {
 
     /**
      * join map
-     * 
+     * 不要使用这个，可以使用GSON直接转换
      * @param map
      * @return
      */
+    @Deprecated
     public static String toJson(Map<String, String> map) {
         if (map == null || map.size() == 0) {
             return null;
@@ -277,7 +276,7 @@ public class MapUtils {
         paras.append("{");
         Iterator<Entry<String, String>> ite = map.entrySet().iterator();
         while (ite.hasNext()) {
-            Entry<String, String> entry = (Entry<String, String>)ite.next();
+            Entry<String, String> entry = ite.next();
             paras.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\"");
             if (ite.hasNext()) {
                 paras.append(",");
