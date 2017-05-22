@@ -10,10 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.text.TextUtils;
+
+import static android.R.attr.path;
 
 /**
  * File Utils
@@ -41,32 +44,27 @@ import android.text.TextUtils;
  * <li>{@link #deleteFile(String)}</li>
  * <li>{@link #isFileExist(String)}</li>
  * <li>{@link #isFolderExist(String)}</li>
- * <li>{@link #makeFolders(String)}</li>
  * <li>{@link #makeDirs(String)}</li>
  * </ul>
- * 
+ *
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2012-5-12
  */
 public class FileUtils {
 
     public final static String FILE_EXTENSION_SEPARATOR = ".";
 
+    public final static String DEFAULT_CHARSET = "utf-8";
+
     private FileUtils() {
         throw new AssertionError();
     }
 
     /**
-     * read file
-     * 
-     * @param filePath
-     * @param charsetName The name of a supported {@link java.nio.charset.Charset </code>charset<code>}
-     * @return if file not exist, return null, else return content of file
-     * @throws RuntimeException if an error occurs while operator BufferedReader
-     */
-    public static StringBuilder readFile(String filePath, String charsetName) {
-        File file = new File(filePath);
-        StringBuilder fileContent = new StringBuilder("");
-        if (file == null || !file.isFile()) {
+     * 注意读入的数据不再携带换行符
+     * */
+    public static StringBuilder readFile(File file, String charsetName) {
+        StringBuilder fileContent = new StringBuilder();
+        if (!file.isFile()) {
             return null;
         }
 
@@ -74,43 +72,64 @@ public class FileUtils {
         try {
             InputStreamReader is = new InputStreamReader(new FileInputStream(file), charsetName);
             reader = new BufferedReader(is);
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
-                if (!fileContent.toString().equals("")) {
-                    fileContent.append("\r\n");
-                }
                 fileContent.append(line);
             }
+            // 移除最后的换行符
             return fileContent;
-        } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         } finally {
             IoUtils.close(reader);
         }
     }
 
+    public static StringBuilder readFile(File file) {
+        return readFile(file, DEFAULT_CHARSET);
+    }
+
+    /**
+     * read file
+     *
+     * @param filePath
+     * @param charsetName The name of a supported {@link java.nio.charset.Charset </code>charset<code>}
+     * @return if file not exist or exception happen, return null, else return content of file
+     */
+    public static StringBuilder readFile(String filePath, String charsetName) {
+        return readFile(new File(filePath), charsetName);
+    }
+
+    /**
+     * 默认为utf-8
+     */
+    public static StringBuilder readFile(String filePath) {
+        return readFile(filePath, DEFAULT_CHARSET);
+    }
+
     /**
      * write file
-     * 
-     * @param filePath
+     *
+     * @param destFilePath
      * @param content
-     * @param append is append, if true, write to the end of file, else clear content of file and write into it
-     * @return return false if content is empty, true otherwise
-     * @throws RuntimeException if an error occurs while operator FileWriter
+     * @param append       is append, if true, write to the end of file, else clear content of file and write into it
+     * @return return false if content is empty or exception happen, true otherwise
      */
-    public static boolean writeFile(String filePath, String content, boolean append) {
+    public static boolean writeFile(String destFilePath, String content, boolean append) {
         if (TextUtil.isEmpty(content)) {
             return false;
         }
 
         FileWriter fileWriter = null;
         try {
-            makeDirs(filePath);
-            fileWriter = new FileWriter(filePath, append);
+            makeDirs(destFilePath);
+            fileWriter = new FileWriter(destFilePath, append);
             fileWriter.write(content);
             return true;
-        } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         } finally {
             IoUtils.close(fileWriter);
         }
@@ -118,22 +137,21 @@ public class FileUtils {
 
     /**
      * write file
-     * 
-     * @param filePath
+     * 将list 以一行一行写进文本中，并添加换行符
+     * @param destFilePath
      * @param contentList
-     * @param append is append, if true, write to the end of file, else clear content of file and write into it
+     * @param append       is append, if true, write to the end of file, else clear content of file and write into it
      * @return return false if contentList is empty, true otherwise
-     * @throws RuntimeException if an error occurs while operator FileWriter
      */
-    public static boolean writeFile(String filePath, List<String> contentList, boolean append) {
+    public static boolean writeFile(String destFilePath, List<String> contentList, boolean append) {
         if (ListUtils.isEmpty(contentList)) {
             return false;
         }
 
         FileWriter fileWriter = null;
         try {
-            makeDirs(filePath);
-            fileWriter = new FileWriter(filePath, append);
+            makeDirs(destFilePath);
+            fileWriter = new FileWriter(destFilePath, append);
             int i = 0;
             for (String line : contentList) {
                 if (i++ > 0) {
@@ -143,7 +161,8 @@ public class FileUtils {
             }
             return true;
         } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+            e.printStackTrace();
+            return false;
         } finally {
             IoUtils.close(fileWriter);
         }
@@ -151,7 +170,7 @@ public class FileUtils {
 
     /**
      * write file, the string will be written to the begin of the file
-     * 
+     *
      * @param filePath
      * @param content
      * @return
@@ -162,7 +181,7 @@ public class FileUtils {
 
     /**
      * write file, the string list will be written to the begin of the file
-     * 
+     *
      * @param filePath
      * @param contentList
      * @return
@@ -173,11 +192,11 @@ public class FileUtils {
 
     /**
      * write file, the bytes will be written to the begin of the file
-     * 
+     *
      * @param filePath
      * @param stream
      * @return
-     * @see {@link #writeFile(String, InputStream, boolean)}
+     * @see FileUtils#writeFile(String, InputStream, boolean)
      */
     public static boolean writeFile(String filePath, InputStream stream) {
         return writeFile(filePath, stream, false);
@@ -185,12 +204,11 @@ public class FileUtils {
 
     /**
      * write file
-     * 
-     * @param file the file to be opened for writing.
-     * @param stream the input stream
-     * @param append if <code>true</code>, then bytes will be written to the end of the file rather than the beginning
+     *
+     * @param filePath the file to be opened for writing.
+     * @param stream   the input stream
+     * @param append   if <code>true</code>, then bytes will be written to the end of the file rather than the beginning
      * @return return true
-     * @throws RuntimeException if an error occurs while operator FileOutputStream
      */
     public static boolean writeFile(String filePath, InputStream stream, boolean append) {
         return writeFile(filePath != null ? new File(filePath) : null, stream, append);
@@ -198,11 +216,11 @@ public class FileUtils {
 
     /**
      * write file, the bytes will be written to the begin of the file
-     * 
+     *
      * @param file
      * @param stream
      * @return
-     * @see {@link #writeFile(File, InputStream, boolean)}
+     * @see FileUtils#writeFile(File, InputStream, boolean)
      */
     public static boolean writeFile(File file, InputStream stream) {
         return writeFile(file, stream, false);
@@ -210,8 +228,8 @@ public class FileUtils {
 
     /**
      * write file
-     * 
-     * @param file the file to be opened for writing.
+     *
+     * @param file   the file to be opened for writing.
      * @param stream the input stream
      * @param append if <code>true</code>, then bytes will be written to the end of the file rather than the beginning
      * @return return true
@@ -223,16 +241,15 @@ public class FileUtils {
             makeDirs(file.getAbsolutePath());
             o = new FileOutputStream(file, append);
             byte data[] = new byte[1024];
-            int length = -1;
+            int length;
             while ((length = stream.read(data)) != -1) {
                 o.write(data, 0, length);
             }
             o.flush();
             return true;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("FileNotFoundException occurred. ", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         } finally {
             IoUtils.close(o);
             IoUtils.close(stream);
@@ -241,52 +258,59 @@ public class FileUtils {
 
     /**
      * move file
-     * 
+     *
      * @param sourceFilePath
      * @param destFilePath
+     * @return
      */
-    public static void moveFile(String sourceFilePath, String destFilePath) {
+    public static boolean moveFile(String sourceFilePath, String destFilePath) {
         if (TextUtils.isEmpty(sourceFilePath) || TextUtils.isEmpty(destFilePath)) {
-            throw new RuntimeException("Both sourceFilePath and destFilePath cannot be null.");
+            return false;
         }
-        moveFile(new File(sourceFilePath), new File(destFilePath));
+        return moveFile(new File(sourceFilePath), new File(destFilePath));
     }
 
     /**
      * move file
-     * 
+     *
      * @param srcFile
      * @param destFile
      */
-    public static void moveFile(File srcFile, File destFile) {
+    public static boolean moveFile(File srcFile, File destFile) {
         boolean rename = srcFile.renameTo(destFile);
         if (!rename) {
-            copyFile(srcFile.getAbsolutePath(), destFile.getAbsolutePath());
-            deleteFile(srcFile.getAbsolutePath());
+            if (!copyFile(srcFile.getAbsolutePath(), destFile.getAbsolutePath())) {
+                return false;
+            }
+
+            if (!deleteFile(srcFile.getAbsolutePath())) {
+                return false;
+            }
         }
+        return true;
     }
 
     /**
      * copy file
-     * 
+     *
      * @param sourceFilePath
      * @param destFilePath
-     * @return
-     * @throws RuntimeException if an error occurs while operator FileOutputStream
+     * @return if exception happen or copy fail return false
      */
     public static boolean copyFile(String sourceFilePath, String destFilePath) {
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             inputStream = new FileInputStream(sourceFilePath);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("FileNotFoundException occurred. ", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
         return writeFile(destFilePath, inputStream);
     }
 
     /**
      * read file to string list, a element of list is a line
-     * 
+     * 每读取一行注意不会添加换行符
      * @param filePath
      * @param charsetName The name of a supported {@link java.nio.charset.Charset </code>charset<code>}
      * @return if file not exist, return null, else return content of file
@@ -294,8 +318,8 @@ public class FileUtils {
      */
     public static List<String> readFileToList(String filePath, String charsetName) {
         File file = new File(filePath);
-        List<String> fileContent = new ArrayList<String>();
-        if (file == null || !file.isFile()) {
+        List<String> fileContent = new ArrayList<>();
+        if (!file.isFile()) {
             return null;
         }
 
@@ -303,21 +327,22 @@ public class FileUtils {
         try {
             InputStreamReader is = new InputStreamReader(new FileInputStream(file), charsetName);
             reader = new BufferedReader(is);
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 fileContent.add(line);
             }
             return fileContent;
-        } catch (IOException e) {
-            throw new RuntimeException("IOException occurred. ", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         } finally {
             IoUtils.close(reader);
         }
     }
 
     /**
-     * get file name from path, not include suffix
-     * 
+     * 获取文件名不包含后缀, 不包含后缀
+     * <p>
      * <pre>
      *      getFileNameWithoutExtension(null)               =   null
      *      getFileNameWithoutExtension("")                 =   ""
@@ -332,7 +357,7 @@ public class FileUtils {
      *      getFileNameWithoutExtension("/home/admin")      =   "admin"
      *      getFileNameWithoutExtension("/home/admin/a.txt/b.mp3")  =   "b"
      * </pre>
-     * 
+     *
      * @param filePath
      * @return file name from path, not include suffix
      * @see
@@ -342,20 +367,20 @@ public class FileUtils {
             return filePath;
         }
 
-        int extenPosi = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
-        int filePosi = filePath.lastIndexOf(File.separator);
-        if (filePosi == -1) {
-            return (extenPosi == -1 ? filePath : filePath.substring(0, extenPosi));
+        int extensionPos = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+        int filePos = filePath.lastIndexOf(File.separator);
+        if (filePos == -1) {
+            return (extensionPos == -1 ? filePath : filePath.substring(0, extensionPos));
         }
-        if (extenPosi == -1) {
-            return filePath.substring(filePosi + 1);
+        if (extensionPos == -1) {
+            return filePath.substring(filePos + 1);
         }
-        return (filePosi < extenPosi ? filePath.substring(filePosi + 1, extenPosi) : filePath.substring(filePosi + 1));
+        return (filePos < extensionPos ? filePath.substring(filePos + 1, extensionPos) : filePath.substring(filePos + 1));
     }
 
     /**
-     * get file name from path, include suffix
-     * 
+     * get file name from path, 包含后缀名
+     * <p>
      * <pre>
      *      getFileName(null)               =   null
      *      getFileName("")                 =   ""
@@ -370,7 +395,7 @@ public class FileUtils {
      *      getFileName("/home/admin")      =   "admin"
      *      getFileName("/home/admin/a.txt/b.mp3")  =   "b.mp3"
      * </pre>
-     * 
+     *
      * @param filePath
      * @return file name from path, include suffix
      */
@@ -379,13 +404,13 @@ public class FileUtils {
             return filePath;
         }
 
-        int filePosi = filePath.lastIndexOf(File.separator);
-        return (filePosi == -1) ? filePath : filePath.substring(filePosi + 1);
+        int filePos = filePath.lastIndexOf(File.separator);
+        return (filePos == -1) ? filePath : filePath.substring(filePos + 1);
     }
 
     /**
      * get folder name from path
-     * 
+     * <p>
      * <pre>
      *      getFolderName(null)               =   null
      *      getFolderName("")                 =   ""
@@ -401,9 +426,9 @@ public class FileUtils {
      *      getFolderName("/home/admin")      =   "/home"
      *      getFolderName("/home/admin/a.txt/b.mp3")  =   "/home/admin/a.txt"
      * </pre>
-     * 
      * @param filePath
      * @return
+     *
      */
     public static String getFolderName(String filePath) {
 
@@ -411,13 +436,13 @@ public class FileUtils {
             return filePath;
         }
 
-        int filePosi = filePath.lastIndexOf(File.separator);
-        return (filePosi == -1) ? "" : filePath.substring(0, filePosi);
+        int filePos = filePath.lastIndexOf(File.separator);
+        return (filePos == -1) ? "" : filePath.substring(0, filePos);
     }
 
     /**
      * get suffix of file from path
-     * 
+     * <p>
      * <pre>
      *      getFileExtension(null)               =   ""
      *      getFileExtension("")                 =   ""
@@ -433,7 +458,7 @@ public class FileUtils {
      *      getFileExtension("/home/admin/a.txt/b")  =   ""
      *      getFileExtension("/home/admin/a.txt/b.mp3")  =   "mp3"
      * </pre>
-     * 
+     *
      * @param filePath
      * @return
      */
@@ -442,12 +467,12 @@ public class FileUtils {
             return filePath;
         }
 
-        int extenPosi = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
-        int filePosi = filePath.lastIndexOf(File.separator);
-        if (extenPosi == -1) {
+        int extensionPos = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+        int filePos = filePath.lastIndexOf(File.separator);
+        if (extensionPos == -1) {
             return "";
         }
-        return (filePosi >= extenPosi) ? "" : filePath.substring(extenPosi + 1);
+        return (filePos >= extensionPos) ? "" : filePath.substring(extensionPos + 1);
     }
 
     /**
@@ -457,17 +482,17 @@ public class FileUtils {
      * <ul>
      * <strong>Attentions:</strong>
      * <li>makeDirs("C:\\Users\\Trinea") can only create users folder</li>
-     * <li>makeFolder("C:\\Users\\Trinea\\") can create Trinea folder</li>
+     * <li>makeDirs("C:\\Users\\Trinea\\") can create Trinea folder</li>
      * </ul>
-     * 
+     *
      * @param filePath
      * @return true if the necessary directories have been created or the target directory already exists, false one of
-     *         the directories can not be created.
-     *         <ul>
-     *         <li>if {@link FileUtils#getFolderName(String)} return null, return false</li>
-     *         <li>if target directory already exists, return true</li>
-     *         <li>return {@link File#makeFolder}</li>
-     *         </ul>
+     * the directories can not be created.
+     * <ul>
+     * <li>if {@link FileUtils#getFolderName(String)} return null, return false</li>
+     * <li>if target directory already exists, return true</li>
+     * <li>return {@link File#mkdirs()}</li>
+     * </ul>
      */
     public static boolean makeDirs(String filePath) {
         String folderName = getFolderName(filePath);
@@ -476,21 +501,12 @@ public class FileUtils {
         }
 
         File folder = new File(folderName);
-        return (folder.exists() && folder.isDirectory()) ? true : folder.mkdirs();
-    }
-
-    /**
-     * @param filePath
-     * @return
-     * @see #makeDirs(String)
-     */
-    public static boolean makeFolders(String filePath) {
-        return makeDirs(filePath);
+        return (folder.exists() && folder.isDirectory()) || folder.mkdirs();
     }
 
     /**
      * Indicates if this file represents a file on the underlying file system.
-     * 
+     *
      * @param filePath
      * @return
      */
@@ -499,13 +515,16 @@ public class FileUtils {
             return false;
         }
 
-        File file = new File(filePath);
-        return (file.exists() && file.isFile());
+        return isFileExist(new File(filePath));
+    }
+
+    public static boolean isFileExist(File file){
+        return file != null && file.exists() && file.isFile();
     }
 
     /**
      * Indicates if this file represents a directory on the underlying file system.
-     * 
+     *
      * @param directoryPath
      * @return
      */
@@ -514,8 +533,11 @@ public class FileUtils {
             return false;
         }
 
-        File dire = new File(directoryPath);
-        return (dire.exists() && dire.isDirectory());
+        return isFolderExist(new File(directoryPath));
+    }
+
+    public static boolean isFolderExist(File file){
+        return file != null && file.exists() && file.isDirectory();
     }
 
     /**
@@ -525,7 +547,7 @@ public class FileUtils {
      * <li>if path not exist, return true</li>
      * <li>if path exist, delete recursion. return true</li>
      * <ul>
-     * 
+     *
      * @param path
      * @return
      */
@@ -534,7 +556,19 @@ public class FileUtils {
             return true;
         }
 
-        File file = new File(path);
+        return deleteFile(new File(path));
+    }
+
+    /**
+     * 如果是文件夹删除，只要其中一个文件删除失败就返回false
+     * if file = null， return false;
+     * 如果既不是文件也不是文件夹，直接返回false
+     * */
+    public static boolean deleteFile(File file) {
+        if (file == null) {
+            return true;
+        }
+
         if (!file.exists()) {
             return true;
         }
@@ -546,12 +580,23 @@ public class FileUtils {
         }
         for (File f : file.listFiles()) {
             if (f.isFile()) {
-                f.delete();
+                if(!file.delete()){
+                    return false;
+                }
             } else if (f.isDirectory()) {
-                deleteFile(f.getAbsolutePath());
+                deleteFile(f);
             }
         }
         return file.delete();
+    }
+
+
+    public static long getFileSize(File file) {
+        if (file == null) {
+            return -1;
+        }
+
+        return (file.exists() && file.isFile()) ? file.length() : -1;
     }
 
     /**
@@ -560,7 +605,7 @@ public class FileUtils {
      * <li>if path is null or empty, return -1</li>
      * <li>if path exist and it is a file, return file size, else return -1</li>
      * <ul>
-     * 
+     *
      * @param path
      * @return returns the length of this file in bytes. returns -1 if the file does not exist.
      */
@@ -569,7 +614,6 @@ public class FileUtils {
             return -1;
         }
 
-        File file = new File(path);
-        return (file.exists() && file.isFile() ? file.length() : -1);
+        return getFileSize(new File(path));
     }
 }

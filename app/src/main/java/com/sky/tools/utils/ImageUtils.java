@@ -20,9 +20,9 @@ import android.graphics.drawable.Drawable;
  * <ul>
  * convert between Bitmap, byte array, Drawable
  * <li>{@link #bitmapToByte(Bitmap)}</li>
- * <li>{@link #bitmapToDrawable(Bitmap)}</li>
+ * <li>{@link #bitmapToDrawable(Resources, Bitmap)}</li>
  * <li>{@link #byteToBitmap(byte[])}</li>
- * <li>{@link #byteToDrawable(byte[])}</li>
+ * <li>{@link #byteToDrawable(Resources, byte[])}</li>
  * <li>{@link #drawableToBitmap(Drawable)}</li>
  * <li>{@link #drawableToByte(Drawable)}</li>
  * scale image

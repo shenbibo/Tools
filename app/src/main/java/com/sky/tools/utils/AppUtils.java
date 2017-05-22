@@ -8,6 +8,8 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 
+import com.sky.tools.utils.ShellUtils.CommandResult;
+
 /**
  * AppUtils
  * <ul>
@@ -21,6 +23,15 @@ public class AppUtils {
     private AppUtils() {
         throw new AssertionError();
     }
+
+    public static String getVersionName(Context context){
+        return null;
+    }
+
+    public static String getVersionCode(Context context){
+        return null;
+    }
+
 
     /**
      * whether this process is named with processName
