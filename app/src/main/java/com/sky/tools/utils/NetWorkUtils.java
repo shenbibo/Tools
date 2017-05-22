@@ -49,7 +49,7 @@ public class NetWorkUtils {
         String type = NETWORK_TYPE_DISCONNECT;
         if (manager == null || (networkInfo = manager.getActiveNetworkInfo()) == null) {
             return type;
-        };
+        }
 
         if (networkInfo.isConnected()) {
             String typeName = networkInfo.getTypeName();
@@ -68,7 +68,7 @@ public class NetWorkUtils {
 
     /**
      * Whether is fast mobile network
-     * 
+     * 数据网络下，当是3G网络（或以上）都认为是快速网络
      * @param context
      * @return
      */
@@ -79,40 +79,46 @@ public class NetWorkUtils {
         }
 
         switch (telephonyManager.getNetworkType()) {
-            case TelephonyManager.NETWORK_TYPE_1xRTT:
-                return false;
-            case TelephonyManager.NETWORK_TYPE_CDMA:
-                return false;
-            case TelephonyManager.NETWORK_TYPE_EDGE:
-                return false;
-            case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                return true;
-            case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                return true;
-            case TelephonyManager.NETWORK_TYPE_GPRS:
-                return false;
             case TelephonyManager.NETWORK_TYPE_HSDPA:
-                return true;
             case TelephonyManager.NETWORK_TYPE_HSPA:
-                return true;
             case TelephonyManager.NETWORK_TYPE_HSUPA:
-                return true;
             case TelephonyManager.NETWORK_TYPE_UMTS:
-                return true;
             case TelephonyManager.NETWORK_TYPE_EHRPD:
-                return true;
             case TelephonyManager.NETWORK_TYPE_EVDO_B:
-                return true;
             case TelephonyManager.NETWORK_TYPE_HSPAP:
-                return true;
-            case TelephonyManager.NETWORK_TYPE_IDEN:
-                return false;
+            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+            case TelephonyManager.NETWORK_TYPE_EVDO_A:
             case TelephonyManager.NETWORK_TYPE_LTE:
                 return true;
+
+            case TelephonyManager.NETWORK_TYPE_1xRTT:
+            case TelephonyManager.NETWORK_TYPE_CDMA:
+            case TelephonyManager.NETWORK_TYPE_EDGE:
+            case TelephonyManager.NETWORK_TYPE_GPRS:
+            case TelephonyManager.NETWORK_TYPE_IDEN:
             case TelephonyManager.NETWORK_TYPE_UNKNOWN:
                 return false;
             default:
                 return false;
         }
+    }
+
+    /**
+     * 检测当前网络是否可用
+     * @param context
+     * @return true 可用，false 不可用
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            return false;
+        }
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                return true;
+            }
+        }
+        return false;
     }
 }

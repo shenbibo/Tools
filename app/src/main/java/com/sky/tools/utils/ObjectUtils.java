@@ -22,79 +22,23 @@ public class ObjectUtils {
      *         </ul>
      */
     public static boolean isEquals(Object actual, Object expected) {
-        return actual == expected || (actual == null ? expected == null : actual.equals(expected));
+        return actual == expected || actual.equals(expected);
     }
 
     /**
      * null Object to empty string
      * 
      * <pre>
-     * nullStrToEmpty(null) = &quot;&quot;;
-     * nullStrToEmpty(&quot;&quot;) = &quot;&quot;;
-     * nullStrToEmpty(&quot;aa&quot;) = &quot;aa&quot;;
+     * toString(null) = &quot;&quot;;
+     * toString(&quot;&quot;) = &quot;&quot;;
+     * toString(&quot;aa&quot;) = &quot;aa&quot;;
      * </pre>
      * 
-     * @param str
+     * @param object
      * @return
      */
-    public static String nullStrToEmpty(Object str) {
-        return (str == null ? "" : (str instanceof String ? (String)str : str.toString()));
-    }
-
-    /**
-     * convert long array to Long array
-     * 
-     * @param source
-     * @return
-     */
-    public static Long[] transformLongArray(long[] source) {
-        Long[] destin = new Long[source.length];
-        for (int i = 0; i < source.length; i++) {
-            destin[i] = source[i];
-        }
-        return destin;
-    }
-
-    /**
-     * convert Long array to long array
-     * 
-     * @param source
-     * @return
-     */
-    public static long[] transformLongArray(Long[] source) {
-        long[] destin = new long[source.length];
-        for (int i = 0; i < source.length; i++) {
-            destin[i] = source[i];
-        }
-        return destin;
-    }
-
-    /**
-     * convert int array to Integer array
-     * 
-     * @param source
-     * @return
-     */
-    public static Integer[] transformIntArray(int[] source) {
-        Integer[] destin = new Integer[source.length];
-        for (int i = 0; i < source.length; i++) {
-            destin[i] = source[i];
-        }
-        return destin;
-    }
-
-    /**
-     * convert Integer array to int array
-     * 
-     * @param source
-     * @return
-     */
-    public static int[] transformIntArray(Integer[] source) {
-        int[] destin = new int[source.length];
-        for (int i = 0; i < source.length; i++) {
-            destin[i] = source[i];
-        }
-        return destin;
+    public static String toString(Object object) {
+        return (object == null ? "" : object.toString());
     }
 
     /**

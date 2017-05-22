@@ -135,7 +135,7 @@ public class ArrayUtils {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
-        Long[] array = ObjectUtils.transformLongArray(sourceArray);
+        Long[] array = transformLongArray(sourceArray);
         return getLast(array, value, defaultValue, isCircle);
 
     }
@@ -148,7 +148,7 @@ public class ArrayUtils {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
-        Long[] array = ObjectUtils.transformLongArray(sourceArray);
+        Long[] array = transformLongArray(sourceArray);
         return getNext(array, value, defaultValue, isCircle);
     }
 
@@ -160,7 +160,7 @@ public class ArrayUtils {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
-        Integer[] array = ObjectUtils.transformIntArray(sourceArray);
+        Integer[] array = transformIntArray(sourceArray);
         return getLast(array, value, defaultValue, isCircle);
 
     }
@@ -173,7 +173,65 @@ public class ArrayUtils {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
-        Integer[] array = ObjectUtils.transformIntArray(sourceArray);
+        Integer[] array = transformIntArray(sourceArray);
         return getNext(array, value, defaultValue, isCircle);
+    }
+
+    /**
+     * convert long array to Long array
+     *
+     * @param source
+     * @return
+     */
+    public static Long[] transformLongArray(long[] source) {
+        Long[] dest = new Long[source.length];
+        for (int i = 0; i < source.length; i++) {
+            dest[i] = source[i];
+        }
+        // 不能使用一下方法拷贝
+        //        System.arraycopy(source, 0, dest, 0, source.length);
+        return dest;
+    }
+
+    /**
+     * convert Long array to long array
+     *
+     * @param source
+     * @return
+     */
+    public static long[] transformLongArray(Long[] source) {
+        long[] dest = new long[source.length];
+        for (int i = 0; i < source.length; i++) {
+            dest[i] = source[i];
+        }
+        return dest;
+    }
+
+    /**
+     * convert int array to Integer array
+     *
+     * @param source
+     * @return
+     */
+    public static Integer[] transformIntArray(int[] source) {
+        Integer[] dest = new Integer[source.length];
+        for (int i = 0; i < source.length; i++) {
+            dest[i] = source[i];
+        }
+        return dest;
+    }
+
+    /**
+     * convert Integer array to int array
+     *
+     * @param source
+     * @return
+     */
+    public static int[] transformIntArray(Integer[] source) {
+        int[] dest = new int[source.length];
+        for (int i = 0; i < source.length; i++) {
+            dest[i] = source[i];
+        }
+        return dest;
     }
 }

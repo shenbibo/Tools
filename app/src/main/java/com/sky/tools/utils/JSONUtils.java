@@ -12,9 +12,10 @@ import org.json.JSONObject;
 
 /**
  * Json Utils
- * 
+ * 现在不在使用，使用开源框架Gjson或者FastJSON
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2012-5-12
  */
+@Deprecated
 public class JSONUtils {
 
     public static boolean isPrintException = true;

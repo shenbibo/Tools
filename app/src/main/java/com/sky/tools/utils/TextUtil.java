@@ -64,9 +64,9 @@ public class TextUtil {
      * null Object to empty string
      * <p>
      * <pre>
-     * nullStrToEmpty(null) = &quot;&quot;;
-     * nullStrToEmpty(&quot;&quot;) = &quot;&quot;;
-     * nullStrToEmpty(&quot;aa&quot;) = &quot;aa&quot;;
+     * toString(null) = &quot;&quot;;
+     * toString(&quot;&quot;) = &quot;&quot;;
+     * toString(&quot;aa&quot;) = &quot;aa&quot;;
      * </pre>
      *
      * @param str
