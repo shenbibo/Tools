@@ -9,9 +9,11 @@ import android.os.Parcelable;
 
 /**
  * ParcelUtils
- * 
+ * <p>
+ * 其有效性还需要验证
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-5-27
  */
+@Deprecated
 public class ParcelUtils {
 
     private ParcelUtils() {
