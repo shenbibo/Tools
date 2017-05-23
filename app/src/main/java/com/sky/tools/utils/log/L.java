@@ -1,6 +1,7 @@
-package com.sky.tools.utils;
+package com.sky.tools.utils.log;
 
 import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.Settings;
 
 /**
  * 日志工具类
@@ -16,9 +17,15 @@ public final class L {
 
     private static final L INSTANCE = new L();
 
-    public static L init(String prefixTag){
+    private Setting mSetting;
+
+    public static Setting init(){
+        return init(DEFAULT_PREFIX_TAG);
+    }
+
+    public static Setting init(String prefixTag) {
         String tag = (prefixTag == null ? DEFAULT_PREFIX_TAG : prefixTag);
-        Logger.init(tag);
-        return INSTANCE;
+        INSTANCE.mSetting = new Setting(Logger.init(tag));
+        return INSTANCE.mSetting;
     }
 }
