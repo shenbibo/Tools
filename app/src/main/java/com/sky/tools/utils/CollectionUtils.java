@@ -41,14 +41,15 @@ public class CollectionUtils {
      * <pre>
      * join(null)      =   "";
      * join({})        =   "";
-     * join({a,b})     =   "a,b";
+     * join({a,b})     =   "a拼接分隔符b";
      * </pre>
      * 
      * @param collection
+     * @param joinSyntax 拼接的分割符
      * @return join collection to string, separator is {@link #DEFAULT_JOIN_SEPARATOR}. if collection is empty, return
      *         ""
      */
-    public static String join(Iterable collection) {
-        return collection == null ? "" : TextUtils.join(DEFAULT_JOIN_SEPARATOR, collection);
+    public static String join(Iterable collection, String joinSyntax) {
+        return collection == null ? "" : TextUtil.join(joinSyntax, collection);
     }
 }

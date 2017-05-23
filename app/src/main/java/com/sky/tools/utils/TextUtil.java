@@ -9,6 +9,10 @@ import java.util.regex.Pattern;
  * 字符串工具类，其内部大部分方法，只是封装调用了{@link TextUtils}类的方法。
  */
 public class TextUtil {
+    /**
+     * 默认分割符，防止出现重复
+     * */
+    static final String JOIN_DEFAULT_SPILT = "2,天0;1工@=#7,p具;s:0项5=19";
 
     /**
      * is null or its length is 0 or it is made by space

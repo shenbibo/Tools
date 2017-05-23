@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -19,9 +20,9 @@ import android.graphics.drawable.Drawable;
  * <ul>
  * convert between Bitmap, byte array, Drawable
  * <li>{@link #bitmapToByte(Bitmap)}</li>
- * <li>{@link #bitmapToDrawable(Bitmap)}</li>
+ * <li>{@link #bitmapToDrawable(Resources, Bitmap)}</li>
  * <li>{@link #byteToBitmap(byte[])}</li>
- * <li>{@link #byteToDrawable(byte[])}</li>
+ * <li>{@link #byteToDrawable(Resources, byte[])}</li>
  * <li>{@link #drawableToBitmap(Drawable)}</li>
  * <li>{@link #drawableToByte(Drawable)}</li>
  * scale image
@@ -40,12 +41,12 @@ public class ImageUtils {
     /**
      * convert Bitmap to byte array
      * 
-     * @param b
+     * @param b if b = null, return new byte[0]
      * @return
      */
     public static byte[] bitmapToByte(Bitmap b) {
         if (b == null) {
-            return null;
+            return new byte[0];
         }
 
         ByteArrayOutputStream o = new ByteArrayOutputStream();
@@ -57,7 +58,7 @@ public class ImageUtils {
      * convert byte array to Bitmap
      * 
      * @param b
-     * @return
+     * @return if b == null || b.length == 0 return null
      */
     public static Bitmap byteToBitmap(byte[] b) {
         return (b == null || b.length == 0) ? null : BitmapFactory.decodeByteArray(b, 0, b.length);
@@ -67,7 +68,7 @@ public class ImageUtils {
      * convert Drawable to Bitmap
      * 
      * @param d
-     * @return
+     * @return if d == null return null
      */
     public static Bitmap drawableToBitmap(Drawable d) {
         return d == null ? null : ((BitmapDrawable)d).getBitmap();
@@ -77,10 +78,10 @@ public class ImageUtils {
      * convert Bitmap to Drawable
      * 
      * @param b
-     * @return
+     * @return if (b == null || res == null) return null
      */
-    public static Drawable bitmapToDrawable(Bitmap b) {
-        return b == null ? null : new BitmapDrawable(b);
+    public static Drawable bitmapToDrawable(Resources res, Bitmap b) {
+        return (b == null || res == null) ? null : new BitmapDrawable(res, b);
     }
 
     /**
@@ -99,38 +100,38 @@ public class ImageUtils {
      * @param b
      * @return
      */
-    public static Drawable byteToDrawable(byte[] b) {
-        return bitmapToDrawable(byteToBitmap(b));
+    public static Drawable byteToDrawable(Resources res, byte[] b) {
+        return bitmapToDrawable(res, byteToBitmap(b));
     }
 
     /**
      * scale image
      * 
-     * @param org
+     * @param src
      * @param newWidth
      * @param newHeight
      * @return
      */
-    public static Bitmap scaleImageTo(Bitmap org, int newWidth, int newHeight) {
-        return scaleImage(org, (float) newWidth / org.getWidth(), (float) newHeight / org.getHeight());
+    public static Bitmap scaleImageTo(Bitmap src, int newWidth, int newHeight) {
+        return scaleImage(src, (float) newWidth / src.getWidth(), (float) newHeight / src.getHeight());
     }
 
     /**
      * scale image
      * 
-     * @param org
+     * @param src
      * @param scaleWidth sacle of width
      * @param scaleHeight scale of height
      * @return
      */
-    public static Bitmap scaleImage(Bitmap org, float scaleWidth, float scaleHeight) {
-        if (org == null) {
+    public static Bitmap scaleImage(Bitmap src, float scaleWidth, float scaleHeight) {
+        if (src == null) {
             return null;
         }
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
-        return Bitmap.createBitmap(org, 0, 0, org.getWidth(), org.getHeight(), matrix, true);
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
 }

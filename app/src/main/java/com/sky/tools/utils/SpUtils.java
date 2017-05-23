@@ -9,6 +9,8 @@ import android.util.Log;
 import java.util.Map;
 import java.util.Set;
 
+import static com.sky.tools.utils.TextUtil.JOIN_DEFAULT_SPILT;
+
 /**
  * SpUtils, easy to get or put data
  * 在调用里面任何的方法之前，必须要先调用{@link #init(Context, String)}方法
@@ -21,7 +23,7 @@ public class SpUtils {
     /**
      * 用于保存string数组的分割符，此处是为了防止被其他的碰撞上了
      */
-    private static final String STRING_ARRAY_SPILT = "2,天0;1工@=#7,p具;s:0项5=19";
+    private static final String STRING_ARRAY_SPILT = JOIN_DEFAULT_SPILT;
     private static Context context;
 
     private SpUtils() {
