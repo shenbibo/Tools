@@ -4,16 +4,16 @@ package com.sky.tools.utils;
  * Array Utils
  * <ul>
  * <li>{@link #isEmpty(Object[])} is null or its length is 0</li>
- * <li>{@link #getLast(Object[], Object, Object, boolean)} get last element of the target element, before the first one
+ * <li>{@link #getLatestEntryBeforeTargetValueFromEnd(Object[], Object, Object, boolean)} get last element of the target element, before the first one
  * that match the target element front to back</li>
- * <li>{@link #getNext(Object[], Object, Object, boolean)} get next element of the target element, after the first one
+ * <li>{@link #getLatestEntryAfterTargetValueFromEnd(Object[], Object, Object, boolean)} get next element of the target element, after the first one
  * that match the target element front to back</li>
- * <li>{@link #getLast(Object[], Object, boolean)}</li>
- * <li>{@link #getLast(int[], int, int, boolean)}</li>
- * <li>{@link #getLast(long[], long, long, boolean)}</li>
- * <li>{@link #getNext(Object[], Object, boolean)}</li>
- * <li>{@link #getNext(int[], int, int, boolean)}</li>
- * <li>{@link #getNext(long[], long, long, boolean)}</li>
+ * <li>{@link #getLatestEntryBeforeTargetValueFromEnd(Object[], Object, boolean)}</li>
+ * <li>{@link #getLatestEntryBeforeTargetValueFromEnd(int[], int, int, boolean)}</li>
+ * <li>{@link #getLatestEntryBeforeTargetValueFromEnd(long[], long, long, boolean)}</li>
+ * <li>{@link #getLatestEntryAfterTargetValueFromEnd(Object[], Object, boolean)}</li>
+ * <li>{@link #getLatestEntryAfterTargetValueFromEnd(int[], int, int, boolean)}</li>
+ * <li>{@link #getLatestEntryAfterTargetValueFromEnd(long[], long, long, boolean)}</li>
  * </ul>
  * 
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2011-10-24
@@ -37,6 +37,7 @@ public class ArrayUtils {
 
     /**
      * get last element of the target element, before the first one that match the target element front to back
+     * 返回匹配给定value值的前一个元素
      * <ul>
      * <li>if array is empty, return defaultValue</li>
      * <li>if target element is not exist in array, return defaultValue</li>
@@ -52,7 +53,7 @@ public class ArrayUtils {
      * @param isCircle whether is circle
      * @return
      */
-    public static <V> V getLast(V[] sourceArray, V value, V defaultValue, boolean isCircle) {
+    public static <V> V getLatestEntryBeforeTargetValueFromEnd(V[] sourceArray, V value, V defaultValue, boolean isCircle) {
         if (isEmpty(sourceArray)) {
             return defaultValue;
         }
@@ -91,7 +92,7 @@ public class ArrayUtils {
      * @param isCircle whether is circle
      * @return
      */
-    public static <V> V getNext(V[] sourceArray, V value, V defaultValue, boolean isCircle) {
+    public static <V> V getLatestEntryAfterTargetValueFromEnd(V[] sourceArray, V value, V defaultValue, boolean isCircle) {
         if (isEmpty(sourceArray)) {
             return defaultValue;
         }
@@ -114,67 +115,67 @@ public class ArrayUtils {
     }
 
     /**
-     * @see {@link ArrayUtils#getLast(Object[], Object, Object, boolean)} defaultValue is null
+     * @see ArrayUtils#getLatestEntryBeforeTargetValueFromEnd(Object[], Object, Object, boolean) defaultValue is null
      */
-    public static <V> V getLast(V[] sourceArray, V value, boolean isCircle) {
-        return getLast(sourceArray, value, null, isCircle);
+    public static <V> V getLatestEntryBeforeTargetValueFromEnd(V[] sourceArray, V value, boolean isCircle) {
+        return getLatestEntryBeforeTargetValueFromEnd(sourceArray, value, null, isCircle);
     }
 
     /**
-     * @see {@link ArrayUtils#getNext(Object[], Object, Object, boolean)} defaultValue is null
+     * @see ArrayUtils#getLatestEntryAfterTargetValueFromEnd(Object[], Object, Object, boolean) defaultValue is null
      */
-    public static <V> V getNext(V[] sourceArray, V value, boolean isCircle) {
-        return getNext(sourceArray, value, null, isCircle);
+    public static <V> V getLatestEntryAfterTargetValueFromEnd(V[] sourceArray, V value, boolean isCircle) {
+        return getLatestEntryAfterTargetValueFromEnd(sourceArray, value, null, isCircle);
     }
 
     /**
-     * @see {@link ArrayUtils#getLast(Object[], Object, Object, boolean)} Object is Long
+     * @see ArrayUtils#getLatestEntryBeforeTargetValueFromEnd(Object[], Object, Object, boolean) Object is Long
      */
-    public static long getLast(long[] sourceArray, long value, long defaultValue, boolean isCircle) {
+    public static long getLatestEntryBeforeTargetValueFromEnd(long[] sourceArray, long value, long defaultValue, boolean isCircle) {
         if (sourceArray.length == 0) {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
         Long[] array = transformLongArray(sourceArray);
-        return getLast(array, value, defaultValue, isCircle);
+        return getLatestEntryBeforeTargetValueFromEnd(array, value, defaultValue, isCircle);
 
     }
 
     /**
-     * @see {@link ArrayUtils#getNext(Object[], Object, Object, boolean)} Object is Long
+     * @see ArrayUtils#getLatestEntryAfterTargetValueFromEnd(Object[], Object, Object, boolean) Object is Long
      */
-    public static long getNext(long[] sourceArray, long value, long defaultValue, boolean isCircle) {
+    public static long getLatestEntryAfterTargetValueFromEnd(long[] sourceArray, long value, long defaultValue, boolean isCircle) {
         if (sourceArray.length == 0) {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
         Long[] array = transformLongArray(sourceArray);
-        return getNext(array, value, defaultValue, isCircle);
+        return getLatestEntryAfterTargetValueFromEnd(array, value, defaultValue, isCircle);
     }
 
     /**
-     * @see {@link ArrayUtils#getLast(Object[], Object, Object, boolean)} Object is Integer
+     * @see ArrayUtils#getLatestEntryBeforeTargetValueFromEnd(Object[], Object, Object, boolean) Object is Integer
      */
-    public static int getLast(int[] sourceArray, int value, int defaultValue, boolean isCircle) {
+    public static int getLatestEntryBeforeTargetValueFromEnd(int[] sourceArray, int value, int defaultValue, boolean isCircle) {
         if (sourceArray.length == 0) {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
         Integer[] array = transformIntArray(sourceArray);
-        return getLast(array, value, defaultValue, isCircle);
+        return getLatestEntryBeforeTargetValueFromEnd(array, value, defaultValue, isCircle);
 
     }
 
     /**
-     * @see {@link ArrayUtils#getNext(Object[], Object, Object, boolean)} Object is Integer
+     * @see ArrayUtils#getLatestEntryAfterTargetValueFromEnd(Object[], Object, Object, boolean) Object is Integer
      */
-    public static int getNext(int[] sourceArray, int value, int defaultValue, boolean isCircle) {
+    public static int getLatestEntryAfterTargetValueFromEnd(int[] sourceArray, int value, int defaultValue, boolean isCircle) {
         if (sourceArray.length == 0) {
             throw new IllegalArgumentException("The length of source array must be greater than 0.");
         }
 
         Integer[] array = transformIntArray(sourceArray);
-        return getNext(array, value, defaultValue, isCircle);
+        return getLatestEntryAfterTargetValueFromEnd(array, value, defaultValue, isCircle);
     }
 
     /**
