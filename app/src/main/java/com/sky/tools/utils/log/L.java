@@ -6,13 +6,14 @@ import timber.log.Timber.Tree;
 
 /**
  * 日志工具类
- * <p></p>
+ * <p>
  * 使用本日志类必须先调用初始化方法{@link L#init(Tree, String, int)},
  * {@link L#init(Tree, String)},{@link L#init(Tree)},{@link L#init()}中的一个。
- * <p></p>
+ * <p>
  * <br>默认日志的Tag值为{@code Android}
  * <br>默认打印全部的日志
  * <br>初始化时必须指定一个执行日志打印的{@link Tree}的对象，默认使用{@link timber.log.Timber.DebugTree}
+ * <p>
  * Created by Sky on 2017/5/23.
  */
 
@@ -364,11 +365,11 @@ public final class L {
     }
 
     public static void init(Tree tree){
-        init(tree, defaultTag);
+        init(tree, DEFAULT_TAG);
     }
 
     public static void init(Tree tree, String defaultTag){
-        init(tree, defaultTag, logLevel);
+        init(tree, defaultTag, FULL);
     }
 
     public static void init(Tree tree, String defaultTag, int logLevel){
