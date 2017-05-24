@@ -1,16 +1,14 @@
 package com.sky.tools.log;
 
-import timber.log.Timber.Tree;
-
 /**
- * 日志工具类
+ * 日志工具类，目前该类的具体实现依赖{@link timber.log.Timber}
  * <p>
  * 使用本日志类必须先调用初始化方法{@link Slog#init(LogAdapter, String, int)},
  * {@link Slog#init(LogAdapter, String)},{@link Slog#init(LogAdapter)},{@link Slog#init()}中的一个。
  * <p>
  * <br>默认日志的Tag值为{@code Android}
  * <br>默认打印全部的日志
- * <br>初始化时必须指定一个执行日志打印的{@link Tree}的对象，默认使用{@link timber.log.Timber.DebugTree}
+ * <br>初始化时必须指定一个执行日志打印的{@link LogAdapter}的对象，默认使用{@link timber.log.Timber.DebugTree}
  * <p>
  * Created by Sky on 2017/5/23.
  */
