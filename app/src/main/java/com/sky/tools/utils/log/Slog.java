@@ -14,7 +14,6 @@ import timber.log.Timber.Tree;
  * <p>
  * Created by Sky on 2017/5/23.
  */
-
 public final class Slog {
     /**
      * All log
@@ -111,6 +110,13 @@ public final class Slog {
     }
 
     /**
+     * 打印对象如list,map,set array
+     */
+    public static void d(Object object) {
+        ADAPTER.d(object);
+    }
+
+    /**
      * Log an info message with optional format args.
      */
     public static void i(String message, Object... args) {
@@ -201,27 +207,29 @@ public final class Slog {
      * {@link #ERROR},{@link #ASSERT}, other value will drop the log
      */
     public static void log(int priority, String message, Object... args) {
-        if (isLegalPriority(priority)) {
-            ADAPTER.log(priority, message, args);
-        }
+        ADAPTER.log(priority, message, args);
     }
 
     /**
      * Log at {@code priority} an exception and a message with optional format args.
      */
     public static void log(int priority, Throwable t, String message, Object... args) {
-        if (isLegalPriority(priority)) {
-            ADAPTER.log(priority, t, message, args);
-        }
+        ADAPTER.log(priority, t, message, args);
     }
 
     /**
      * Log at {@code priority} an exception.
      */
     public static void log(int priority, Throwable t) {
-        if (isLegalPriority(priority)) {
-            ADAPTER.log(priority, t);
-        }
+        ADAPTER.log(priority, t);
+    }
+
+    public static void json(String json) {
+        ADAPTER.json(json);
+    }
+
+    public static void xml(String xml) {
+        ADAPTER.xml(xml);
     }
 
     public static void init() {
@@ -279,16 +287,12 @@ public final class Slog {
      * <br>
      * {@link #NONE}表示不答应任何日志
      * <br>其他的值表示只打印级别大于等于它的日志。
-     * */
+     */
     public static void setLogLevel(int logLevel) {
         Slog.logLevel = logLevel;
     }
 
     public static int getLogLevel() {
         return logLevel;
-    }
-
-    private static boolean isLegalPriority(int priority) {
-        return priority >= VERBOSE && priority <= ASSERT;
     }
 }
