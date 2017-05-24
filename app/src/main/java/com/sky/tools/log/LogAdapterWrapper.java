@@ -1,4 +1,4 @@
-package com.sky.tools.utils.log;
+package com.sky.tools.log;
 
 import org.json.*;
 
@@ -11,13 +11,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import timber.log.Timber;
-import timber.log.Timber.DebugTree;
 import timber.log.Timber.Tree;
 
-import static android.R.attr.tag;
-import static android.R.id.message;
-import static com.sky.tools.utils.log.Slog.ASSERT;
-import static com.sky.tools.utils.log.Slog.VERBOSE;
+import static com.sky.tools.log.Slog.ASSERT;
+import static com.sky.tools.log.Slog.VERBOSE;
 
 /**
  * [function]

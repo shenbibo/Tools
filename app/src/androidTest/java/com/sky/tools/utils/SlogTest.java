@@ -2,7 +2,7 @@ package com.sky.tools.utils;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.sky.tools.utils.log.Slog;
+import com.sky.tools.log.Slog;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

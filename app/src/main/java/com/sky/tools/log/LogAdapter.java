@@ -1,4 +1,4 @@
-package com.sky.tools.utils.log;
+package com.sky.tools.log;
 
 import android.util.Log;
 
