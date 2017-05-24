@@ -44,7 +44,7 @@ public final class Slog {
     public static final int ERROR = 6;
 
     /**
-     * Priority constant for the println method.
+     * Priority constant for the println method；use Log.wtf.
      */
     public static final int ASSERT = 7;
 
