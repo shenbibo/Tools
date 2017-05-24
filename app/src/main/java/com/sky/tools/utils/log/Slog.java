@@ -56,117 +56,172 @@ public final class Slog {
      */
     public static final int NONE = 8;
 
-    /** 默认日志TAG */
+    /**
+     * 默认日志TAG
+     */
     public static final String DEFAULT_TAG = "Android";
 
-    /** 默认日志输出级别 */
+    /**
+     * 默认日志输出级别
+     */
     private static int logLevel = FULL;
 
-    private final static LogAdapterWrapper WRAPPER = new LogAdapterWrapper();
+    private final static LogAdapterWrapper ADAPTER = LogAdapterWrapper.LOG_ADAPTER;
 
-    /** Log a verbose message with optional format args. */
+    /**
+     * Log a verbose message with optional format args.
+     */
     public static void v(String message, Object... args) {
-        WRAPPER.v(message, args);
+        ADAPTER.v(message, args);
     }
 
-    /** Log a verbose exception and a message with optional format args. */
+    /**
+     * Log a verbose exception and a message with optional format args.
+     */
     public static void v(Throwable t, String message, Object... args) {
-        WRAPPER.v(t, message, args);
+        ADAPTER.v(t, message, args);
     }
 
-    /** Log a verbose exception. */
+    /**
+     * Log a verbose exception.
+     */
     public static void v(Throwable t) {
-        WRAPPER.v(t);
+        ADAPTER.v(t);
     }
 
-    /** Log a debug message with optional format args. */
+    /**
+     * Log a debug message with optional format args.
+     */
     public static void d(String message, Object... args) {
-        WRAPPER.d(message, args);
+        ADAPTER.d(message, args);
     }
 
-    /** Log a debug exception and a message with optional format args. */
+    /**
+     * Log a debug exception and a message with optional format args.
+     */
     public static void d(Throwable t, String message, Object... args) {
-        WRAPPER.d(t, message, args);
+        ADAPTER.d(t, message, args);
     }
 
-    /** Log a debug exception. */
+    /**
+     * Log a debug exception.
+     */
     public static void d(Throwable t) {
-        WRAPPER.d(t);
+        ADAPTER.d(t);
     }
 
-    /** Log an info message with optional format args. */
+    /**
+     * Log an info message with optional format args.
+     */
     public static void i(String message, Object... args) {
-        WRAPPER.i(message, args);
+        ADAPTER.i(message, args);
     }
 
-    /** Log an info exception and a message with optional format args. */
+    /**
+     * Log an info exception and a message with optional format args.
+     */
     public static void i(Throwable t, String message, Object... args) {
-        WRAPPER.i(t, message, args);
+        ADAPTER.i(t, message, args);
     }
 
-    /** Log an info exception. */
+    /**
+     * Log an info exception.
+     */
     public static void i(Throwable t) {
-        WRAPPER.i(t);
+        ADAPTER.i(t);
     }
 
-    /** Log a warning message with optional format args. */
+    /**
+     * Log a warning message with optional format args.
+     */
     public static void w(String message, Object... args) {
-        WRAPPER.w(message, args);
+        ADAPTER.w(message, args);
     }
 
-    /** Log a warning exception and a message with optional format args. */
+    /**
+     * Log a warning exception and a message with optional format args.
+     */
     public static void w(Throwable t, String message, Object... args) {
-        WRAPPER.w(t, message, args);
+        ADAPTER.w(t, message, args);
     }
 
-    /** Log a warning exception. */
+    /**
+     * Log a warning exception.
+     */
     public static void w(Throwable t) {
-        WRAPPER.w(t);
+        ADAPTER.w(t);
     }
 
-    /** Log an error message with optional format args. */
+    /**
+     * Log an error message with optional format args.
+     */
     public static void e(String message, Object... args) {
-        WRAPPER.e(message, args);
+        ADAPTER.e(message, args);
     }
 
-    /** Log an error exception and a message with optional format args. */
+    /**
+     * Log an error exception and a message with optional format args.
+     */
     public static void e(Throwable t, String message, Object... args) {
-        WRAPPER.e(t, message, args);
+        ADAPTER.e(t, message, args);
     }
 
-    /** Log an error exception. */
+    /**
+     * Log an error exception.
+     */
     public static void e(Throwable t) {
-        WRAPPER.e(t);
+        ADAPTER.e(t);
     }
 
-    /** Log an assert message with optional format args. */
+    /**
+     * Log an assert message with optional format args.
+     */
     public static void wtf(String message, Object... args) {
-        WRAPPER.wtf(message, args);
+        ADAPTER.wtf(message, args);
     }
 
-    /** Log an assert exception and a message with optional format args. */
+    /**
+     * Log an assert exception and a message with optional format args.
+     */
     public static void wtf(Throwable t, String message, Object... args) {
-        WRAPPER.wtf(t, message, args);
+        ADAPTER.wtf(t, message, args);
     }
 
-    /** Log an assert exception. */
+    /**
+     * Log an assert exception.
+     */
     public static void wtf(Throwable t) {
-        WRAPPER.wtf(t);
+        ADAPTER.wtf(t);
     }
 
-    /** Log at {@code priority} a message with optional format args. */
+    /**
+     * Log at {@code priority} a message with optional format args.
+     * <p>
+     * the priority legal value must be one of this:{@link #VERBOSE},{@link #DEBUG},{@link #INFO},{@link #WARN},
+     * {@link #ERROR},{@link #ASSERT}, other value will drop the log
+     */
     public static void log(int priority, String message, Object... args) {
-        WRAPPER.log(priority, message, args);
+        if (isLegalPriority(priority)) {
+            ADAPTER.log(priority, message, args);
+        }
     }
 
-    /** Log at {@code priority} an exception and a message with optional format args. */
+    /**
+     * Log at {@code priority} an exception and a message with optional format args.
+     */
     public static void log(int priority, Throwable t, String message, Object... args) {
-        WRAPPER.log(priority, t, message, args);
+        if (isLegalPriority(priority)) {
+            ADAPTER.log(priority, t, message, args);
+        }
     }
 
-    /** Log at {@code priority} an exception. */
+    /**
+     * Log at {@code priority} an exception.
+     */
     public static void log(int priority, Throwable t) {
-        WRAPPER.log(priority, t);
+        if (isLegalPriority(priority)) {
+            ADAPTER.log(priority, t);
+        }
     }
 
     public static void init() {
@@ -187,29 +242,44 @@ public final class Slog {
         setLogLevel(logLevel);
     }
 
-    /** 添加一个新的日志打印的适配器到日志打印器中 */
+    /**
+     * 添加一个新的日志打印的适配器到日志打印器中
+     */
     public static void plant(LogAdapter logAdapter) {
-        WRAPPER.plant(logAdapter);
+        ADAPTER.plant(logAdapter);
     }
 
-    public static LogAdapterWrapper t(String tag){
-        return WRAPPER.setTag(tag);
+    public static LogAdapterWrapper t(String tag) {
+        return ADAPTER.setTag(tag);
     }
 
-    /** 移除指定的tree */
+    /**
+     * 移除指定的tree
+     */
     public static void removeLogAdapter(LogAdapter logAdapter) {
-        WRAPPER.removeLogAdapter(logAdapter);
+        ADAPTER.removeLogAdapter(logAdapter);
     }
 
-    /** 移除所有的tree */
+    /**
+     * 移除所有的tree
+     */
     public static void removeAllLogAdapter() {
-        WRAPPER.removeAllLogAdapter();
+        ADAPTER.removeAllLogAdapter();
     }
 
     public static void setDefaultTag(String tag) {
-        WRAPPER.setDefaultTag(tag);
+        ADAPTER.setDefaultTag(tag);
     }
 
+    /**
+     * 可选的level值如下：{@link #FULL},{@link #VERBOSE},{@link #DEBUG},{@link #INFO},{@link #WARN},
+     * {@link #ERROR},{@link #ASSERT},{@link #NONE}
+     * <p>
+     * {@link #FULL}表示可以打印任何级别的日志
+     * <br>
+     * {@link #NONE}表示不答应任何日志
+     * <br>其他的值表示只打印级别大于等于它的日志。
+     * */
     public static void setLogLevel(int logLevel) {
         Slog.logLevel = logLevel;
     }
@@ -218,9 +288,7 @@ public final class Slog {
         return logLevel;
     }
 
-//    private static boolean isPriorityLegal
-
-    private static int getPriority(int priority){
-        return priority <= FULL ? VERBOSE : priority;
+    private static boolean isLegalPriority(int priority) {
+        return priority >= VERBOSE && priority <= ASSERT;
     }
 }

@@ -29,20 +29,20 @@ public class SlogTest {
 
     @Test
     public void logEWithCustomTag(){
-        Slog.t("custom").i("i tag Test");
-        Slog.t("custom2").i("i tag test = %d", 2);
-        Slog.t("custom").i(new Throwable(), "i tag test = %d", 3);
+        Slog.t("custom").e("i tag Test");
+        Slog.t("custom2").e("i tag test = %d", 2);
+        Slog.t("custom3").e(new Throwable(), "i tag test = %d", 3);
     }
 
     @Test
     public void logWithDefaultTag(){
-        Slog.log(-100, "info");
-        Slog.log(Slog.NONE, "info");
-        Slog.log(Slog.INFO, "info");
-        Slog.log(Slog.WARN, "info");
-        Slog.log(Slog.ERROR, "info");
-        Slog.log(Slog.ASSERT, "info");
-        Slog.log(Slog.FULL, "info");
-        Slog.log(100, "info");
+        Slog.log(-100, "-100");             // 无打印
+        Slog.log(Slog.NONE, "NONE1111");    //
+        Slog.log(Slog.INFO, "INFO");
+        Slog.log(Slog.WARN, "WARN");
+        Slog.log(Slog.ERROR, "ERROR");
+        Slog.log(Slog.ASSERT, "ASSERT");
+        Slog.log(Slog.FULL, "info");        // 不打印
+        Slog.log(100, "+100");              // 不答应
     }
 }
