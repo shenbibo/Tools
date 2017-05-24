@@ -8,6 +8,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * [function]
  * [detail]
@@ -15,6 +17,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(AndroidJUnit4.class)
 public class SlogTest {
+    private static CountDownLatch countDownLatch;
     @BeforeClass
     public static void init(){
         Slog.init();
@@ -44,5 +47,33 @@ public class SlogTest {
         Slog.log(Slog.ASSERT, "ASSERT");
         Slog.log(Slog.FULL, "info");        // 不打印
         Slog.log(100, "+100");              // 不答应
+    }
+
+    /**
+     * 测试多线程设置tag的准确性
+     * */
+    @Test
+    public void multithreadingPrintLog() throws InterruptedException {
+        countDownLatch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++){
+            new LogTestThread(i).start();
+        }
+        countDownLatch.await();
+    }
+
+    private class LogTestThread extends Thread{
+        int index;
+        LogTestThread(int i){
+            index = i;
+        }
+
+        @Override
+        public void run() {
+            String tag = "LogTestThread_" + index;
+            for (int i = 0; i < 1000; i++){
+                Slog.t(tag).d(tag);
+            }
+            countDownLatch.countDown();
+        }
     }
 }
