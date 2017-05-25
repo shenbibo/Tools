@@ -1,0 +1,117 @@
+package com.sky.tools.log;
+
+import android.support.annotation.NonNull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Arrays;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+/**
+ * [function]
+ * [detail]
+ * Created by Sky on 2017/5/25.
+ */
+class Helper {
+    /**
+     * It is used for json pretty print
+     */
+    private static final int JSON_INDENT = 2;
+
+    /**
+     * Android's max limit for a log entry is ~4076 bytes,
+     * so 4000 bytes is used as chunk size since default charset
+     * is UTF-8
+     */
+    private static final int CHUNK_SIZE = 4000;
+
+    static String covertJson(String json) {
+        if (isEmpty(json)) {
+            return "Empty/Null json content";
+        }
+        try {
+            json = json.trim();
+            if (json.startsWith("{")) {
+                JSONObject jsonObject = new JSONObject(json);
+                return jsonObject.toString(JSON_INDENT);
+            }
+            if (json.startsWith("[")) {
+                JSONArray jsonArray = new JSONArray(json);
+                String message = jsonArray.toString(JSON_INDENT);
+
+                return jsonArray.toString(JSON_INDENT);
+            }
+            return "Invalid Json";
+        } catch (JSONException e) {
+            return "Invalid Json";
+        }
+    }
+
+    static String covertXml(String xml) {
+        if (isEmpty(xml)) {
+            return "Empty/Null xml content";
+        }
+        try {
+            Source xmlInput = new StreamSource(new StringReader(xml));
+            StreamResult xmlOutput = new StreamResult(new StringWriter());
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.transform(xmlInput, xmlOutput);
+            return xmlOutput.getWriter().toString().replaceFirst(">", ">\n");
+        } catch (TransformerException e) {
+            return "Invalid xml";
+        }
+    }
+
+    static String parseObject(Object object) {
+        String message;
+        if (object.getClass().isArray()) {
+            message = Arrays.deepToString((Object[]) object);
+        } else {
+            message = object.toString();
+        }
+        return message;
+    }
+
+    /**
+     * 因为logcat对字数有限制4000，所以当字数大于4000时进行拆分成数组
+     */
+    static String[] splitString(@NonNull String string) {
+        int length = string.length();
+        if(length <= CHUNK_SIZE){
+            return new String[]{string};
+        }
+
+        String[] strings = new String[length / CHUNK_SIZE + 1];
+        for(int i= 0, j = 0; i < length; i+=CHUNK_SIZE, j++){
+            int count = Math.min(length - i, CHUNK_SIZE);
+            strings[j] = string.substring(i, i + count);
+        }
+        return strings;
+    }
+
+    static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
+
+    static String formatMessage(String message, Object... args) {
+        return args == null || args.length == 0 ? message : String.format(message, args);
+    }
+
+    static String getSimpleClassName(String name) {
+        int lastIndex = name.lastIndexOf(".");
+        return name.substring(lastIndex + 1);
+    }
+}
