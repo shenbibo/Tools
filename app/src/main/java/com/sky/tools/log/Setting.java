@@ -9,7 +9,7 @@ package com.sky.tools.log;
 public class Setting {
     private int methodCount = 1;
     private int logLevel = Slog.FULL;
-    private boolean hideThreadInfo = true;
+    private boolean showThreadInfo = false;
     /** 简单模式，设置为true之后和正常的普通log一样 */
     private boolean simpleMode = false;
     private String defaultTag = Slog.DEFAULT_TAG;
@@ -20,16 +20,16 @@ public class Setting {
     }
 
     public Setting setMethodCount(int methodCount) {
-        this.methodCount = methodCount;
+        this.methodCount = methodCount < 0 ? 0 : methodCount;
         return this;
     }
 
-    public boolean isHideThreadInfo() {
-        return hideThreadInfo;
+    public boolean isShowThreadInfo() {
+        return showThreadInfo;
     }
 
-    public Setting setHideThreadInfo(boolean hideThreadInfo) {
-        this.hideThreadInfo = hideThreadInfo;
+    public Setting setShowThreadInfo(boolean showThreadInfo) {
+        this.showThreadInfo = showThreadInfo;
         return this;
     }
 
@@ -47,7 +47,9 @@ public class Setting {
     }
 
     public Setting setDefaultTag(String defaultTag) {
-        this.defaultTag = defaultTag;
+        if(defaultTag != null){
+            this.defaultTag = defaultTag;
+        }
         return this;
     }
 
@@ -56,7 +58,7 @@ public class Setting {
     }
 
     /**
-     * 如果设置该值为true，则{@link Setting#methodCount},{@link Setting#hideThreadInfo},字段不再生效
+     * 如果设置该值为true，则{@link Setting#methodCount},{@link Setting#showThreadInfo},字段不再生效
      * */
     public Setting setSimpleMode(boolean simpleMode) {
         this.simpleMode = simpleMode;

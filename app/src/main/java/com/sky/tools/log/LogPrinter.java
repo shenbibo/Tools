@@ -1,6 +1,5 @@
 package com.sky.tools.log;
 
-import android.app.backup.FullBackupDataOutput;
 import android.support.annotation.Nullable;
 
 import static com.sky.tools.log.Helper.*;
@@ -42,60 +41,61 @@ public class LogPrinter implements Printer {
     private ThreadLocal<String> localTag = new ThreadLocal<>();
     private ThreadLocal<Integer> localMethodCount = new ThreadLocal<>();
     private ThreadLocal<Boolean> localSimpleMode = new ThreadLocal<>();
-    private ThreadLocal<Boolean> localHideThreadInfo = new ThreadLocal<>();
+    private ThreadLocal<Boolean> localShowThreadInfo = new ThreadLocal<>();
 
-    public LogPrinter(AbsTree logTree) {
-        plant(logTree);
+    public Setting init(AbsTree tree) {
+        plant(tree);
+        return setting;
     }
 
     @Override
     public void v(String msg, @Nullable Object... args) {
-
+        log(VERBOSE, null, null, null, msg, args);
     }
 
     @Override
     public void d(String msg, @Nullable Object... args) {
-
+        log(DEBUG, null, null, null, msg, args);
     }
 
     @Override
     public void d(Object object) {
-
+        log(DEBUG, null, null, object, null);
     }
 
     @Override
     public void i(String msg, @Nullable Object... args) {
-
+        log(INFO, null, null, null, msg, args);
     }
 
     @Override
     public void w(String msg, @Nullable Object... args) {
-
+        log(WARN, null, null, null, msg, args);
     }
 
     @Override
     public void w(Throwable t, String msg, @Nullable Object... args) {
-
+        log(WARN, null, t, null, msg, args);
     }
 
     @Override
     public void e(String msg, @Nullable Object... args) {
-
+        log(ERROR, null, null, null, msg, args);
     }
 
     @Override
     public void e(Throwable t, String msg, @Nullable Object... args) {
-
+        log(ERROR, null, t, null, msg, args);
     }
 
     @Override
     public void wtf(String msg, @Nullable Object... args) {
-
+        log(ASSERT, null, null, null, msg, args);
     }
 
     @Override
-    public synchronized void log(int priority, String tag, Throwable t, String msg, @Nullable Object... args) {
-
+    public void log(int priority, String tag, Throwable t, String msg, @Nullable Object... args) {
+        log(priority, tag, t, null, msg, args);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class LogPrinter implements Printer {
     @Override
     public Printer th(Boolean hideThreadInfo) {
         if (hideThreadInfo != null) {
-            localHideThreadInfo.set(hideThreadInfo);
+            localShowThreadInfo.set(hideThreadInfo);
         }
         return this;
     }
@@ -157,7 +157,7 @@ public class LogPrinter implements Printer {
         return setting;
     }
 
-    private synchronized void log(int priority, Throwable t, Object originalObject, String originalMsg, Object... args) {
+    private void log(int priority, String tag, Throwable t, Object originalObject, String originalMsg, Object... args) {
         if (!isLoggable(priority) || !isLegalPriority(priority)) {
             return;
         }
@@ -166,14 +166,29 @@ public class LogPrinter implements Printer {
             return;
         }
 
+        String finalTag = tag != null ? tag : getTag();
         // 简单模式不组装消息直接返回
         if (isSimpleMode()) {
-            onSimpleModeLog(priority, t, originalObject, originalMsg, args);
+            logSimpleMode(priority, finalTag, t, originalObject, originalMsg, args);
             return;
+        }
+        logStandardMode(priority, finalTag, t, originalObject, originalMsg, args);
+    }
+
+    private void logSimpleMode(int priority, String tag, Throwable t, Object originalObject, String originalString,
+            Object... args) {
+        String[] spiltMsg = compoundMsgAndSplit(originalObject, originalString, args);
+        for (int i = 0; i < spiltMsg.length; i++) {
+            // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
+            if (i != spiltMsg.length - 1) {
+                dispatchLog(priority, tag, t, null, spiltMsg[i], null);
+            } else {
+                dispatchLog(priority, tag, t, originalObject, spiltMsg[i], originalString, args);
+            }
         }
     }
 
-    private void onSimpleModeLog(int priority, Throwable t, Object originalObject, String originalString, Object... args) {
+    private String[] compoundMsgAndSplit(Object originalObject, String originalString, Object... args) {
         String compoundMsg;
         if (originalObject == null) {
             compoundMsg = formatMessage(originalString, args);
@@ -181,20 +196,90 @@ public class LogPrinter implements Printer {
             compoundMsg = parseObject(originalObject);
         }
 
-        String[] spiltString = splitString(compoundMsg);
-        for (int i = 0; i < spiltString.length; i++) {
-            // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
-            if(i != spiltString.length -1 ){
-                dispatchLog(priority, t, null, spiltString[i], null);
-            }else {
-                dispatchLog(priority, t, originalObject, spiltString[i], originalString, args);
+        return splitString(compoundMsg);
+    }
+
+    private synchronized void logStandardMode(int priority, String tag, Throwable t, Object originalObject, String
+            originalString, Object... args) {
+        int methodCount = getMethodCount();
+        logTopBorder(priority, tag);
+        logHeaderContent(priority, tag, methodCount);
+
+        if (methodCount > 0) {
+            logDivider(priority, tag);
+        }
+
+        logContent(priority, tag, t, originalObject, originalString, args);
+        logBottomBorder(priority, tag);
+    }
+
+    private void logTopBorder(int priority, String tag) {
+        dispatchLog(priority, tag, null, null, TOP_BORDER, null);
+    }
+
+    @SuppressWarnings("StringBufferReplaceableByString")
+    private void logHeaderContent(int priority, String tag, int methodCount) {
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+        if (isShowThreadInfo()) {
+            logDivider(priority, tag);
+        }
+        String level = "";
+
+        int stackOffset = getStackOffset(trace);
+
+        //corresponding method count with the current stack may exceeds the stack trace. Trims the count
+        if (methodCount + stackOffset > trace.length) {
+            methodCount = trace.length - stackOffset - 1;
+        }
+
+        for (int i = methodCount; i > 0; i--) {
+            int stackIndex = i + stackOffset;
+            if (stackIndex >= trace.length) {
+                continue;
+            }
+            StringBuilder builder = new StringBuilder();
+            builder.append("║ ")
+                   .append(level)
+                   .append(getSimpleClassName(trace[stackIndex].getClassName()))
+                   .append(".")
+                   .append(trace[stackIndex].getMethodName())
+                   .append(" ")
+                   .append(" (")
+                   .append(trace[stackIndex].getFileName())
+                   .append(":")
+                   .append(trace[stackIndex].getLineNumber())
+                   .append(")");
+            level += "   ";
+            dispatchLog(priority, tag, null, null, builder.toString(), null);
+        }
+    }
+
+    private void logBottomBorder(int priority, String tag) {
+        dispatchLog(priority, tag, null, null, BOTTOM_BORDER, null);
+    }
+
+    private void logDivider(int priority, String tag) {
+        dispatchLog(priority, tag, null, null, MIDDLE_BORDER, null);
+    }
+
+    private void logContent(int priority, String tag, Throwable t, Object originalObject, String originalString,
+            Object... args) {
+        String[] splitMsg = compoundMsgAndSplit(originalObject, originalString, args);
+        // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
+        for (int i = 0; i < splitMsg.length; i++) {
+            String[] lines = splitMsg[i].split(System.getProperty("line.separator"));
+            for (int j = 0; j < lines.length; j++) {
+                if (j != lines.length - 1 || i != splitMsg.length - 1) {
+                    dispatchLog(priority, tag, t, null, getLineCompoundStr(lines[j]), null);
+                } else {
+                    dispatchLog(priority, tag, t, originalObject, getLineCompoundStr(lines[j]), originalString, args);
+                }
             }
         }
     }
 
-    private void dispatchLog(int priority, Throwable t, Object originalObject, String compoundMsg, String originalString,
-            Object... args) {
-        String tag = getTag();
+    private void dispatchLog(int priority, String tag, Throwable t, Object originalObject, String compoundMsg, String
+            originalString, Object... args) {
         if (originalObject == null) {
             Timber.log(priority, tag, t, compoundMsg, originalString, args);
         } else {
@@ -232,14 +317,14 @@ public class LogPrinter implements Printer {
         return simpleMode;
     }
 
-    private boolean isHideThreadInfo() {
-        Boolean hideThreadInfo = localHideThreadInfo.get();
-        if (hideThreadInfo != null) {
-            localHideThreadInfo.remove();
+    private boolean isShowThreadInfo() {
+        Boolean showThreadInfo = localShowThreadInfo.get();
+        if (showThreadInfo != null) {
+            localShowThreadInfo.remove();
         } else {
-            hideThreadInfo = setting.isHideThreadInfo();
+            showThreadInfo = setting.isShowThreadInfo();
         }
-        return hideThreadInfo;
+        return showThreadInfo;
     }
 
     /**
@@ -257,6 +342,10 @@ public class LogPrinter implements Printer {
             }
         }
         return -1;
+    }
+
+    private String getLineCompoundStr(String line) {
+        return HORIZONTAL_DOUBLE_LINE + " " + line;
     }
 
     private boolean isLoggable(int priority) {
