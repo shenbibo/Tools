@@ -1,5 +1,7 @@
 package com.sky.tools.log;
 
+import com.orhanobut.logger.Logger;
+
 /**
  * 日志工具类，目前该类的具体实现依赖{@link timber.log.Timber}
  * <p>
