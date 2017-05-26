@@ -1,6 +1,5 @@
 package com.sky.tools.utils;
 
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.sky.tools.log.LogcatTree;
@@ -104,6 +103,9 @@ public class SlogTest {
         Slog.d(set);
 
     }
+
+    @Test
+    public static void log11234Chars(){}
 
     @Test
     public void logWithDefaultTagFormNoneToFull() {
