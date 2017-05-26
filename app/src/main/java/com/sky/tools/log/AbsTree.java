@@ -12,8 +12,8 @@ import static com.sky.tools.log.Slog.*;
 
 public  abstract class AbsTree implements Tree {
 //    @Override
-//    public void v(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-//        prepareLog(VERBOSE, tag, null, compoundMsg, normalMsg, args);
+//    public void v(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+//        prepareLog(VERBOSE, defaultTag, null, compoundMsg, normalMsg, args);
 //    }
 
     @Override
@@ -22,8 +22,8 @@ public  abstract class AbsTree implements Tree {
     }
 
 //    @Override
-//    public void d(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-//        prepareLog(DEBUG, tag, null, compoundMsg, normalMsg, args);
+//    public void d(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+//        prepareLog(DEBUG, defaultTag, null, compoundMsg, normalMsg, args);
 //    }
 
     @Override
@@ -37,8 +37,8 @@ public  abstract class AbsTree implements Tree {
     }
 
 //    @Override
-//    public void i(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-//        prepareLog(INFO, tag, null, compoundMsg, normalMsg, args);
+//    public void i(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+//        prepareLog(INFO, defaultTag, null, compoundMsg, normalMsg, args);
 //    }
 
     @Override
@@ -47,8 +47,8 @@ public  abstract class AbsTree implements Tree {
     }
 
 //    @Override
-//    public void w(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-//        prepareLog(WARN, tag, null, compoundMsg, normalMsg, args);
+//    public void w(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+//        prepareLog(WARN, defaultTag, null, compoundMsg, normalMsg, args);
 //    }
 
     @Override
@@ -57,8 +57,8 @@ public  abstract class AbsTree implements Tree {
     }
 
 //    @Override
-//    public void e(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-//        prepareLog(ERROR, tag, null, compoundMsg, normalMsg, args);
+//    public void e(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+//        prepareLog(ERROR, defaultTag, null, compoundMsg, normalMsg, args);
 //    }
 
     @Override
@@ -67,8 +67,8 @@ public  abstract class AbsTree implements Tree {
     }
 
 //    @Override
-//    public void wtf(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-//        prepareLog(ASSERT, tag, null, compoundMsg, normalMsg, args);
+//    public void wtf(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+//        prepareLog(ASSERT, defaultTag, null, compoundMsg, normalMsg, args);
 //    }
 
     @Override
@@ -77,9 +77,9 @@ public  abstract class AbsTree implements Tree {
     }
 
     //    @Override
-//    public void log(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg,
+//    public void log(int priority, String defaultTag, Throwable t, String compoundMsg, @Nullable String normalMsg,
 //            @Nullable Object... args) {
-//        prepareLog(priority, tag, t, compoundMsg, normalMsg, args);
+//        prepareLog(priority, defaultTag, t, compoundMsg, normalMsg, args);
 //    }
 
     /**
@@ -88,7 +88,7 @@ public  abstract class AbsTree implements Tree {
     protected void prepareLog(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable
             Object... args) {
         if (isLoggable(priority, tag)) {
-            log(priority, tag, compoundMsg);
+            log(priority, tag, compoundMsg, t);
         }
     }
 
@@ -96,5 +96,5 @@ public  abstract class AbsTree implements Tree {
         return true;
     }
 
-    protected abstract void log(int priority, String tag, String message);
+    protected abstract void log(int priority, String tag, String message, Throwable t);
 }

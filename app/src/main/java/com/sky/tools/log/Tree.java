@@ -11,13 +11,13 @@ import android.support.annotation.Nullable;
 
 public interface Tree {
     //    /** Log a verbose message with optional format args. */
-    //    void v(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void v(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     /** Log a verbose message with optional format args. */
     void v(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     //    /** Log a debug message with optional format args. */
-    //    void d(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void d(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     /** Log a debug message with optional format args. */
     void d(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
@@ -26,29 +26,29 @@ public interface Tree {
     void d(String tag, String compoundMsg, @Nullable Object object);
 
     //    /** Log an info message with optional format args. */
-    //    void i(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void i(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     /** Log an info message with optional format args. */
     void i(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     //    /** Log a warning message with optional format args. */
-    //    void w(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void w(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     /** Log a warning exception and a message with optional format args. */
     void w(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     //    /** Log an error message with optional format args. */
-    //    void e(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void e(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     /** Log an error exception and a message with optional format args. */
     void e(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     //    /** Log an assert message with optional format args. */
-    //    void wtf(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void wtf(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     /** Log an assert message with optional format args. */
     void wtf(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 
     //    /** Log at {@code priority} an exception and a message with optional format args. */
-    //    void log(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    //    void log(int priority, String defaultTag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
 }

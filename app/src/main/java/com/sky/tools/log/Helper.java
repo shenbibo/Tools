@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -113,5 +114,15 @@ class Helper {
     static String getSimpleClassName(String name) {
         int lastIndex = name.lastIndexOf(".");
         return name.substring(lastIndex + 1);
+    }
+
+    static String getStackTraceString(Throwable t) {
+        // Don't replace this with Log.getStackTraceString() - it hides
+        // UnknownHostException, which is not what we want.
+        StringWriter sw = new StringWriter(256);
+        PrintWriter pw = new PrintWriter(sw, false);
+        t.printStackTrace(pw);
+        pw.flush();
+        return sw.toString();
     }
 }

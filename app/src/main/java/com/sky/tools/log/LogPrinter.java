@@ -12,12 +12,12 @@ import static com.sky.tools.log.Slog.*;
  */
 
 public class LogPrinter implements Printer {
-    /**
-     * Android's max limit for a log entry is ~4076 bytes,
-     * so 4000 bytes is used as chunk size since default charset
-     * is UTF-8
-     */
-    private static final int CHUNK_SIZE = 4000;
+    //    /**
+    //     * Android's max limit for a log entry is ~4076 bytes,
+    //     * so 4000 bytes is used as chunk size since default charset
+    //     * is UTF-8
+    //     */
+    //    private static final int CHUNK_SIZE = 4000;
 
     /**
      * The minimum stack trace index, starts at this class after two native calls.
@@ -43,6 +43,7 @@ public class LogPrinter implements Printer {
     private ThreadLocal<Boolean> localSimpleMode = new ThreadLocal<>();
     private ThreadLocal<Boolean> localShowThreadInfo = new ThreadLocal<>();
 
+    @Override
     public Setting init(AbsTree tree) {
         plant(tree);
         return setting;
@@ -133,26 +134,28 @@ public class LogPrinter implements Printer {
     }
 
     @Override
-    public Printer th(Boolean hideThreadInfo) {
-        if (hideThreadInfo != null) {
-            localShowThreadInfo.set(hideThreadInfo);
+    public Printer th(Boolean showThreadInfo) {
+        if (showThreadInfo != null) {
+            localShowThreadInfo.set(showThreadInfo);
         }
         return this;
     }
 
     @Override
-    public Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean hideThreadInfo) {
+    public Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean showThreadInfo) {
         t(tag);
         m(methodCount);
         s(simpleMode);
-        th(hideThreadInfo);
+        th(showThreadInfo);
         return this;
     }
 
+    @Override
     public void plant(AbsTree tree) {
         Timber.plant(tree);
     }
 
+    @Override
     public Setting getSetting() {
         return setting;
     }
@@ -177,7 +180,7 @@ public class LogPrinter implements Printer {
 
     private void logSimpleMode(int priority, String tag, Throwable t, Object originalObject, String originalString,
             Object... args) {
-        String[] spiltMsg = compoundMsgAndSplit(originalObject, originalString, args);
+        String[] spiltMsg = compoundMsgAndSplit(t, originalObject, originalString, args);
         for (int i = 0; i < spiltMsg.length; i++) {
             // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
             if (i != spiltMsg.length - 1) {
@@ -188,12 +191,16 @@ public class LogPrinter implements Printer {
         }
     }
 
-    private String[] compoundMsgAndSplit(Object originalObject, String originalString, Object... args) {
+    private String[] compoundMsgAndSplit(Throwable t, Object originalObject, String originalString, Object... args) {
         String compoundMsg;
         if (originalObject == null) {
             compoundMsg = formatMessage(originalString, args);
         } else {
             compoundMsg = parseObject(originalObject);
+        }
+
+        if (t != null) {
+            compoundMsg += " : " + getStackTraceString(t);
         }
 
         return splitString(compoundMsg);
@@ -264,7 +271,7 @@ public class LogPrinter implements Printer {
 
     private void logContent(int priority, String tag, Throwable t, Object originalObject, String originalString,
             Object... args) {
-        String[] splitMsg = compoundMsgAndSplit(originalObject, originalString, args);
+        String[] splitMsg = compoundMsgAndSplit(t, originalObject, originalString, args);
         // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
         for (int i = 0; i < splitMsg.length; i++) {
             String[] lines = splitMsg[i].split(System.getProperty("line.separator"));
@@ -292,7 +299,7 @@ public class LogPrinter implements Printer {
         if (tag != null) {
             localTag.remove();
         } else {
-            tag = setting.getDefaultTag();
+            tag = setting.defaultTag();
         }
         return tag;
     }
@@ -349,7 +356,7 @@ public class LogPrinter implements Printer {
     }
 
     private boolean isLoggable(int priority) {
-        return priority >= setting.getLogLevel();
+        return priority >= setting.logLevel();
     }
 
     private boolean isLegalPriority(int priority) {

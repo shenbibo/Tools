@@ -19,7 +19,7 @@ public class Setting {
         return methodCount;
     }
 
-    public Setting setMethodCount(int methodCount) {
+    public Setting methodCount(int methodCount) {
         this.methodCount = methodCount < 0 ? 0 : methodCount;
         return this;
     }
@@ -28,12 +28,12 @@ public class Setting {
         return showThreadInfo;
     }
 
-    public Setting setShowThreadInfo(boolean showThreadInfo) {
+    public Setting showThreadInfo(boolean showThreadInfo) {
         this.showThreadInfo = showThreadInfo;
         return this;
     }
 
-    public int getLogLevel() {
+    public int logLevel() {
         return logLevel;
     }
 
@@ -42,7 +42,7 @@ public class Setting {
         return this;
     }
 
-    public String getDefaultTag() {
+    public String defaultTag() {
         return defaultTag;
     }
 
@@ -60,7 +60,7 @@ public class Setting {
     /**
      * 如果设置该值为true，则{@link Setting#methodCount},{@link Setting#showThreadInfo},字段不再生效
      * */
-    public Setting setSimpleMode(boolean simpleMode) {
+    public Setting simpleMode(boolean simpleMode) {
         this.simpleMode = simpleMode;
         return this;
     }

@@ -36,40 +36,40 @@ final class Timber {
         SOULS_TREE.wtf(tag, t, compoundMsg, normalMsg, args);
     }
 
-    //    public static void v(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-    //        SOULS_TREE.v(tag, compoundMsg, normalMsg, args);
+    //    public static void v(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+    //        SOULS_TREE.v(defaultTag, compoundMsg, normalMsg, args);
     //    }
 
-    //    public static void d(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-    //        SOULS_TREE.d(tag, compoundMsg, normalMsg, args);
+    //    public static void d(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+    //        SOULS_TREE.d(defaultTag, compoundMsg, normalMsg, args);
     //    }
 
     public static void d(String tag, String compoundMsg, @Nullable Object object) {
         SOULS_TREE.d(tag, compoundMsg, object);
     }
 
-    //    public static void i(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-    //        SOULS_TREE.i(tag, compoundMsg, normalMsg, args);
+    //    public static void i(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+    //        SOULS_TREE.i(defaultTag, compoundMsg, normalMsg, args);
     //    }
 
-    //    public static void w(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-    //        SOULS_TREE.w(tag, compoundMsg, normalMsg, args);
+    //    public static void w(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+    //        SOULS_TREE.w(defaultTag, compoundMsg, normalMsg, args);
     //    }
 
     public static void w(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         SOULS_TREE.w(tag, t, compoundMsg, normalMsg, args);
     }
 
-    //    public static void e(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-    //        SOULS_TREE.e(tag, compoundMsg, normalMsg, args);
+    //    public static void e(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+    //        SOULS_TREE.e(defaultTag, compoundMsg, normalMsg, args);
     //    }
 
     public static void e(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         SOULS_TREE.e(tag, t, compoundMsg, normalMsg, args);
     }
 
-    //    public static void wtf(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-    //        SOULS_TREE.wtf(tag, compoundMsg, normalMsg, args);
+    //    public static void wtf(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+    //        SOULS_TREE.wtf(defaultTag, compoundMsg, normalMsg, args);
     //    }
     public static void log(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg,
             @Nullable Object... args) {
@@ -185,11 +185,11 @@ final class Timber {
 
     private static final AbsTree SOULS_TREE = new AbsTree() {
         //        @Override
-        //        public void v(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        //        public void v(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].v(tag, compoundMsg, normalMsg, args);
+        //                forest[i].v(defaultTag, compoundMsg, normalMsg, args);
         //            }
         //        }
 
@@ -203,11 +203,11 @@ final class Timber {
         }
 
         //        @Override
-        //        public void d(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        //        public void d(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].d(tag, compoundMsg, normalMsg, args);
+        //                forest[i].d(defaultTag, compoundMsg, normalMsg, args);
         //            }
         //        }
 
@@ -231,11 +231,11 @@ final class Timber {
         }
 
         //        @Override
-        //        public void i(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        //        public void i(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].i(tag, compoundMsg, normalMsg, args);
+        //                forest[i].i(defaultTag, compoundMsg, normalMsg, args);
         //            }
         //        }
 
@@ -249,11 +249,11 @@ final class Timber {
         }
 
         //        @Override
-        //        public void w(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        //        public void w(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].w(tag, compoundMsg, normalMsg, args);
+        //                forest[i].w(defaultTag, compoundMsg, normalMsg, args);
         //            }
         //        }
 
@@ -267,11 +267,11 @@ final class Timber {
         }
 
         //        @Override
-        //        public void e(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        //        public void e(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].e(tag, compoundMsg, normalMsg, args);
+        //                forest[i].e(defaultTag, compoundMsg, normalMsg, args);
         //            }
         //        }
 
@@ -285,11 +285,11 @@ final class Timber {
         }
 
         //        @Override
-        //        public void wtf(String tag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        //        public void wtf(String defaultTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].wtf(tag, compoundMsg, normalMsg, args);
+        //                forest[i].wtf(defaultTag, compoundMsg, normalMsg, args);
         //            }
         //        }
 
@@ -303,12 +303,12 @@ final class Timber {
         }
 
         //        @Override
-        //        public void log(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg,
+        //        public void log(int priority, String defaultTag, Throwable t, String compoundMsg, @Nullable String normalMsg,
         //                @Nullable Object... args) {
         //            AbsTree[] forest = forestAsArray;
         //            //noinspection ForLoopReplaceableByForEach
         //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].log(priority, tag, t, compoundMsg, normalMsg, args);
+        //                forest[i].log(priority, defaultTag, t, compoundMsg, normalMsg, args);
         //            }
         //        }
 

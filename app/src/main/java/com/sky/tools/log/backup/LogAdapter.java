@@ -1,6 +1,8 @@
-package com.sky.tools.log;
+package com.sky.tools.log.backup;
 
 import android.util.Log;
+
+import com.sky.tools.log.backup.Slog;
 
 import timber.log.Timber.Tree;
 

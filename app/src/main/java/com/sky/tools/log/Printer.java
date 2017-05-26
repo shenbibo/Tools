@@ -59,4 +59,10 @@ public interface Printer {
     Printer th(Boolean hideThreadInfo);
 
     Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean hideThreadInfo);
+
+    Setting getSetting();
+
+    Setting init(AbsTree tree);
+
+    void plant(AbsTree tree);
 }
