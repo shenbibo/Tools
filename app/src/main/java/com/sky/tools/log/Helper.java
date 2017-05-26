@@ -49,8 +49,6 @@ class Helper {
             }
             if (json.startsWith("[")) {
                 JSONArray jsonArray = new JSONArray(json);
-                String message = jsonArray.toString(JSON_INDENT);
-
                 return jsonArray.toString(JSON_INDENT);
             }
             return "Invalid Json";

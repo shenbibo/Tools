@@ -1,5 +1,6 @@
 package com.sky.tools.utils;
 
+import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.sky.tools.log.LogcatTree;
@@ -9,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -39,34 +41,68 @@ public class SlogTest {
     }
 
     @Test
-    public void logWithSwitchSimpleMode(){
+    public void logWithSwitchSimpleMode() {
         Slog.s(true).i("testSimpleMode");
     }
 
     @Test
-    public void logWithMultiMethodCount(){
+    public void logWithMultiMethodCount() {
         Slog.m(3).i("test three method count println");
         Slog.m(0).i("test 0 method count print, so hide track");
     }
 
     @Test
-    public void logWithHideThreadInfo(){
+    public void logWithHideThreadInfo() {
         Slog.th(false).i("hide thread info");
     }
 
     @Test
-    public void logWithMethodHideInfoSimpleModeTag(){
+    public void logWithMethodHideInfoSimpleModeTag() {
         Slog.s(true).m(100).th(true).i("s(true).m(100).th(true)");
         Slog.s(false).m(100).th(false).i("set s(false).m(100).th(false)");
         Slog.s(false).m(0).th(true).t("s(false).m(0).th(true)").i("s(false).m(0).th(true).tag");
     }
 
-//    @Test
-    public void logCollectTest(){
+    //    @Test
+    public void logCollectTest() {
         logWithSwitchSimpleMode();
         logWithMultiMethodCount();
         logWithHideThreadInfo();
         logWithMethodHideInfoSimpleModeTag();
+    }
+
+    @Test
+    public void json() {}
+
+    @Test
+    public void xml() {}
+
+    @Test
+    public void setting() {}
+
+    @Test
+    public void object() {
+        String[] name = {"sga", "gsadgsa", "sgdsfhds"};
+        Slog.i("array test");
+        Slog.d(name);
+
+        String[] name2 = {"wwt", "wetgety", "reyertu"};
+        Slog.i("list test");
+        Slog.d(Arrays.asList(name2));
+
+        Map<String, String> map = new HashMap<>();
+        for(int i = 0; i < name.length; i++){
+            map.put(name[i], name2[2]);
+        }
+        Slog.i("map test");
+        Slog.d(map);
+
+        String[] name3 = {"wggsg", "hketydfhdsh", "7887reyertu"};
+        Set<String> set = new HashSet<>();
+        set.addAll(Arrays.asList(name3));
+        Slog.i("set test");
+        Slog.d(set);
+
     }
 
     @Test

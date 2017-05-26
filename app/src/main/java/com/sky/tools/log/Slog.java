@@ -143,8 +143,12 @@ public final class Slog {
     }
 
     public static Setting init(AbsTree tree) {
-        printer = new LogPrinter();
-        return printer.init(tree);
+        if (printer == null) {
+            printer = new LogPrinter();
+            return printer.init(tree);
+        } else {
+            return getLogSetting();
+        }
     }
 
     /**
