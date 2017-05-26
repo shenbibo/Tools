@@ -1,14 +1,13 @@
 package com.sky.tools.log;
 
-import com.sky.tools.log.backup.LogAdapter;
-import com.sky.tools.log.backup.LogAdapterWrapper;
-
 /**
  * 日志工具类
  * 使用本日志类必须先调用初始化方法{@link Slog#init(AbsTree)}
  * <p>
  * 默认日志的Tag值为{@code Android}
- * <br>默认打印全部的日志
+ * <br>默认打印全部的日志{@link Slog#FULL}
+ * <br>打印日志时，可以使用的日志级别只有{@link Slog#VERBOSE},{@link Slog#INFO},{@link Slog#INFO},{@link Slog#WARN},
+ * {@link Slog#ERROR},{@link Slog#ASSERT}，其他的值不会打印。
  * <br>初始化时必须指定一个执行日志打印的{@link AbsTree}的对象
  * <p>
  * Created by Sky on 2017/5/23.
@@ -59,11 +58,6 @@ public final class Slog {
      */
     public static final String DEFAULT_TAG = "Android";
 
-    /**
-     * 默认日志输出级别
-     */
-    private static int logLevel = FULL;
-
     private static Printer printer;
 
     /**
@@ -73,40 +67,12 @@ public final class Slog {
         printer.v(message, args);
     }
 
-    //    /**
-    //     * Log a verbose exception and a message with optional format args.
-    //     */
-    //    public static void v(Throwable t, String message, Object... args) {
-    //        printer.v(t, message, args);
-    //    }
-
-    //    /**
-    //     * Log a verbose exception.
-    //     */
-    //    public static void v(Throwable t) {
-    //        printer.v(t);
-    //    }
-
     /**
      * Log a debug message with optional format args.
      */
     public static void d(String message, Object... args) {
         printer.d(message, args);
     }
-
-    //    /**
-    //     * Log a debug exception and a message with optional format args.
-    //     */
-    //    public static void d(Throwable t, String message, Object... args) {
-    //        printer.d(t, message, args);
-    //    }
-
-    //    /**
-    //     * Log a debug exception.
-    //     */
-    //    public static void d(Throwable t) {
-    //        printer.d(t);
-    //    }
 
     /**
      * 打印对象如list,map,set array
@@ -122,20 +88,6 @@ public final class Slog {
         printer.i(message, args);
     }
 
-    //    /**
-    //     * Log an info exception and a message with optional format args.
-    //     */
-    //    public static void i(Throwable t, String message, Object... args) {
-    //        printer.i(t, message, args);
-    //    }
-
-    //    /**
-    //     * Log an info exception.
-    //     */
-    //    public static void i(Throwable t) {
-    //        printer.i(t);
-    //    }
-
     /**
      * Log a warning message with optional format args.
      */
@@ -149,13 +101,6 @@ public final class Slog {
     public static void w(Throwable t, String message, Object... args) {
         printer.w(t, message, args);
     }
-
-    //    /**
-    //     * Log a warning exception.
-    //     */
-    //    public static void w(Throwable t) {
-    //        printer.w(t);
-    //    }
 
     /**
      * Log an error message with optional format args.
@@ -171,13 +116,6 @@ public final class Slog {
         printer.e(t, message, args);
     }
 
-    //    /**
-    //     * Log an error exception.
-    //     */
-    //    public static void e(Throwable t) {
-    //        printer.e(t);
-    //    }
-
     /**
      * Log an assert message with optional format args.
      */
@@ -185,43 +123,16 @@ public final class Slog {
         printer.wtf(message, args);
     }
 
-    //    /**
-    //     * Log an assert exception and a message with optional format args.
-    //     */
-    //    public static void wtf(Throwable t, String message, Object... args) {
-    //        printer.wtf(t, message, args);
-    //    }
-
-    //    /**
-    //     * Log an assert exception.
-    //     */
-    //    public static void wtf(Throwable t) {
-    //        printer.wtf(t);
-    //    }
-
-    //    /**
-    //     * Log at {@code priority} a message with optional format args.
-    //     * <p>
-    //     * the priority legal value must be one of this:{@link #VERBOSE},{@link #DEBUG},{@link #INFO},{@link #WARN},
-    //     * {@link #ERROR},{@link #ASSERT}, other value will drop the log
-    //     */
-    //    public static void log(int priority, String message, Object... args) {
-    //        printer.log(priority, message, args);
-    //    }
-
     /**
      * Log at {@code priority} an exception and a message with optional format args.
+     * <br>
+     * 只有{@link Slog#VERBOSE},{@link Slog#INFO},{@link Slog#INFO},{@link Slog#WARN},{@link Slog#ERROR},
+     * {@link Slog#ASSERT}
+     * 才打印，其他的值无效
      */
     public static void log(int priority, String tag, Throwable t, String message, Object... args) {
         printer.log(priority, tag, t, message, args);
     }
-
-    //    /**
-    //     * Log at {@code priority} an exception.
-    //     */
-    //    public static void log(int priority, Throwable t) {
-    //        printer.log(priority, t);
-    //    }
 
     public static void json(String json) {
         printer.json(json);
@@ -251,16 +162,16 @@ public final class Slog {
         return printer.m(methodCount);
     }
 
-    public Printer s(Boolean simpleMode) {
+    public static Printer s(Boolean simpleMode) {
         return printer.s(simpleMode);
     }
 
-    public Printer th(Boolean showThreadInfo) {
+    public static Printer th(Boolean showThreadInfo) {
         return printer.th(showThreadInfo);
     }
 
 
-    public Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean showThreadInfo) {
+    public static Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean showThreadInfo) {
         return printer.t(tag, methodCount, simpleMode, showThreadInfo);
     }
 

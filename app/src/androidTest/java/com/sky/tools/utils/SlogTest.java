@@ -2,8 +2,8 @@ package com.sky.tools.utils;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.sky.tools.log.LogcatTree;
 import com.sky.tools.log.Slog;
-import com.sky.tools.log.backup.LogcatTree;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,59 +19,93 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(AndroidJUnit4.class)
 public class SlogTest {
     private static CountDownLatch countDownLatch;
+
     @BeforeClass
-    public static void init(){
+    public static void init() {
         Slog.init(new LogcatTree()).showThreadInfo(true);
     }
 
     @Test
-    public void logIWithDefaultTag(){
-        Slog.i("i no defaultTag Test");
-        Slog.i("i no defaultTag test = %d", 2);
-//        Slog.i(new Throwable(), "i no defaultTag test = %d", 3);
+    public void logIWithDefaultTag() {
+        Slog.i("i no prefixTag Test");
+        Slog.i("i no prefixTag test = %d", 2);
     }
 
     @Test
-    public void logEWithCustomTag(){
-        Slog.t("custom").e("i defaultTag Test");
-        Slog.t("custom2").e("i defaultTag test = %d", 2);
-        Slog.t("custom3").e(new Throwable(), "i defaultTag test = %d", 3);
+    public void logEWithCustomTag() {
+        Slog.t("custom").e("i prefixTag Test");
+        Slog.t("custom2").e("i prefixTag test = %d", 2);
+        Slog.t("custom3").e(new Throwable(), "i prefixTag test = %d", 3);
     }
 
     @Test
-    public void logWithDefaultTag(){
-//        Slog.log(-100, "-100");             // 无打印
-//        Slog.log(Slog.NONE, "NONE1111");    //
-//        Slog.log(Slog.INFO, "INFO");
-//        Slog.log(Slog.WARN, "WARN");
-//        Slog.log(Slog.ERROR, "ERROR");
-//        Slog.log(Slog.ASSERT, "ASSERT");
-//        Slog.log(Slog.FULL, "info");        // 不打印
-//        Slog.log(100, "+100");              // 不答应
+    public void logWithSwitchSimpleMode(){
+        Slog.s(true).i("testSimpleMode");
+    }
+
+    @Test
+    public void logWithMultiMethodCount(){
+        Slog.m(3).i("test three method count println");
+        Slog.m(0).i("test 0 method count print, so hide track");
+    }
+
+    @Test
+    public void logWithHideThreadInfo(){
+        Slog.th(false).i("hide thread info");
+    }
+
+    @Test
+    public void logWithMethodHideInfoSimpleModeTag(){
+        Slog.s(true).m(100).th(true).i("s(true).m(100).th(true)");
+        Slog.s(false).m(100).th(false).i("set s(false).m(100).th(false)");
+        Slog.s(false).m(0).th(true).t("s(false).m(0).th(true)").i("s(false).m(0).th(true).tag");
+    }
+
+//    @Test
+    public void logCollectTest(){
+        logWithSwitchSimpleMode();
+        logWithMultiMethodCount();
+        logWithHideThreadInfo();
+        logWithMethodHideInfoSimpleModeTag();
+    }
+
+    @Test
+    public void logWithDefaultTagFormNoneToFull() {
+        Slog.log(-100, "FormNoneToFull", null, "-100");             // 无打印
+        Slog.log(Slog.NONE, "FormNoneToFull", null, "NONE1111");
+        Slog.log(Slog.VERBOSE, "FormNoneToFull", null, "INFO");
+        Slog.log(Slog.INFO, "FormNoneToFull", null, "INFO");
+        Slog.log(Slog.WARN, "FormNoneToFull", null, "WARN");
+        Slog.log(Slog.ERROR, "FormNoneToFull", null, "ERROR");
+        Slog.log(Slog.ASSERT, "FormNoneToFull", null, "ASSERT");
+        Slog.log(Slog.FULL, "FormNoneToFull", null, "info");        // 不打印
+        Slog.log(100, "FormNoneToFull", null, "+100");              // 不答应
     }
 
     /**
      * 测试多线程设置tag的准确性
-     * */
+     */
     @Test
     public void multithreadingPrintLog() throws InterruptedException {
         countDownLatch = new CountDownLatch(10);
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 10; i++) {
             new LogTestThread(i).start();
         }
         countDownLatch.await();
     }
 
-    private class LogTestThread extends Thread{
+    private class LogTestThread extends Thread {
         int index;
-        LogTestThread(int i){
+
+        LogTestThread(int i) {
             index = i;
+            setName("Thread_" + i);
         }
 
         @Override
         public void run() {
             String tag = "LogTestThread_" + index;
-            for (int i = 0; i < 1000; i++){
+            for (int i = 0; i < 20; i++) {
                 Slog.t(tag).d(tag + "_" + i);
             }
             countDownLatch.countDown();

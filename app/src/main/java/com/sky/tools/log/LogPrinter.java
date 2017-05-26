@@ -2,6 +2,8 @@ package com.sky.tools.log;
 
 import android.support.annotation.Nullable;
 
+import com.sky.tools.utils.TextUtil;
+
 import static com.sky.tools.log.Helper.*;
 import static com.sky.tools.log.Slog.*;
 
@@ -11,14 +13,7 @@ import static com.sky.tools.log.Slog.*;
  * Created by Sky on 2017/5/25.
  */
 
-public class LogPrinter implements Printer {
-    //    /**
-    //     * Android's max limit for a log entry is ~4076 bytes,
-    //     * so 4000 bytes is used as chunk size since default charset
-    //     * is UTF-8
-    //     */
-    //    private static final int CHUNK_SIZE = 4000;
-
+class LogPrinter implements Printer {
     /**
      * The minimum stack trace index, starts at this class after two native calls.
      */
@@ -169,12 +164,13 @@ public class LogPrinter implements Printer {
             return;
         }
 
-        String finalTag = tag != null ? tag : getTag();
+        String finalTag = tag != null ? createCompoundTag(tag) : getTag();
         // 简单模式不组装消息直接返回
         if (isSimpleMode()) {
             logSimpleMode(priority, finalTag, t, originalObject, originalMsg, args);
             return;
         }
+
         logStandardMode(priority, finalTag, t, originalObject, originalMsg, args);
     }
 
@@ -228,6 +224,8 @@ public class LogPrinter implements Printer {
     private void logHeaderContent(int priority, String tag, int methodCount) {
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         if (isShowThreadInfo()) {
+            String curThreadName = Thread.currentThread().getName();
+            dispatchLog(priority, tag, null, null, getLineCompoundStr(curThreadName), null);
             logDivider(priority, tag);
         }
         String level = "";
@@ -250,8 +248,7 @@ public class LogPrinter implements Printer {
                    .append(getSimpleClassName(trace[stackIndex].getClassName()))
                    .append(".")
                    .append(trace[stackIndex].getMethodName())
-                   .append(" ")
-                   .append(" (")
+                   .append("(")
                    .append(trace[stackIndex].getFileName())
                    .append(":")
                    .append(trace[stackIndex].getLineNumber())
@@ -298,9 +295,11 @@ public class LogPrinter implements Printer {
         String tag = localTag.get();
         if (tag != null) {
             localTag.remove();
+            tag = createCompoundTag(tag);
         } else {
-            tag = setting.defaultTag();
+            tag = setting.getPrefixTag();
         }
+
         return tag;
     }
 
@@ -349,6 +348,10 @@ public class LogPrinter implements Printer {
             }
         }
         return -1;
+    }
+
+    private String createCompoundTag(String srcTag) {
+        return setting.getPrefixTag() + "-" + srcTag;
     }
 
     private String getLineCompoundStr(String line) {

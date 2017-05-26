@@ -1,19 +1,17 @@
 package com.sky.tools.log;
 
 /**
- * [function]
+ * 全局配置属性设置
  * [detail]
  * Created by Sky on 2017/5/25.
  */
-
 public class Setting {
     private int methodCount = 1;
     private int logLevel = Slog.FULL;
     private boolean showThreadInfo = false;
     /** 简单模式，设置为true之后和正常的普通log一样 */
     private boolean simpleMode = false;
-    private String defaultTag = Slog.DEFAULT_TAG;
-
+    private String prefixTag = Slog.DEFAULT_TAG;
 
     public int getMethodCount() {
         return methodCount;
@@ -42,13 +40,13 @@ public class Setting {
         return this;
     }
 
-    public String defaultTag() {
-        return defaultTag;
+    public String getPrefixTag() {
+        return prefixTag;
     }
 
-    public Setting setDefaultTag(String defaultTag) {
-        if(defaultTag != null){
-            this.defaultTag = defaultTag;
+    public Setting prefixTag(String prefixTag) {
+        if (prefixTag != null) {
+            this.prefixTag = prefixTag;
         }
         return this;
     }
@@ -59,9 +57,20 @@ public class Setting {
 
     /**
      * 如果设置该值为true，则{@link Setting#methodCount},{@link Setting#showThreadInfo},字段不再生效
-     * */
+     */
     public Setting simpleMode(boolean simpleMode) {
         this.simpleMode = simpleMode;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Setting{" +
+                "methodCount=" + methodCount +
+                ", logLevel=" + logLevel +
+                ", showThreadInfo=" + showThreadInfo +
+                ", simpleMode=" + simpleMode +
+                ", prefixTag='" + prefixTag + '\'' +
+                '}';
     }
 }
