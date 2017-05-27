@@ -9,7 +9,11 @@ import org.json.JSONObject;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -36,6 +40,12 @@ class Helper {
      * is UTF-8
      */
     private static final int CHUNK_SIZE = 4000;
+
+    /**
+     * KEY = Object.getClass().getName();
+     * value = ObjectParse.getClass();
+     * */
+    private static final Map<String, Class<? extends ObjectParse>> parseObjects = new ConcurrentHashMap<>();
 
     static String covertJson(String json) {
         if (isEmpty(json)) {
@@ -75,6 +85,14 @@ class Helper {
     }
 
     static String parseObject(Object object) {
+        if(parseObjects.containsKey(object.getClass().getName())){
+            return parseSpecificObject(object);
+        }
+
+        return parseNormalObject(object);
+    }
+
+    private static String parseNormalObject(Object object) {
         String message;
         if (object.getClass().isArray()) {
             message = Arrays.deepToString((Object[]) object);
@@ -84,17 +102,35 @@ class Helper {
         return message;
     }
 
+    private static String parseSpecificObject(Object object) {
+        String message = object.toString();
+        Class<? extends ObjectParse> clazz = parseObjects.get(object.getClass().getName());
+        if(clazz == null){
+            return message;
+        }
+
+        try {
+            Method method = clazz.getMethod("parse", Object.class);
+            ObjectParse objectParse = clazz.newInstance();
+            message = (String) method.invoke(objectParse, object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return message;
+    }
+
     /**
      * 因为logcat对字数有限制4000，所以当字数大于4000时进行拆分成数组
      */
     static String[] splitString(@NonNull String string) {
         int length = string.length();
-        if(length <= CHUNK_SIZE){
+        if (length <= CHUNK_SIZE) {
             return new String[]{string};
         }
 
         String[] strings = new String[length / CHUNK_SIZE + 1];
-        for(int i= 0, j = 0; i < length; i+=CHUNK_SIZE, j++){
+        for (int i = 0, j = 0; i < length; i += CHUNK_SIZE, j++) {
             int count = Math.min(length - i, CHUNK_SIZE);
             strings[j] = string.substring(i, i + count);
         }
