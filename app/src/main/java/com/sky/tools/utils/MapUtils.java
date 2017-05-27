@@ -176,7 +176,7 @@ public class MapUtils {
     }
 
     /**
-     * parse key-value pairs to map, ignore empty key
+     * parseToString key-value pairs to map, ignore empty key
      * <p>
      * 默认键值分割符":"，默认键值对之间分割符","
      * <pre>
@@ -232,7 +232,7 @@ public class MapUtils {
     }
 
     /**
-     * parse key-value pairs to map, ignore empty key
+     * parseToString key-value pairs to map, ignore empty key
      * 
      * @param source key-value pairs
      * @param ignoreSpace whether ignore space at the begging or end of key and value
@@ -247,7 +247,7 @@ public class MapUtils {
     }
 
     /**
-     * parse key-value pairs to map, ignore empty key, ignore space at the begging or end of key and value
+     * parseToString key-value pairs to map, ignore empty key, ignore space at the begging or end of key and value
      * 
      * @param source key-value pairs
      * @return

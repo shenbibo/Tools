@@ -208,7 +208,9 @@ public final class Slog {
         printer.clearTrees();
     }
 
-    /** 获取全局日志配置， 可以通过该对象设置全局配置参数 */
+    /** 
+     * 获取全局日志配置， 可以通过该对象设置全局配置参数
+     * */
     public static Setting getLogSetting() {
         return printer.getSetting();
     }

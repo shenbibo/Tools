@@ -2,6 +2,8 @@ package com.sky.tools.log;
 
 import android.support.annotation.NonNull;
 
+import com.sky.tools.log.parse.Parse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +15,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -43,9 +44,9 @@ class Helper {
 
     /**
      * KEY = Object.getClass().getName();
-     * value = ObjectParse.getClass();
+     * value = Parse.getClass();
      * */
-    private static final Map<String, Class<? extends ObjectParse>> parseObjects = new ConcurrentHashMap<>();
+    private static final Map<String, Class<? extends Parse>> parseObjects = new ConcurrentHashMap<>();
 
     static String covertJson(String json) {
         if (isEmpty(json)) {
@@ -104,15 +105,15 @@ class Helper {
 
     private static String parseSpecificObject(Object object) {
         String message = object.toString();
-        Class<? extends ObjectParse> clazz = parseObjects.get(object.getClass().getName());
+        Class<? extends Parse> clazz = parseObjects.get(object.getClass().getName());
         if(clazz == null){
             return message;
         }
 
         try {
-            Method method = clazz.getMethod("parse", Object.class);
-            ObjectParse objectParse = clazz.newInstance();
-            message = (String) method.invoke(objectParse, object);
+            Method method = clazz.getMethod("parseToString", Object.class);
+            Parse parse = clazz.newInstance();
+            message = (String) method.invoke(parse, object);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,6 +17,7 @@ import static com.sky.tools.log.Slog.INFO;
 import static com.sky.tools.log.Slog.NONE;
 import static com.sky.tools.log.Slog.VERBOSE;
 import static com.sky.tools.log.Slog.WARN;
+import static com.sky.tools.log.LogConstant.*;
 
 /**
  * [日志中间处理转发类]
@@ -30,18 +31,6 @@ class LogPrinter implements Printer {
      */
     private static final int MIN_STACK_OFFSET = 3;
 
-    /**
-     * Drawing toolbox
-     */
-    private static final char TOP_LEFT_CORNER = '╔';
-    private static final char BOTTOM_LEFT_CORNER = '╚';
-    private static final char MIDDLE_CORNER = '╟';
-    private static final char HORIZONTAL_DOUBLE_LINE = '║';
-    private static final String DOUBLE_DIVIDER = "════════════════════════════════════════════";
-    private static final String SINGLE_DIVIDER = "────────────────────────────────────────────";
-    private static final String TOP_BORDER = TOP_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER;
-    private static final String BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER;
-    private static final String MIDDLE_BORDER = MIDDLE_CORNER + SINGLE_DIVIDER + SINGLE_DIVIDER;
 
     private Setting setting = new Setting();
     private ThreadLocal<String> localTag = new ThreadLocal<>();
@@ -297,7 +286,7 @@ class LogPrinter implements Printer {
         String[] splitMsg = compoundMsgAndSplit(t, originalObject, originalString, args);
         // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
         for (int i = 0; i < splitMsg.length; i++) {
-            String[] lines = splitMsg[i].split(System.getProperty("line.separator"));
+            String[] lines = splitMsg[i].split(LINE_SEPARATOR);
             for (int j = 0; j < lines.length; j++) {
                 if (j != lines.length - 1 || i != splitMsg.length - 1) {
                     dispatchLog(priority, tag, t, null, getLineCompoundStr(lines[j]), null);
@@ -369,7 +358,7 @@ class LogPrinter implements Printer {
         for (int i = MIN_STACK_OFFSET; i < trace.length; i++) {
             StackTraceElement e = trace[i];
             String name = e.getClassName();
-            if (!name.equals(LogPrinter.class.getName()) && !name.equals(Slog.class.getName())) {
+            if (!name.equals(this.getClass().getName()) && !name.equals(Slog.class.getName())) {
                 return --i;
             }
         }

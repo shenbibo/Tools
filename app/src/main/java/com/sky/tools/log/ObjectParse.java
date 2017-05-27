@@ -1,11 +1,71 @@
 package com.sky.tools.log;
 
+import com.sky.tools.log.parse.Parse;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
- * 对象解析接口，返回解析的结果为String
- * [实现该接口的必须要有一个默认构造函数，否则会无法解析]
- * Created by sky on 2017/5/27.
+ * [解析对象]
+ * [详述类的功能。]
+ * Created by sky on 2017/5/28.
  */
 
-public interface ObjectParse {
-    String parse(Object object);
+public final class ObjectParse {
+
+    private static final CopyOnWriteArrayList<Parse> parseObjects = new CopyOnWriteArrayList<>();
+
+    static void addParseObject(Parse parseAdapter) {
+        if (parseAdapter == null) {
+            return;
+        }
+
+        parseObjects.addIfAbsent(parseAdapter);
+    }
+
+    static void removeParseObject(Parse parseAdapter) {
+        parseObjects.remove(parseAdapter);
+    }
+
+    static String objectToString(Object object) {
+        Parse parse = null;
+        Class<?> clazz = object.getClass();
+        // 先检测是否有确切的class类型的解析适配器
+        if ((parse = getActualParse(clazz)) != null) {
+            return parse.parseToString(object);
+        }
+
+        // 再检查是否有其超类的解析适配器
+        if ((parse = getAssignableParse(clazz)) != null) {
+            return parse.parseToString(object);
+        }
+
+        return object.toString();
+    }
+
+    /**
+     * 从适配器表中获取确切的与给定对象class相等的解析器，不包括其超类的
+     * */
+    private static Parse<?> getActualParse(Class<?> clazz){
+        for (Parse<?> parse : parseObjects){
+            if(clazz == parse.getParseType()){
+                return parse;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 从适配器表中获取确切的与给定对象class，或是其超类的解析器
+     */
+    private static Parse<?> getAssignableParse(Class<?> clazz) {
+        for (Parse<?> parse : parseObjects){
+            if(parse.getParseType().isAssignableFrom(clazz)){
+                return parse;
+            }
+        }
+        return null;
+    }
+
 }

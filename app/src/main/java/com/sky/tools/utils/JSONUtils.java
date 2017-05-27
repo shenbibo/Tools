@@ -771,12 +771,12 @@ public class JSONUtils {
     }
 
     /**
-     * parse key-value pairs to map. ignore empty key, if getValue exception, put empty value
+     * parseToString key-value pairs to map. ignore empty key, if getValue exception, put empty value
      * 
      * @param sourceObj key-value pairs json
      * @return <ul>
      *         <li>if sourceObj is null, return null</li>
-     *         <li>else parse entry by {@link MapUtils#putMapNotEmptyKey(Map, String, String)} one by one</li>
+     *         <li>else parseToString entry by {@link MapUtils#putMapNotEmptyKey(Map, String, String)} one by one</li>
      *         </ul>
      */
     @SuppressWarnings("rawtypes")
@@ -795,7 +795,7 @@ public class JSONUtils {
     }
 
     /**
-     * parse key-value pairs to map. ignore empty key, if getValue exception, put empty value
+     * parseToString key-value pairs to map. ignore empty key, if getValue exception, put empty value
      * 
      * @param source key-value pairs json
      * @return <ul>
