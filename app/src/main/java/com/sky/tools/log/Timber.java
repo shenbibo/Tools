@@ -15,10 +15,10 @@ import static java.util.Collections.unmodifiableList;
  * Created by Sky on 2017/5/25.
  */
 final class Timber {
-    private static final AbsTree[] TREE_ARRAY_EMPTY = new AbsTree[0];
-    private static volatile AbsTree[] forestAsArray = TREE_ARRAY_EMPTY;
+    private static final Tree[] TREE_ARRAY_EMPTY = new Tree[0];
+    private static volatile Tree[] forestAsArray = TREE_ARRAY_EMPTY;
     // Both fields guarded by 'FOREST'.
-    private static final List<AbsTree> FOREST = new ArrayList<>();
+    private static final List<Tree> FOREST = new ArrayList<>();
 
     public static void v(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         SOULS_TREE.v(tag, t, compoundMsg, normalMsg, args);
@@ -115,12 +115,12 @@ final class Timber {
      * A view into Timber's planted trees as a tree itself. This can be used for injecting a logger
      * instance rather than using static methods or to facilitate testing.
      */
-    public static AbsTree asTree() {
+    public static Tree asTree() {
         return SOULS_TREE;
     }
 
     /** Add a new logging tree. */
-    public static void plant(AbsTree tree) {
+    public static void plant(Tree tree) {
         if (tree == null) {
             throw new NullPointerException("tree == null");
         }
@@ -129,16 +129,16 @@ final class Timber {
         }
         synchronized (FOREST) {
             FOREST.add(tree);
-            forestAsArray = FOREST.toArray(new AbsTree[FOREST.size()]);
+            forestAsArray = FOREST.toArray(new Tree[FOREST.size()]);
         }
     }
 
     /** Adds new logging trees. */
-    public static void plant(AbsTree... trees) {
+    public static void plant(Tree... trees) {
         if (trees == null) {
             throw new NullPointerException("trees == null");
         }
-        for (AbsTree tree : trees) {
+        for (Tree tree : trees) {
             if (tree == null) {
                 throw new NullPointerException("trees contains null");
             }
@@ -148,17 +148,17 @@ final class Timber {
         }
         synchronized (FOREST) {
             Collections.addAll(FOREST, trees);
-            forestAsArray = FOREST.toArray(new AbsTree[FOREST.size()]);
+            forestAsArray = FOREST.toArray(new Tree[FOREST.size()]);
         }
     }
 
     /** Remove a planted tree. */
-    public static void removeTree(AbsTree tree) {
+    public static void removeTree(Tree tree) {
         synchronized (FOREST) {
             if (!FOREST.remove(tree)) {
                 throw new IllegalArgumentException("Cannot removeTree tree which is not planted: " + tree);
             }
-            forestAsArray = FOREST.toArray(new AbsTree[FOREST.size()]);
+            forestAsArray = FOREST.toArray(new Tree[FOREST.size()]);
         }
     }
 
@@ -170,8 +170,8 @@ final class Timber {
         }
     }
 
-    /** Return a copy of all planted {@linkplain AbsTree trees}. */
-    public static List<AbsTree> forest() {
+    /** Return a copy of all planted {@linkplain Tree trees}. */
+    public static List<Tree> forest() {
         synchronized (FOREST) {
             return unmodifiableList(new ArrayList<>(FOREST));
         }
@@ -183,37 +183,19 @@ final class Timber {
         }
     }
 
-    private static final AbsTree SOULS_TREE = new AbsTree() {
-        //        @Override
-        //        public void v(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].v(prefixTag, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
+    private static final Tree SOULS_TREE = new Tree() {
         @Override
         public void v(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].v(tag, t, compoundMsg, normalMsg, args);
             }
         }
 
-        //        @Override
-        //        public void d(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].d(prefixTag, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
         @Override
         public void d(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].d(tag, t, compoundMsg, normalMsg, args);
@@ -223,97 +205,51 @@ final class Timber {
 
         @Override
         public void d(String tag, String compoundMsg, @Nullable Object object) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].d(tag, compoundMsg, object);
             }
         }
 
-        //        @Override
-        //        public void i(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].i(prefixTag, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
         @Override
         public void i(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].i(tag, t, compoundMsg, normalMsg, args);
             }
         }
 
-        //        @Override
-        //        public void w(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].w(prefixTag, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
         @Override
         public void w(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].w(tag, t, compoundMsg, normalMsg, args);
             }
         }
 
-        //        @Override
-        //        public void e(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].e(prefixTag, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
         @Override
         public void e(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].e(tag, t, compoundMsg, normalMsg, args);
             }
         }
 
-        //        @Override
-        //        public void wtf(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].wtf(prefixTag, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
         @Override
         public void wtf(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
-            AbsTree[] forest = forestAsArray;
+            Tree[] forest = forestAsArray;
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, count = forest.length; i < count; i++) {
                 forest[i].wtf(tag, t, compoundMsg, normalMsg, args);
             }
         }
 
-        //        @Override
-        //        public void log(int priority, String prefixTag, Throwable t, String compoundMsg, @Nullable String normalMsg,
-        //                @Nullable Object... args) {
-        //            AbsTree[] forest = forestAsArray;
-        //            //noinspection ForLoopReplaceableByForEach
-        //            for (int i = 0, count = forest.length; i < count; i++) {
-        //                forest[i].log(priority, prefixTag, t, compoundMsg, normalMsg, args);
-        //            }
-        //        }
-
         @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
+        protected void log(int priority, String tag, String message) {
             throw new UnsupportedOperationException("do not support this method");
         }
     };

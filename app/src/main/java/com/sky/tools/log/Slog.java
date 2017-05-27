@@ -2,13 +2,13 @@ package com.sky.tools.log;
 
 /**
  * 日志工具类
- * 使用本日志类必须先调用初始化方法{@link Slog#init(AbsTree)}
+ * 使用本日志类必须先调用初始化方法{@link Slog#init(Tree)}
  * <p>
  * 默认日志的Tag值为{@code Android}
  * <br>默认打印全部的日志{@link Slog#FULL}
  * <br>打印日志时，可以使用的日志级别只有{@link Slog#VERBOSE},{@link Slog#INFO},{@link Slog#INFO},{@link Slog#WARN},
  * {@link Slog#ERROR},{@link Slog#ASSERT}，其他的值不会打印。
- * <br>初始化时必须指定一个执行日志打印的{@link AbsTree}的对象
+ * <br>初始化时必须指定一个执行日志打印的{@link Tree}的对象
  * <p>
  * Created by Sky on 2017/5/23.
  */
@@ -142,7 +142,7 @@ public final class Slog {
         printer.xml(xml);
     }
 
-    public static Setting init(AbsTree tree) {
+    public static Setting init(Tree tree) {
         if (printer == null) {
             printer = new LogPrinter();
             return printer.init(tree);
@@ -154,7 +154,7 @@ public final class Slog {
     /**
      * 添加一个新的日志打印的适配器到日志打印器中
      */
-    public static void plant(AbsTree tree) {
+    public static void plant(Tree tree) {
         printer.plant(tree);
     }
 

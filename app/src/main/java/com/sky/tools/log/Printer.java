@@ -62,7 +62,7 @@ public interface Printer {
 
     Setting getSetting();
 
-    Setting init(AbsTree tree);
+    Setting init(Tree tree);
 
-    void plant(AbsTree tree);
+    void plant(Tree tree);
 }

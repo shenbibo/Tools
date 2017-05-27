@@ -2,10 +2,21 @@ package com.sky.tools.log;
 
 import android.support.annotation.Nullable;
 
-import com.sky.tools.utils.TextUtil;
-
-import static com.sky.tools.log.Helper.*;
-import static com.sky.tools.log.Slog.*;
+import static com.sky.tools.log.Helper.covertJson;
+import static com.sky.tools.log.Helper.covertXml;
+import static com.sky.tools.log.Helper.formatMessage;
+import static com.sky.tools.log.Helper.getSimpleClassName;
+import static com.sky.tools.log.Helper.getStackTraceString;
+import static com.sky.tools.log.Helper.parseObject;
+import static com.sky.tools.log.Helper.splitString;
+import static com.sky.tools.log.Slog.ASSERT;
+import static com.sky.tools.log.Slog.DEBUG;
+import static com.sky.tools.log.Slog.ERROR;
+import static com.sky.tools.log.Slog.FULL;
+import static com.sky.tools.log.Slog.INFO;
+import static com.sky.tools.log.Slog.NONE;
+import static com.sky.tools.log.Slog.VERBOSE;
+import static com.sky.tools.log.Slog.WARN;
 
 /**
  * [日志中间处理转发类]
@@ -39,7 +50,7 @@ class LogPrinter implements Printer {
     private ThreadLocal<Boolean> localShowThreadInfo = new ThreadLocal<>();
 
     @Override
-    public Setting init(AbsTree tree) {
+    public Setting init(Tree tree) {
         plant(tree);
         return setting;
     }
@@ -146,7 +157,7 @@ class LogPrinter implements Printer {
     }
 
     @Override
-    public void plant(AbsTree tree) {
+    public void plant(Tree tree) {
         Timber.plant(tree);
     }
 

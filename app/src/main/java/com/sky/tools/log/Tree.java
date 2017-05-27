@@ -1,54 +1,60 @@
 package com.sky.tools.log;
 
-import android.support.annotation.Nullable;
-
 /**
- * 传递到tree中的数据可能是已经处理过的，所以需要返回原始数据
- * <p>
+ * [默认实现中，只处理合成和的字符串]
  * [detail]
  * Created by Sky on 2017/5/25.
  */
 
-public interface Tree {
-    //    /** Log a verbose message with optional format args. */
-    //    void v(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+import android.support.annotation.Nullable;
 
-    /** Log a verbose message with optional format args. */
-    void v(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+import static com.sky.tools.log.Slog.*;
 
-    //    /** Log a debug message with optional format args. */
-    //    void d(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+public abstract class Tree {
+    public void v(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        prepareLog(VERBOSE, tag, t, compoundMsg, normalMsg, args);
+    }
 
-    /** Log a debug message with optional format args. */
-    void d(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    public void d(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        prepareLog(DEBUG, tag, t, compoundMsg, normalMsg, args);
+    }
 
-    /** Log a debug message and the object */
-    void d(String tag, String compoundMsg, @Nullable Object object);
+    public void d(String tag, String compoundMsg, @Nullable Object object) {
+        prepareLog(DEBUG, tag, null, compoundMsg, (object == null ? null : object.toString()));
+    }
 
-    //    /** Log an info message with optional format args. */
-    //    void i(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    public void i(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        prepareLog(INFO, tag, t, compoundMsg, normalMsg, args);
+    }
 
-    /** Log an info message with optional format args. */
-    void i(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    public void w(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        prepareLog(WARN, tag, t, compoundMsg, normalMsg, args);
+    }
 
-    //    /** Log a warning message with optional format args. */
-    //    void w(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    public void e(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        prepareLog(ERROR, tag, t, compoundMsg, normalMsg, args);
+    }
 
-    /** Log a warning exception and a message with optional format args. */
-    void w(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    public void wtf(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
+        prepareLog(ASSERT, tag, t, compoundMsg, normalMsg, args);
+    }
 
-    //    /** Log an error message with optional format args. */
-    //    void e(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    /**
+     * 默认实现中只处理合成后的日志，不处理原始日志，所有的上述方法都调用该方法
+     */
+    protected void prepareLog(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg,
+            @Nullable Object... args) {
+        if (isLoggable(priority, tag)) {
+            log(priority, tag, compoundMsg);
+        }
+    }
 
-    /** Log an error exception and a message with optional format args. */
-    void e(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    /**
+     * 默认返回true
+     */
+    protected boolean isLoggable(int priority, String tag) {
+        return true;
+    }
 
-    //    /** Log an assert message with optional format args. */
-    //    void wtf(String prefixTag, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
-
-    /** Log an assert message with optional format args. */
-    void wtf(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
-
-    //    /** Log at {@code priority} an exception and a message with optional format args. */
-    //    void log(int priority, String prefixTag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    protected abstract void log(int priority, String tag, String message);
 }

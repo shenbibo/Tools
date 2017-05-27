@@ -2,17 +2,15 @@ package com.sky.tools.log;
 
 import android.util.Log;
 
-import com.sky.tools.log.AbsTree;
-
 /**
  * [打印日志到logcat]
  * [detail]
  * Created by Sky on 2017/5/26.
  */
 
-public class LogcatTree extends AbsTree {
+public class LogcatTree extends Tree {
     @Override
-    protected void log(int priority, String tag, String message, Throwable t) {
+    protected void log(int priority, String tag, String message) {
         if (priority == Log.ASSERT) {
             Log.wtf(tag, message);
         } else {
