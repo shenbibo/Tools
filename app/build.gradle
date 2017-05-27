@@ -22,8 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
+    // log
     compile 'com.orhanobut:logger:1.15'
     compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.vise.xiaoyaoyou:viselog:1.1.0'
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 

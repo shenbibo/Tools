@@ -89,6 +89,13 @@ public final class Slog {
     }
 
     /**
+     * 打印对象如list,map,set array等
+     */
+    public static void i(Object object) {
+        printer.i(object);
+    }
+
+    /**
      * Log a warning message with optional format args.
      */
     public static void w(String message, Object... args) {
@@ -103,6 +110,13 @@ public final class Slog {
     }
 
     /**
+     * Log an error exception
+     */
+    public static void w(Throwable t) {
+        w(t, "");
+    }
+
+    /**
      * Log an error message with optional format args.
      */
     public static void e(String message, Object... args) {
@@ -114,6 +128,13 @@ public final class Slog {
      */
     public static void e(Throwable t, String message, Object... args) {
         printer.e(t, message, args);
+    }
+
+    /**
+     * Log an error exception
+     */
+    public static void e(Throwable t) {
+        e(t, "");
     }
 
     /**
@@ -151,13 +172,6 @@ public final class Slog {
         }
     }
 
-    /**
-     * 添加一个新的日志打印的适配器到日志打印器中
-     */
-    public static void plant(Tree tree) {
-        printer.plant(tree);
-    }
-
     public static Printer t(String tag) {
         return printer.t(tag);
     }
@@ -177,6 +191,21 @@ public final class Slog {
 
     public static Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean showThreadInfo) {
         return printer.t(tag, methodCount, simpleMode, showThreadInfo);
+    }
+
+    /**
+     * 添加一个新的日志打印的适配器到日志打印器中
+     */
+    public static void plantTree(Tree tree) {
+        printer.plant(tree);
+    }
+
+    public static void removeTree(Tree tree) {
+        printer.removeTree(tree);
+    }
+
+    public static void clearTrees() {
+        printer.clearTrees();
     }
 
     /** 获取全局日志配置， 可以通过该对象设置全局配置参数 */

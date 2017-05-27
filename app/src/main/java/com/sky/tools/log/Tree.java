@@ -27,6 +27,10 @@ public abstract class Tree {
         prepareLog(INFO, tag, t, compoundMsg, normalMsg, args);
     }
 
+    public void i(String tag, String compoundMsg, @Nullable Object object) {
+        prepareLog(INFO, tag, null, compoundMsg, (object == null ? null : object.toString()));
+    }
+
     public void w(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         prepareLog(WARN, tag, t, compoundMsg, normalMsg, args);
     }

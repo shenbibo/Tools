@@ -76,6 +76,11 @@ class LogPrinter implements Printer {
     }
 
     @Override
+    public void i(Object object) {
+        log(INFO, null, null, object, null);
+    }
+
+    @Override
     public void w(String msg, @Nullable Object... args) {
         log(WARN, null, null, null, msg, args);
     }
@@ -159,6 +164,16 @@ class LogPrinter implements Printer {
     @Override
     public void plant(Tree tree) {
         Timber.plant(tree);
+    }
+
+    @Override
+    public void removeTree(Tree tree) {
+        Timber.removeTree(tree);
+    }
+
+    @Override
+    public void clearTrees() {
+        Timber.clearTrees();
     }
 
     @Override

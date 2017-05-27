@@ -15,11 +15,14 @@ public interface Printer {
     /** Log a debug message with optional format args. */
     void d(String normalMsg, @Nullable Object... args);
 
-    /** Log a debug message and the object */
+    /** Log a debug message for the object */
     void d(Object object);
 
     /** Log an info message with optional format args. */
     void i(String normalMsg, @Nullable Object... args);
+
+    /** Log a debug message for the object */
+    void i(Object object);
 
     /** Log a warning message with optional format args. */
     void w(String normalMsg, @Nullable Object... args);
@@ -65,4 +68,8 @@ public interface Printer {
     Setting init(Tree tree);
 
     void plant(Tree tree);
+
+    void removeTree(Tree tree);
+
+    void clearTrees();
 }
