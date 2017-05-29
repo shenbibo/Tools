@@ -1,5 +1,7 @@
 package com.sky.tools.log;
 
+import static android.R.attr.priority;
+
 /**
  * 日志工具类
  * 使用本日志类必须先调用初始化方法{@link Slog#init(Tree)}
@@ -58,55 +60,57 @@ public final class Slog {
      */
     public static final String DEFAULT_TAG = "Android";
 
-    private static Printer printer;
+    private static LogController logController;
+    private static Setting setting;
+    private static TreeManager treeManager;
 
     /**
      * Log a verbose message with optional format args.
      */
     public static void v(String message, Object... args) {
-        printer.v(message, args);
+        logController.v(message, args);
     }
 
     /**
      * Log a debug message with optional format args.
      */
     public static void d(String message, Object... args) {
-        printer.d(message, args);
+        logController.d(message, args);
     }
 
     /**
      * 打印对象如list,map,set array
      */
     public static void d(Object object) {
-        printer.d(object);
+        logController.d(object);
     }
 
     /**
      * Log an info message with optional format args.
      */
     public static void i(String message, Object... args) {
-        printer.i(message, args);
+        logController.i(message, args);
     }
 
     /**
      * 打印对象如list,map,set array等
      */
     public static void i(Object object) {
-        printer.i(object);
+        logController.i(object);
     }
 
     /**
      * Log a warning message with optional format args.
      */
     public static void w(String message, Object... args) {
-        printer.w(message, args);
+        logController.w(message, args);
     }
 
     /**
      * Log a warning exception and a message with optional format args.
      */
     public static void w(Throwable t, String message, Object... args) {
-        printer.w(t, message, args);
+        logController.w(t, message, args);
     }
 
     /**
@@ -120,14 +124,14 @@ public final class Slog {
      * Log an error message with optional format args.
      */
     public static void e(String message, Object... args) {
-        printer.e(message, args);
+        logController.e(message, args);
     }
 
     /**
      * Log an error exception and a message with optional format args.
      */
     public static void e(Throwable t, String message, Object... args) {
-        printer.e(t, message, args);
+        logController.e(t, message, args);
     }
 
     /**
@@ -141,7 +145,7 @@ public final class Slog {
      * Log an assert message with optional format args.
      */
     public static void wtf(String message, Object... args) {
-        printer.wtf(message, args);
+        logController.wtf(message, args);
     }
 
     /**
@@ -152,66 +156,63 @@ public final class Slog {
      * 才打印，其他的值无效
      */
     public static void log(int priority, String tag, Throwable t, String message, Object... args) {
-        printer.log(priority, tag, t, message, args);
+        logController.log(priority, tag, t, message, args);
     }
 
     public static void json(String json) {
-        printer.json(json);
+        logController.json(json);
     }
 
     public static void xml(String xml) {
-        printer.xml(xml);
+        logController.xml(xml);
     }
 
     public static Setting init(Tree tree) {
-        if (printer == null) {
-            printer = new LogPrinter();
-            return printer.init(tree);
-        } else {
-            return getLogSetting();
+        if (setting == null) {
+            setting = new Setting();
+            logController = LogFactory.createLogController();
+            LogManager logManager = LogFactory.createLogManager();
+            treeManager = logManager;
+            logController.init(Slog.class, setting, logManager);
         }
+        return setting;
     }
 
-    public static Printer t(String tag) {
-        return printer.t(tag);
+    public static LogController t(String tag) {
+        return logController.t(tag);
     }
 
-    public static Printer m(Integer methodCount) {
-        return printer.m(methodCount);
+    public static LogController m(Integer methodCount) {
+        return logController.m(methodCount);
     }
 
-    public static Printer s(Boolean simpleMode) {
-        return printer.s(simpleMode);
+    public static LogController s(Boolean simpleMode) {
+        return logController.s(simpleMode);
     }
 
-    public static Printer th(Boolean showThreadInfo) {
-        return printer.th(showThreadInfo);
-    }
-
-
-    public static Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean showThreadInfo) {
-        return printer.t(tag, methodCount, simpleMode, showThreadInfo);
+    public static LogController th(Boolean showThreadInfo) {
+        return logController.th(showThreadInfo);
     }
 
     /**
      * 添加一个新的日志打印的适配器到日志打印器中
      */
     public static void plantTree(Tree tree) {
-        printer.plant(tree);
+        treeManager.plantTree(tree);
     }
 
     public static void removeTree(Tree tree) {
-        printer.removeTree(tree);
+        treeManager.removeTree(tree);
     }
 
     public static void clearTrees() {
-        printer.clearTrees();
+        treeManager.clearTrees();
     }
 
-    /** 
+    /**
      * 获取全局日志配置， 可以通过该对象设置全局配置参数
-     * */
-    public static Setting getLogSetting() {
-        return printer.getSetting();
+     */
+    public static Setting getSetting() {
+        return setting;
     }
 }

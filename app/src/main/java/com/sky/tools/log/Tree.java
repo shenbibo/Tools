@@ -15,6 +15,10 @@ public abstract class Tree {
         prepareLog(VERBOSE, tag, t, compoundMsg, normalMsg, args);
     }
 
+    public void v(String tag, String compoundMsg, @Nullable Object object) {
+        prepareLog(VERBOSE, tag, null, compoundMsg, (object == null ? null : object.toString()));
+    }
+
     public void d(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         prepareLog(DEBUG, tag, t, compoundMsg, normalMsg, args);
     }
@@ -35,12 +39,24 @@ public abstract class Tree {
         prepareLog(WARN, tag, t, compoundMsg, normalMsg, args);
     }
 
+    public void w(String tag, String compoundMsg, @Nullable Object object) {
+        prepareLog(WARN, tag, null, compoundMsg, (object == null ? null : object.toString()));
+    }
+
     public void e(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         prepareLog(ERROR, tag, t, compoundMsg, normalMsg, args);
     }
 
+    public void e(String tag, String compoundMsg, @Nullable Object object) {
+        prepareLog(ERROR, tag, null, compoundMsg, (object == null ? null : object.toString()));
+    }
+
     public void wtf(String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args) {
         prepareLog(ASSERT, tag, t, compoundMsg, normalMsg, args);
+    }
+
+    public void wtf(String tag, String compoundMsg, @Nullable Object object) {
+        prepareLog(ASSERT, tag, null, compoundMsg, (object == null ? null : object.toString()));
     }
 
     /**

@@ -9,14 +9,7 @@ import static com.sky.tools.log.Helper.getSimpleClassName;
 import static com.sky.tools.log.Helper.getStackTraceString;
 import static com.sky.tools.log.Helper.parseObject;
 import static com.sky.tools.log.Helper.splitString;
-import static com.sky.tools.log.Slog.ASSERT;
-import static com.sky.tools.log.Slog.DEBUG;
-import static com.sky.tools.log.Slog.ERROR;
-import static com.sky.tools.log.Slog.FULL;
-import static com.sky.tools.log.Slog.INFO;
-import static com.sky.tools.log.Slog.NONE;
-import static com.sky.tools.log.Slog.VERBOSE;
-import static com.sky.tools.log.Slog.WARN;
+import static com.sky.tools.log.Slog.*;
 import static com.sky.tools.log.LogConstant.*;
 
 /**
@@ -25,24 +18,21 @@ import static com.sky.tools.log.LogConstant.*;
  * Created by Sky on 2017/5/25.
  */
 
-class LogPrinter implements Printer {
+class LogControllerImpl implements LogController {
     /**
      * The minimum stack trace index, starts at this class after two native calls.
      */
     private static final int MIN_STACK_OFFSET = 3;
 
+    private Setting setting;
+    private Class<?> callerClass;
+    private LogDispatcher dispatcher;
 
-    private Setting setting = new Setting();
     private ThreadLocal<String> localTag = new ThreadLocal<>();
     private ThreadLocal<Integer> localMethodCount = new ThreadLocal<>();
     private ThreadLocal<Boolean> localSimpleMode = new ThreadLocal<>();
     private ThreadLocal<Boolean> localShowThreadInfo = new ThreadLocal<>();
-
-    @Override
-    public Setting init(Tree tree) {
-        plant(tree);
-        return setting;
-    }
+    private ThreadLocal<Integer> localMethodOffset = new ThreadLocal<>();
 
     @Override
     public void v(String msg, @Nullable Object... args) {
@@ -110,7 +100,7 @@ class LogPrinter implements Printer {
     }
 
     @Override
-    public Printer t(String tag) {
+    public LogController t(String tag) {
         if (tag != null) {
             localTag.set(tag);
         }
@@ -118,7 +108,7 @@ class LogPrinter implements Printer {
     }
 
     @Override
-    public Printer m(Integer methodCount) {
+    public LogController m(Integer methodCount) {
         if (methodCount != null) {
             localMethodCount.set(methodCount);
         }
@@ -126,7 +116,7 @@ class LogPrinter implements Printer {
     }
 
     @Override
-    public Printer s(Boolean simpleMode) {
+    public LogController s(Boolean simpleMode) {
         if (simpleMode != null) {
             localSimpleMode.set(simpleMode);
         }
@@ -134,7 +124,7 @@ class LogPrinter implements Printer {
     }
 
     @Override
-    public Printer th(Boolean showThreadInfo) {
+    public LogController th(Boolean showThreadInfo) {
         if (showThreadInfo != null) {
             localShowThreadInfo.set(showThreadInfo);
         }
@@ -142,32 +132,15 @@ class LogPrinter implements Printer {
     }
 
     @Override
-    public Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean showThreadInfo) {
-        t(tag);
-        m(methodCount);
-        s(simpleMode);
-        th(showThreadInfo);
+    public LogController o(Integer methodOffset) {
         return this;
     }
 
     @Override
-    public void plant(Tree tree) {
-        Timber.plant(tree);
-    }
-
-    @Override
-    public void removeTree(Tree tree) {
-        Timber.removeTree(tree);
-    }
-
-    @Override
-    public void clearTrees() {
-        Timber.clearTrees();
-    }
-
-    @Override
-    public Setting getSetting() {
-        return setting;
+    public void init(Class<?> callerClass, Setting logSetting, LogDispatcher logDispatcher) {
+        this.callerClass = callerClass;
+        setting = logSetting;
+        dispatcher = logDispatcher;
     }
 
     private void log(int priority, String tag, Throwable t, Object originalObject, String originalMsg, Object... args) {
@@ -245,7 +218,7 @@ class LogPrinter implements Printer {
         }
         String level = "";
 
-        int stackOffset = getStackOffset(trace);
+        int stackOffset = getMinStackOffset(trace);
 
         //corresponding method count with the current stack may exceeds the stack trace. Trims the count
         if (methodCount + stackOffset > trace.length) {
@@ -300,9 +273,9 @@ class LogPrinter implements Printer {
     private void dispatchLog(int priority, String tag, Throwable t, Object originalObject, String compoundMsg, String
             originalString, Object... args) {
         if (originalObject == null) {
-            Timber.log(priority, tag, t, compoundMsg, originalString, args);
+            dispatcher.log(priority, tag, t, compoundMsg, originalString, args);
         } else {
-            Timber.log(priority, tag, compoundMsg, originalObject);
+            dispatcher.log(priority, tag, compoundMsg, originalObject);
         }
     }
 
@@ -354,7 +327,7 @@ class LogPrinter implements Printer {
      * @param trace the stack trace
      * @return the stack offset
      */
-    private int getStackOffset(StackTraceElement[] trace) {
+    private int getMinStackOffset(StackTraceElement[] trace) {
         for (int i = MIN_STACK_OFFSET; i < trace.length; i++) {
             StackTraceElement e = trace[i];
             String name = e.getClassName();

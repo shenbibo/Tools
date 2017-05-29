@@ -114,7 +114,7 @@ final class Timber {
             throw new NullPointerException("tree == null");
         }
         if (tree == SOULS_TREE) {
-            throw new IllegalArgumentException("Cannot plant Timber into itself.");
+            throw new IllegalArgumentException("Cannot plantTrees Timber into itself.");
         }
         synchronized (FOREST) {
             FOREST.add(tree);
@@ -132,7 +132,7 @@ final class Timber {
                 throw new NullPointerException("trees contains null");
             }
             if (tree == SOULS_TREE) {
-                throw new IllegalArgumentException("Cannot plant Timber into itself.");
+                throw new IllegalArgumentException("Cannot plantTrees Timber into itself.");
             }
         }
         synchronized (FOREST) {

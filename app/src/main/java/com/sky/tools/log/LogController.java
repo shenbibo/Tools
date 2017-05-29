@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
  * Created by Sky on 2017/5/25.
  */
 
-public interface Printer {
+public interface LogController {
     /** Log a verbose message with optional format args. */
     void v(String normalMsg, @Nullable Object... args);
 
@@ -41,35 +41,42 @@ public interface Printer {
 
     /** Log at {@code priority} an exception and a message with optional format args. */
     void log(int priority, String tag, Throwable t, String normalMsg, @Nullable Object... args);
-    
+
     void json(String json);
-    
+
     void xml(String xml);
 
-    /** 设置接下来该线程打印一次日志的tag*/
-    Printer t(String tag);
+    /** 设置接下来该线程打印一次日志的tag */
+    LogController t(String tag);
 
-    /** 调用该方法后，确定接下来打印的日志显示堆栈内方法的个数，若{@code simpleCode}为true，则设置无效
-     * @param methodCount*/
-    Printer m(Integer methodCount);
+    /**
+     * 调用该方法后，确定接下来打印的日志显示堆栈内方法的个数，若{@code simpleCode}为true，则设置无效
+     *
+     * @param methodCount
+     */
+    LogController m(Integer methodCount);
 
-    /** 为true，则为普通log打印，有最高的效率
-     * @param simpleMode*/
-    Printer s(Boolean simpleMode);
+    /**
+     * 为true，则为普通log打印，有最高的效率
+     *
+     * @param simpleMode
+     */
+    LogController s(Boolean simpleMode);
 
-    /** 调用该方法后，确定接下来打印的日志是否携带线程信息，若{@code simpleCode}为true，则设置无效
-     * @param hideThreadInfo*/
-    Printer th(Boolean hideThreadInfo);
+    /**
+     * 调用该方法后，确定接下来打印的日志是否携带线程信息，若{@code simpleCode}为true，则设置无效
+     *
+     * @param hideThreadInfo
+     */
+    LogController th(Boolean hideThreadInfo);
 
-    Printer t(String tag, Integer methodCount, Boolean simpleMode, Boolean hideThreadInfo);
+    /**
+     * 调用该方法后，设置打印堆栈方法的偏移值，默认值为0，若{@code simpleCode}为true，则设置无效
+     * */
+    LogController o(Integer methodOffset);
 
-    Setting getSetting();
-
-    Setting init(Tree tree);
-
-    void plant(Tree tree);
-
-    void removeTree(Tree tree);
-
-    void clearTrees();
+    /**
+     * 调用该方法的类class
+     * */
+    void init(Class<?> callerClass, Setting logSetting, LogDispatcher logDispatcher);
 }
