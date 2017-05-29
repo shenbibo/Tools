@@ -160,4 +160,8 @@ class Helper {
         pw.flush();
         return sw.toString();
     }
+
+    static String createThreadInfo(Thread thread){
+        return "name = " + thread.getName() + ", tid = " + thread.getId();
+    }
 }

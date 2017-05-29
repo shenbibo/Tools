@@ -7,7 +7,8 @@ package com.sky.tools.log;
  */
 public class Setting {
     private int methodCount = 1;
-    private int logLevel = Slog.FULL;
+    private int logPriority = Slog.FULL;
+    private int methodOffset = 0;
     private boolean showThreadInfo = false;
     /** 简单模式，设置为true之后和正常的普通log一样 */
     private boolean simpleMode = false;
@@ -31,12 +32,12 @@ public class Setting {
         return this;
     }
 
-    public int logLevel() {
-        return logLevel;
+    public int getLogPriority() {
+        return logPriority;
     }
 
-    public Setting setLogLevel(int logLevel) {
-        this.logLevel = logLevel;
+    public Setting logPriority(int logPriority) {
+        this.logPriority = logPriority;
         return this;
     }
 
@@ -56,18 +57,27 @@ public class Setting {
     }
 
     /**
-     * 如果设置该值为true，则{@link Setting#methodCount},{@link Setting#showThreadInfo},字段不再生效
+     * 如果设置该值为true，则{@link Setting#methodCount},{@link Setting#showThreadInfo},{@link Setting#methodOffset}字段不再生效
      */
     public Setting simpleMode(boolean simpleMode) {
         this.simpleMode = simpleMode;
         return this;
     }
 
+    public int getMethodOffset() {
+        return methodOffset;
+    }
+
+    public void methodOffset(int methodOffset) {
+        this.methodOffset = methodOffset;
+    }
+
     @Override
     public String toString() {
         return "Setting{" +
                 "methodCount=" + methodCount +
-                ", logLevel=" + logLevel +
+                ", logPriority=" + logPriority +
+                ", methodOffset=" + methodOffset +
                 ", showThreadInfo=" + showThreadInfo +
                 ", simpleMode=" + simpleMode +
                 ", prefixTag='" + prefixTag + '\'' +

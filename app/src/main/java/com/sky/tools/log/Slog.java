@@ -1,7 +1,5 @@
 package com.sky.tools.log;
 
-import static android.R.attr.priority;
-
 /**
  * 日志工具类
  * 使用本日志类必须先调用初始化方法{@link Slog#init(Tree)}
@@ -68,84 +66,91 @@ public final class Slog {
      * Log a verbose message with optional format args.
      */
     public static void v(String message, Object... args) {
-        logController.v(message, args);
+        log(VERBOSE, null, null, message, args);
     }
 
     /**
      * Log a debug message with optional format args.
      */
     public static void d(String message, Object... args) {
-        logController.d(message, args);
+        log(DEBUG, null, null, message, args);
     }
 
     /**
      * 打印对象如list,map,set array
      */
     public static void d(Object object) {
-        logController.d(object);
+        object(DEBUG, null, object);
     }
 
     /**
      * Log an info message with optional format args.
      */
     public static void i(String message, Object... args) {
-        logController.i(message, args);
+        log(INFO, null, null, message, args);
     }
 
     /**
      * 打印对象如list,map,set array等
      */
     public static void i(Object object) {
-        logController.i(object);
+        object(INFO, null, object);
     }
 
     /**
      * Log a warning message with optional format args.
      */
     public static void w(String message, Object... args) {
-        logController.w(message, args);
+        log(WARN, null, null, message, args);
     }
 
     /**
      * Log a warning exception and a message with optional format args.
      */
     public static void w(Throwable t, String message, Object... args) {
-        logController.w(t, message, args);
+        log(WARN, null, t, message, args);
     }
 
     /**
      * Log an error exception
      */
     public static void w(Throwable t) {
-        w(t, "");
+        log(WARN, null, t, "");
     }
 
     /**
      * Log an error message with optional format args.
      */
     public static void e(String message, Object... args) {
-        logController.e(message, args);
+        log(ERROR, null, null, message, args);
     }
 
     /**
      * Log an error exception and a message with optional format args.
      */
     public static void e(Throwable t, String message, Object... args) {
-        logController.e(t, message, args);
+        log(ERROR, null, t, message, args);
     }
 
     /**
      * Log an error exception
      */
     public static void e(Throwable t) {
-        e(t, "");
+        log(ERROR, null, t, "");
     }
 
     /**
      * Log an assert message with optional format args.
      */
     public static void wtf(String message, Object... args) {
-        logController.wtf(message, args);
+        log(ASSERT, null, null, message, args);
+    }
+
+    /**
+     * Log an assert message with optional format args.
+     */
+    public static void wtf(Throwable t, String message, Object... args) {
+        log(ASSERT, null, t, message, args);
     }
 
     /**
@@ -157,6 +162,13 @@ public final class Slog {
      */
     public static void log(int priority, String tag, Throwable t, String message, Object... args) {
         logController.log(priority, tag, t, message, args);
+    }
+
+    /**
+     * 打印对象
+     */
+    public static void object(int priority, String tag, Object object) {
+        logController.object(priority, tag, object);
     }
 
     public static void json(String json) {
@@ -174,6 +186,7 @@ public final class Slog {
             LogManager logManager = LogFactory.createLogManager();
             treeManager = logManager;
             logController.init(Slog.class, setting, logManager);
+            treeManager.plantTree(tree);
         }
         return setting;
     }
@@ -182,15 +195,19 @@ public final class Slog {
         return logController.t(tag);
     }
 
-    public static LogController m(Integer methodCount) {
+    public static LogController m(int methodCount) {
         return logController.m(methodCount);
     }
 
-    public static LogController s(Boolean simpleMode) {
+    public static LogController o(int methodOffset) {
+        return logController.o(methodOffset);
+    }
+
+    public static LogController s(boolean simpleMode) {
         return logController.s(simpleMode);
     }
 
-    public static LogController th(Boolean showThreadInfo) {
+    public static LogController th(boolean showThreadInfo) {
         return logController.th(showThreadInfo);
     }
 

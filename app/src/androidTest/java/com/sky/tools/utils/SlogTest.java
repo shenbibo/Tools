@@ -23,7 +23,7 @@ public class SlogTest {
 
     @BeforeClass
     public static void init() {
-        Slog.init(new LogcatTree()).showThreadInfo(true);
+        Slog.init(new LogcatTree()).showThreadInfo(true).prefixTag("sky.test.tools");
     }
 
     @Test
@@ -103,9 +103,6 @@ public class SlogTest {
         Slog.d(set);
 
     }
-
-    @Test
-    public static void log11234Chars(){}
 
     @Test
     public void logWithDefaultTagFormNoneToFull() {

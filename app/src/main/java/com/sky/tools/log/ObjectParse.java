@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public final class ObjectParse {
+    private static final String OBJECT_NULL = "object is null";
 
     private static final CopyOnWriteArrayList<Parse> parseObjects = new CopyOnWriteArrayList<>();
 
@@ -29,6 +30,14 @@ public final class ObjectParse {
     }
 
     static String objectToString(Object object) {
+        if(object == null){
+            return OBJECT_NULL;
+        }
+
+        if(object instanceof String){
+            return (String)object;
+        }
+
         Parse parse = null;
         Class<?> clazz = object.getClass();
         // 先检测是否有确切的class类型的解析适配器
