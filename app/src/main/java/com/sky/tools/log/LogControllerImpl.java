@@ -16,15 +16,15 @@ import static com.sky.tools.log.LogConstant.*;
  * [detail]
  * Created by Sky on 2017/5/25.
  */
-
 class LogControllerImpl extends LogController {
     /**
      * 最小的栈偏移值，因为该类本身和包裹它的类，所以默认偏移2
      */
     private static final int MIN_STACK_OFFSET = 6;
 
-    /** 当传递的message是空时，先包装成一个空对象，在分发之前在变成原来的null **/
-    private final String NULL_STRING = "";
+    /** 当传递的message是空时，先包装成一个空对象，在分发之前在变成原来的null */
+    @SuppressWarnings("RedundantStringConstructorCall")
+    private final String NULL_STRING = new String("");
     /** 当日志方法传递的object是空时，先包装成一个空对象，在分发之前在变成原来的null **/
     private final Object NULL_OBJECT = new Object();
 
@@ -95,10 +95,11 @@ class LogControllerImpl extends LogController {
 
     @Override
     public void log(int priority, @Nullable String tag, @Nullable Throwable t, @Nullable String msg, @Nullable Object... args) {
-        if (msg == null) {   // TODO 此处需要确定如果外面直接传入一个""字符串会不会导致相等
-            msg = NULL_STRING;
+        Object msgObject = msg;
+        if (msgObject == null) {
+            msgObject = NULL_STRING;
         }
-        logParse(priority, tag, t, msg, args);
+        logParse(priority, tag, t, msgObject, args);
     }
 
     @Override
@@ -106,7 +107,12 @@ class LogControllerImpl extends LogController {
         if (object == null) {
             object = NULL_OBJECT;
         }
-        logParse(priority, tag, null, object);
+
+        if (object instanceof String) {
+            log(priority, tag, null, (String) object);
+        } else {
+            logParse(priority, tag, null, object);
+        }
     }
 
     @Override
@@ -252,16 +258,7 @@ class LogControllerImpl extends LogController {
                 continue;
             }
             StringBuilder builder = new StringBuilder();
-            builder.append("║ ")
-                   .append(level)
-                   .append(getSimpleClassName(trace[stackIndex].getClassName()))
-                   .append(".")
-                   .append(trace[stackIndex].getMethodName())
-                   .append("(")
-                   .append(trace[stackIndex].getFileName())
-                   .append(":")
-                   .append(trace[stackIndex].getLineNumber())
-                   .append(")");
+            builder.append("║ ").append(level).append(getSimpleClassName(trace[stackIndex].getClassName())).append(".").append(trace[stackIndex].getMethodName()).append("(").append(trace[stackIndex].getFileName()).append(":").append(trace[stackIndex].getLineNumber()).append(")");
             level += "   ";
 
             messagesList.add(builder.toString());
@@ -287,14 +284,12 @@ class LogControllerImpl extends LogController {
         }
     }
 
-    private void dispatchLog(int priority, String tag, Throwable t, String[] compoundMessages,
-            Object originalObject, Object... args) {
+    private void dispatchLog(int priority, String tag, Throwable t, String[] compoundMessages, Object originalObject, Object... args) {
         if (originalObject instanceof String) {
-            if(originalObject == NULL_STRING){
+            if (originalObject == NULL_STRING) {
                 Log.i("LogController", "is null string");
             }
-            dispatcher.log(priority, tag, t, compoundMessages,
-                    originalObject == NULL_STRING ? null : (String) originalObject, args);
+            dispatcher.log(priority, tag, t, compoundMessages, originalObject == NULL_STRING ? null : (String) originalObject, args);
         } else {
             dispatcher.log(priority, tag, compoundMessages, originalObject == NULL_OBJECT ? null : originalObject);
         }

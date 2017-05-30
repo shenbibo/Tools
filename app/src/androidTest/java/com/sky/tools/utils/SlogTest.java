@@ -86,6 +86,17 @@ public class SlogTest {
     public void multiLineLogTest(){}
 
     @Test
+    public void nullObject(){
+        Slog.d(null);
+    }
+
+    @Test
+    public void nullAndEmptyStringTest(){
+        Slog.i(null);
+        Slog.i("");
+    }
+
+    @Test
     public void object() {
         String[] name = {"sga", "gsadgsa", "sgdsfhds"};
         Slog.i("array test");
@@ -126,7 +137,7 @@ public class SlogTest {
     /**
      * 测试多线程设置tag的准确性
      */
-//    @Test
+    @Test
     public void multithreadingPrintLog() throws InterruptedException {
         countDownLatch = new CountDownLatch(10);
         for (int i = 0; i < 10; i++) {
