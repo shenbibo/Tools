@@ -9,7 +9,8 @@ import android.support.annotation.Nullable;
  */
 
 public interface LogDispatcher {
-    void log(int priority, String tag, Throwable t, String compoundMsg, @Nullable String normalMsg, @Nullable Object... args);
+    void log(int priority, String tag, Throwable t, String[] compoundMessages, @Nullable String originalMsg,
+            @Nullable Object... args);
 
-    void log(int priority, String tag, String compoundMsg, @Nullable Object originalObject);
+    void log(int priority, String tag, String[] compoundMessages, @Nullable Object originalObject);
 }

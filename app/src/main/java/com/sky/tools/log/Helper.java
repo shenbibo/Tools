@@ -24,6 +24,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
+
 /**
  * [function]
  * [detail]
@@ -143,7 +145,7 @@ class Helper {
     }
 
     static String formatMessage(String message, Object... args) {
-        return args == null || args.length == 0 ? message : String.format(message, args);
+        return args == null ? OBJECT_NULL_STRING : String.format(message, args);
     }
 
     static String getSimpleClassName(String name) {

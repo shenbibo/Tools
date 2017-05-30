@@ -2,9 +2,9 @@ package com.sky.tools.log;
 
 import com.sky.tools.log.parse.Parse;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
 
 /**
  * [解析对象]
@@ -13,8 +13,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public final class ObjectParse {
-    private static final String OBJECT_NULL = "object is null";
-
     private static final CopyOnWriteArrayList<Parse> parseObjects = new CopyOnWriteArrayList<>();
 
     static void addParseObject(Parse parseAdapter) {
@@ -31,7 +29,7 @@ public final class ObjectParse {
 
     static String objectToString(Object object) {
         if(object == null){
-            return OBJECT_NULL;
+            return OBJECT_NULL_STRING;
         }
 
         if(object instanceof String){

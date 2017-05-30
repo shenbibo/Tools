@@ -21,4 +21,5 @@ public class LogConstant {
     static final String MIDDLE_BORDER = MIDDLE_CORNER + SINGLE_DIVIDER + SINGLE_DIVIDER;
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String OBJECT_NULL_STRING = "warning, the msg object is null!!!!";
 }

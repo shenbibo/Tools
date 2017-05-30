@@ -83,7 +83,9 @@ public abstract class LogController {
     public abstract LogController o(Integer methodOffset);
 
     /**
-     * 调用该方法的类class
+     * @param callerClass   调用该方法的类的class
+     * @param logSetting    日志配置
+     * @param logDispatcher 日志分发器
      */
     abstract void init(@NonNull Class<?> callerClass, @NonNull Setting logSetting, @NonNull LogDispatcher logDispatcher);
 }

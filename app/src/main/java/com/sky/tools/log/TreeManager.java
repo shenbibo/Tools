@@ -10,8 +10,7 @@ import java.util.*;
 
 public interface TreeManager {
     /**
-     * A view into Timber's planted trees as a tree itself. This can be used for injecting a logger
-     * instance rather than using static methods or to facilitate testing.
+     * 返回其内部用于管理所有子树的根数
      */
     Tree asTree();
 

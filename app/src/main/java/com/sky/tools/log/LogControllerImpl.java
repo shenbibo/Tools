@@ -2,6 +2,10 @@ package com.sky.tools.log;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sky.tools.log.Helper.*;
 import static com.sky.tools.log.Slog.*;
@@ -18,6 +22,11 @@ class LogControllerImpl extends LogController {
      * 最小的栈偏移值，因为该类本身和包裹它的类，所以默认偏移2
      */
     private static final int MIN_STACK_OFFSET = 6;
+
+    /** 当传递的message是空时，先包装成一个空对象，在分发之前在变成原来的null **/
+    private final String NULL_STRING = "";
+    /** 当日志方法传递的object是空时，先包装成一个空对象，在分发之前在变成原来的null **/
+    private final Object NULL_OBJECT = new Object();
 
     private Setting setting;
     private Class<?> callerClass;
@@ -86,22 +95,28 @@ class LogControllerImpl extends LogController {
 
     @Override
     public void log(int priority, @Nullable String tag, @Nullable Throwable t, @Nullable String msg, @Nullable Object... args) {
+        if (msg == null) {   // TODO 此处需要确定如果外面直接传入一个""字符串会不会导致相等
+            msg = NULL_STRING;
+        }
         logParse(priority, tag, t, msg, args);
     }
 
     @Override
     public void object(int priority, String tag, Object object) {
+        if (object == null) {
+            object = NULL_OBJECT;
+        }
         logParse(priority, tag, null, object);
     }
 
     @Override
     public void json(String json) {
-        logParse(DEBUG, null, null, covertJson(json));
+        log(DEBUG, null, null, covertJson(json));
     }
 
     @Override
     public void xml(String xml) {
-        logParse(DEBUG, null, null, covertXml(xml));
+        log(DEBUG, null, null, covertXml(xml));
     }
 
     @Override
@@ -138,7 +153,7 @@ class LogControllerImpl extends LogController {
 
     @Override
     public LogController o(Integer methodOffset) {
-        if(methodOffset != null){
+        if (methodOffset != null) {
             localMethodOffset.set(methodOffset);
         }
         return this;
@@ -156,10 +171,6 @@ class LogControllerImpl extends LogController {
             return;
         }
 
-        if (originalObject == null) {
-            return;
-        }
-
         String finalTag = tag != null ? createCompoundTag(tag) : getTag();
         // 简单模式不组装消息直接返回
         if (isSimpleMode()) {
@@ -167,69 +178,70 @@ class LogControllerImpl extends LogController {
             return;
         }
 
-        logStandardMode(priority, finalTag, t, originalObject, args);
+        logCompoundMode(priority, finalTag, t, originalObject, args);
     }
 
     private void logSimpleMode(int priority, String tag, Throwable t, Object originalObject, Object... args) {
-        String[] spiltMsg = compoundMsgAndSplit(t, originalObject, args);
-        for (int i = 0; i < spiltMsg.length; i++) {
-            // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
-            if (i != spiltMsg.length - 1) {
-                dispatchLog(priority, tag, t, spiltMsg[i], null);
-            } else {
-                dispatchLog(priority, tag, t, spiltMsg[i], originalObject, args);
-            }
-        }
+        String[] compoundMessages = compoundMessage(t, originalObject, args);
+        dispatchLog(priority, tag, t, compoundMessages, originalObject, args);
     }
 
-    private synchronized void logStandardMode(int priority, String tag, Throwable t, Object originalObject, Object... args) {
+    private void logCompoundMode(int priority, String tag, Throwable t, Object originalObject, Object... args) {
         int methodCount = getMethodCount();
-        logTopBorder(priority, tag);
-        logHeaderContent(priority, tag, methodCount);
+        // 初始化时指定容量，避免发生拷贝
+        ArrayList<String> compoundMessages = new ArrayList<>(12 + (int) (methodCount / 0.75));
+        logTopBorder(compoundMessages);
+        logHeaderContent(compoundMessages, methodCount);
 
         if (methodCount > 0) {
-            logDivider(priority, tag);
+            logDivider(compoundMessages);
         }
 
-        logContent(priority, tag, t, originalObject, args);
-        logBottomBorder(priority, tag);
+        logContent(compoundMessages, t, originalObject, args);
+        logBottomBorder(compoundMessages);
+
+        dispatchLog(priority, tag, t, compoundMessages.toArray(new String[compoundMessages.size()]), originalObject, args);
     }
 
     /** 组装格式化字符串或解析对象，并且如果长度超过限制则进行切除 */
-    private String[] compoundMsgAndSplit(Throwable t, Object originalObject, Object... args) {
-        String compoundMsg;
-        if (originalObject instanceof String) {
-            compoundMsg = formatMessage((String) originalObject, args);
+    private String[] compoundMessage(Throwable t, Object originalObject, Object... args) {
+        String compoundMessage;
+        if (originalObject == NULL_OBJECT || originalObject == NULL_STRING) {
+            compoundMessage = OBJECT_NULL_STRING;
         } else {
-            compoundMsg = parseObject(originalObject);
+            if (originalObject instanceof String) {
+                compoundMessage = formatMessage((String) originalObject, args);
+            } else {
+                compoundMessage = parseObject(originalObject);
+            }
         }
 
         if (t != null) {
-            compoundMsg += " : " + getStackTraceString(t);
+            compoundMessage += " : " + getStackTraceString(t);
         }
 
-        return splitString(compoundMsg);
+        return splitString(compoundMessage);
     }
 
 
-    private void logTopBorder(int priority, String tag) {
-        dispatchLog(priority, tag, null, TOP_BORDER, null);
+    private void logTopBorder(List<String> messagesList) {
+        messagesList.add(TOP_BORDER);
     }
 
     @SuppressWarnings("StringBufferReplaceableByString")
-    private void logHeaderContent(int priority, String tag, int methodCount) {
+    private void logHeaderContent(List<String> messagesList, int methodCount) {
         Thread curThread = Thread.currentThread();
         StackTraceElement[] trace = curThread.getStackTrace();
         if (isShowThreadInfo()) {
             String threadInfo = createThreadInfo(curThread);
-            dispatchLog(priority, tag, null, getLineCompoundStr(threadInfo), null);
-            logDivider(priority, tag);
+            messagesList.add(getLineCompoundStr(threadInfo));
+            logDivider(messagesList);
         }
         String level = "";
 
         int stackOffset = getStackOffset(trace);
 
-        //corresponding method count with the current stack may exceeds the stack trace. Trims the count
+        // 校正最终要输出的方法数目，不能比整个栈还长
         if (methodCount + stackOffset > trace.length) {
             methodCount = trace.length - stackOffset - 1;
         }
@@ -251,38 +263,40 @@ class LogControllerImpl extends LogController {
                    .append(trace[stackIndex].getLineNumber())
                    .append(")");
             level += "   ";
-            dispatchLog(priority, tag, null, builder.toString(), null);
+
+            messagesList.add(builder.toString());
         }
     }
 
-    private void logBottomBorder(int priority, String tag) {
-        dispatchLog(priority, tag, null, BOTTOM_BORDER, null);
+    private void logBottomBorder(List<String> messagesList) {
+        messagesList.add(BOTTOM_BORDER);
     }
 
-    private void logDivider(int priority, String tag) {
-        dispatchLog(priority, tag, null, MIDDLE_BORDER, null);
+    private void logDivider(List<String> messagesList) {
+        messagesList.add(MIDDLE_BORDER);
     }
 
-    private void logContent(int priority, String tag, Throwable t, Object originalObject, Object... args) {
-        String[] splitMsg = compoundMsgAndSplit(t, originalObject, args);
-        // 注意当一个msg被拆分时，只有在最后一次输出完全时才会传递原始参数，前面都会传null
-        for (int i = 0; i < splitMsg.length; i++) {
-            String[] lines = splitMsg[i].split(LINE_SEPARATOR);
-            for (int j = 0; j < lines.length; j++) {
-                if (j != lines.length - 1 || i != splitMsg.length - 1) {
-                    dispatchLog(priority, tag, t, getLineCompoundStr(lines[j]), null);
-                } else {
-                    dispatchLog(priority, tag, t, getLineCompoundStr(lines[j]), originalObject, args);
-                }
+    private void logContent(List<String> messagesList, Throwable t, Object originalObject, Object... args) {
+        String[] compoundMessages = compoundMessage(t, originalObject, args);
+        // TODO 需要确定如果字符串中没有换行符，解析出来的字符串是什么
+        for (String compoundMessage : compoundMessages) {
+            String[] splitMessages = compoundMessage.split(LINE_SEPARATOR);
+            for (String splitMessage : splitMessages) {
+                messagesList.add(getLineCompoundStr(splitMessage));
             }
         }
     }
 
-    private void dispatchLog(int priority, String tag, Throwable t, String compoundMsg, Object originalObject, Object... args) {
+    private void dispatchLog(int priority, String tag, Throwable t, String[] compoundMessages,
+            Object originalObject, Object... args) {
         if (originalObject instanceof String) {
-            dispatcher.log(priority, tag, t, compoundMsg, (String) originalObject, args);
+            if(originalObject == NULL_STRING){
+                Log.i("LogController", "is null string");
+            }
+            dispatcher.log(priority, tag, t, compoundMessages,
+                    originalObject == NULL_STRING ? null : (String) originalObject, args);
         } else {
-            dispatcher.log(priority, tag, compoundMsg, originalObject);
+            dispatcher.log(priority, tag, compoundMessages, originalObject == NULL_OBJECT ? null : originalObject);
         }
     }
 
@@ -308,7 +322,7 @@ class LogControllerImpl extends LogController {
         return count;
     }
 
-    private int getStackOffset(StackTraceElement[] stackTraceElements){
+    private int getStackOffset(StackTraceElement[] stackTraceElements) {
         Integer userSetOffset = localMethodOffset.get();
         if (userSetOffset != null) {
             localMethodOffset.remove();
@@ -316,7 +330,7 @@ class LogControllerImpl extends LogController {
             userSetOffset = setting.getMethodOffset();
         }
 
-       return userSetOffset + getMinStackOffset(stackTraceElements);
+        return userSetOffset + getMinStackOffset(stackTraceElements);
     }
 
     private boolean isSimpleMode() {
@@ -340,7 +354,8 @@ class LogControllerImpl extends LogController {
     }
 
     /**
-     * Determines the starting index of the stack trace, after method calls made by this class.
+     * 获取最小的堆栈偏移值，获取线程的stack，基本算法为当第一次出现stack中元素的类型不为logController和其调用者时，
+     * 就认为当前位置为最小偏移值。
      *
      * @param trace the stack trace
      * @return the stack offset
@@ -350,6 +365,7 @@ class LogControllerImpl extends LogController {
             StackTraceElement e = trace[i];
             String name = e.getClassName();
             if (!name.equals(this.getClass().getName()) && !name.equals(callerClass.getName())) {
+                // 因为数组从0，开始所有要-1
                 return --i;
             }
         }
