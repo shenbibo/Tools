@@ -4,6 +4,7 @@ import com.sky.tools.log.parse.Parse;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static android.R.attr.level;
 import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
 
 /**
@@ -13,6 +14,8 @@ import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
  */
 
 public final class ObjectParse {
+    /** 最大解析层级，只解析2层 */
+    private static final int MAX_PARSE_LEVEL = 2;
     private static final CopyOnWriteArrayList<Parse> parseObjects = new CopyOnWriteArrayList<>();
 
     static void addParseObject(Parse parseAdapter) {
@@ -27,36 +30,40 @@ public final class ObjectParse {
         parseObjects.remove(parseAdapter);
     }
 
-    static String objectToString(Object object) {
-        if(object == null){
+
+    public static String objectToString(Object object){
+        if (object == null) {
             return OBJECT_NULL_STRING;
         }
 
-        if(object instanceof String){
-            return (String)object;
+        if (object instanceof String) {
+            return (String) object;
         }
 
-        Parse parse = null;
+        Parse parse;
         Class<?> clazz = object.getClass();
         // 先检测是否有确切的class类型的解析适配器
         if ((parse = getActualParse(clazz)) != null) {
+            //noinspection unchecked
             return parse.parseToString(object);
         }
 
         // 再检查是否有其超类的解析适配器
         if ((parse = getAssignableParse(clazz)) != null) {
+            //noinspection unchecked
             return parse.parseToString(object);
         }
 
         return object.toString();
     }
 
+
     /**
      * 从适配器表中获取确切的与给定对象class相等的解析器，不包括其超类的
-     * */
-    private static Parse<?> getActualParse(Class<?> clazz){
-        for (Parse<?> parse : parseObjects){
-            if(clazz == parse.getParseType()){
+     */
+    private static Parse<?> getActualParse(Class<?> clazz) {
+        for (Parse<?> parse : parseObjects) {
+            if (clazz == parse.getParseType()) {
                 return parse;
             }
         }
@@ -67,8 +74,8 @@ public final class ObjectParse {
      * 从适配器表中获取确切的与给定对象class，或是其超类的解析器
      */
     private static Parse<?> getAssignableParse(Class<?> clazz) {
-        for (Parse<?> parse : parseObjects){
-            if(parse.getParseType().isAssignableFrom(clazz)){
+        for (Parse<?> parse : parseObjects) {
+            if (parse.getParseType().isAssignableFrom(clazz)) {
                 return parse;
             }
         }

@@ -59,7 +59,8 @@ public class IntentParse implements Parse<Intent> {
         builder.append(String.format("%s = %s" + LINE_SEPARATOR, "ComponentInfo", intent.getComponent()));
         builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Flags", getFlags(intent.getFlags())));
         builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Categories", intent.getCategories()));
-        builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Extras", new BundleParse().parseToString(intent.getExtras())));
+        builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Extras",
+                new BundleParse().parseToString(intent.getExtras())));
         return builder.toString() + "]";
     }
 
