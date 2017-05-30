@@ -87,7 +87,7 @@ public class SlogTest {
 
     @Test
     public void nullObject(){
-        Slog.d(null);
+        Slog.dO(null);
     }
 
     @Test
@@ -100,24 +100,24 @@ public class SlogTest {
     public void object() {
         String[] name = {"sga", "gsadgsa", "sgdsfhds"};
         Slog.i("array test");
-        Slog.d(name);
+        Slog.dO(name);
 
         String[] name2 = {"wwt", "wetgety", "reyertu"};
         Slog.i("list test");
-        Slog.d(Arrays.asList(name2));
+        Slog.dO(Arrays.asList(name2));
 
         Map<String, String> map = new HashMap<>();
         for(int i = 0; i < name.length; i++){
-            map.put(name[i], name2[2]);
+            map.put(name[i], name2[i]);
         }
         Slog.i("map test");
-        Slog.d(map);
+        Slog.dO(map);
 
         String[] name3 = {"wggsg", "hketydfhdsh", "7887reyertu"};
         Set<String> set = new HashSet<>();
         set.addAll(Arrays.asList(name3));
         Slog.i("set test");
-        Slog.d(set);
+        Slog.dO(set);
 
     }
 

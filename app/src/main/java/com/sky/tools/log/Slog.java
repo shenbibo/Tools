@@ -79,8 +79,8 @@ public final class Slog {
     /**
      * 打印对象如list,map,set array
      */
-    public static void d(Object object) {
-        object(DEBUG, null, object);
+    public static void dO(Object object) {
+        o(DEBUG, null, object);
     }
 
     /**
@@ -93,8 +93,8 @@ public final class Slog {
     /**
      * 打印对象如list,map,set array等
      */
-    public static void i(Object object) {
-        object(INFO, null, object);
+    public static void iO(Object object) {
+        o(INFO, null, object);
     }
 
     /**
@@ -167,8 +167,8 @@ public final class Slog {
     /**
      * 打印对象
      */
-    public static void object(int priority, String tag, Object object) {
-        logController.object(priority, tag, object);
+    public static void o(int priority, String tag, Object object) {
+        logController.o(priority, tag, object);
     }
 
     public static void json(String json) {

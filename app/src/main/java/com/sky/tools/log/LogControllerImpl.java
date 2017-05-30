@@ -49,8 +49,8 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public void d(Object object) {
-        object(DEBUG, null, object);
+    public void dO(Object object) {
+        o(DEBUG, null, object);
     }
 
     @Override
@@ -59,8 +59,8 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public void i(Object object) {
-        object(INFO, null, object);
+    public void iO(Object object) {
+        o(INFO, null, object);
     }
 
     @Override
@@ -103,7 +103,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public void object(int priority, String tag, Object object) {
+    public void o(int priority, String tag, Object object) {
         if (object == null) {
             object = NULL_OBJECT;
         }

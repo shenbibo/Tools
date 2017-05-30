@@ -17,13 +17,13 @@ public abstract class LogController {
     public abstract void d(String normalMsg, @Nullable Object... args);
 
     /** Log a debug message for the object */
-    public abstract void d(Object object);
+    public abstract void dO(Object object);
 
     /** Log an info message with optional format args. */
     public abstract void i(String normalMsg, @Nullable Object... args);
 
     /** Log a debug message for the object */
-    public abstract void i(Object object);
+    public abstract void iO(Object object);
 
     /** Log a warning message with optional format args. */
     public abstract void w(String normalMsg, @Nullable Object... args);
@@ -47,7 +47,7 @@ public abstract class LogController {
     public abstract void log(int priority, String tag, Throwable t, String normalMsg, @Nullable Object... args);
 
     /** 打印日志 */
-    public abstract void object(int priority, @Nullable String tag, @Nullable Object object);
+    public abstract void o(int priority, @Nullable String tag, @Nullable Object object);
 
     public abstract void json(String json);
 
