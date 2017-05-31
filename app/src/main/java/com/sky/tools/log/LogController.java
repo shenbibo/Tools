@@ -1,91 +1,266 @@
 package com.sky.tools.log;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.*;
+import static com.sky.tools.log.Slog.*;
+import static java.util.Collections.unmodifiableList;
+
 /**
- * [日志打印的中间层，包含数据的转换逻辑接口]
- * [detail]
- * Created by Sky on 2017/5/25.
+ * 日志控制器，包括日志的分发，日志树的管理
+ * <p>
+ * Created by sky on 2017/5/29.
  */
+interface LogController extends LogDispatcher, TreeManager {
 
-public abstract class LogController {
-    /** Log a verbose message with optional format args. */
-    public abstract void v(String normalMsg, @Nullable Object... args);
+    class LogManagerImpl implements LogController {
+        private final Tree[] TREE_ARRAY_EMPTY = new Tree[0];
+        private volatile Tree[] forestAsArray = TREE_ARRAY_EMPTY;
+        // Both fields guarded by 'FOREST'.
+        private final List<Tree> FOREST = new ArrayList<>();
 
-    /** Log a debug message with optional format args. */
-    public abstract void d(String normalMsg, @Nullable Object... args);
+        @Override
+        public void log(int priority, String tag, Throwable t, String[] compoundMessages, @Nullable String originalMsg,
+                @Nullable Object... args) {
+            switch (priority) {
+                case DEBUG:
+                    SOULS_TREE.d(tag, t, compoundMessages, originalMsg, args);
+                    break;
 
-    /** Log a debug message for the object */
-    public abstract void dO(Object object);
+                case INFO:
+                    SOULS_TREE.i(tag, t, compoundMessages, originalMsg, args);
+                    break;
 
-    /** Log an info message with optional format args. */
-    public abstract void i(String normalMsg, @Nullable Object... args);
+                case WARN:
+                    SOULS_TREE.w(tag, t, compoundMessages, originalMsg, args);
+                    break;
 
-    /** Log a debug message for the object */
-    public abstract void iO(Object object);
+                case ERROR:
+                    SOULS_TREE.e(tag, t, compoundMessages, originalMsg, args);
+                    break;
 
-    /** Log a warning message with optional format args. */
-    public abstract void w(String normalMsg, @Nullable Object... args);
+                case VERBOSE:
+                    SOULS_TREE.v(tag, t, compoundMessages, originalMsg, args);
+                    break;
 
-    /** Log a warning exception and a message with optional format args. */
-    public abstract void w(Throwable t, String normalMsg, @Nullable Object... args);
+                case ASSERT:
+                    SOULS_TREE.wtf(tag, t, compoundMessages, originalMsg, args);
+                    break;
 
-    /** Log an error message with optional format args. */
-    public abstract void e(String normalMsg, @Nullable Object... args);
+                default:
+                    break;
+            }
+        }
 
-    /** Log an error exception and a message with optional format args. */
-    public abstract void e(Throwable t, String normalMsg, @Nullable Object... args);
+        @Override
+        public void log(int priority, String tag, String[] compoundMessages, @Nullable Object originalObject) {
+            switch (priority) {
+                case DEBUG:
+                    SOULS_TREE.d(tag, compoundMessages, originalObject);
+                    break;
 
-    /** Log an assert message with optional format args. */
-    public abstract void wtf(String normalMsg, @Nullable Object... args);
+                case INFO:
+                    SOULS_TREE.i(tag, compoundMessages, originalObject);
+                    break;
 
-    /** Log an throwable and assert message with optional format args. */
-    public abstract void wtf(Throwable t, String normalMsg, @Nullable Object... args);
+                case WARN:
+                    SOULS_TREE.w(tag, compoundMessages, originalObject);
+                    break;
 
-    /** Log at {@code priority} an exception and a message with optional format args. */
-    public abstract void log(int priority, String tag, Throwable t, String normalMsg, @Nullable Object... args);
+                case ERROR:
+                    SOULS_TREE.e(tag, compoundMessages, originalObject);
+                    break;
 
-    /** 打印日志 */
-    public abstract void object(int priority, @Nullable String tag, @Nullable Object object);
+                case VERBOSE:
+                    SOULS_TREE.v(tag, compoundMessages, originalObject);
+                    break;
 
-    public abstract void json(String json);
+                case ASSERT:
+                    SOULS_TREE.wtf(tag, compoundMessages, originalObject);
+                    break;
 
-    public abstract void xml(String xml);
+                default:
+                    break;
+            }
+        }
 
-    /** 设置接下来该线程打印一次日志的tag */
-    public abstract LogController t(String tag);
+        @Override
+        public Tree asTree() {
+            return SOULS_TREE;
+        }
 
-    /**
-     * 调用该方法后，确定接下来打印的日志显示堆栈内方法的个数，若{@code simpleCode}为true，则设置无效
-     *
-     * @param methodCount
-     */
-    public abstract LogController m(Integer methodCount);
+        @Override
+        public void plantTree(Tree tree) {
+            if (tree == null) {
+                throw new NullPointerException("tree == null");
+            }
+            if (tree == SOULS_TREE) {
+                throw new IllegalArgumentException("Cannot plant Tree into itself.");
+            }
+            synchronized (FOREST) {
+                FOREST.add(tree);
+                forestAsArray = FOREST.toArray(new Tree[FOREST.size()]);
+            }
+        }
 
-    /**
-     * 为true，则为普通log打印，有最高的效率
-     *
-     * @param simpleMode
-     */
-    public abstract LogController s(Boolean simpleMode);
+        @Override
+        public void plantTrees(Tree... trees) {
+            if (trees == null) {
+                throw new NullPointerException("trees == null");
+            }
+            for (Tree tree : trees) {
+                if (tree == null) {
+                    throw new NullPointerException("trees contains null");
+                }
+                if (tree == SOULS_TREE) {
+                    throw new IllegalArgumentException("Cannot plant Tree into itself.");
+                }
+            }
+            synchronized (FOREST) {
+                Collections.addAll(FOREST, trees);
+                forestAsArray = FOREST.toArray(new Tree[FOREST.size()]);
+            }
+        }
 
-    /**
-     * 调用该方法后，确定接下来打印的日志是否携带线程信息，若{@code simpleCode}为true，则设置无效
-     *
-     * @param hideThreadInfo
-     */
-    public abstract LogController th(Boolean hideThreadInfo);
+        @Override
+        public void removeTree(Tree tree) {
+            synchronized (FOREST) {
+                if (!FOREST.remove(tree)) {
+                    return;
+                }
+                forestAsArray = FOREST.toArray(new Tree[FOREST.size()]);
+            }
+        }
 
-    /**
-     * 调用该方法后，设置打印堆栈方法的偏移值，默认值为0，若{@code simpleCode}为true，则设置无效
-     */
-    public abstract LogController o(Integer methodOffset);
+        @Override
+        public void clearTrees() {
+            synchronized (FOREST) {
+                FOREST.clear();
+                forestAsArray = TREE_ARRAY_EMPTY;
+            }
+        }
 
-    /**
-     * @param callerClass   调用该方法的类的class
-     * @param logSetting    日志配置
-     * @param logDispatcher 日志分发器
-     */
-    abstract void init(@NonNull Class<?> callerClass, @NonNull Setting logSetting, @NonNull LogDispatcher logDispatcher);
+        @Override
+        public List<Tree> forest() {
+            synchronized (FOREST) {
+                return unmodifiableList(new ArrayList<>(FOREST));
+            }
+        }
+
+        @Override
+        public int treeCount() {
+            synchronized (FOREST) {
+                return FOREST.size();
+            }
+        }
+
+        private final Tree SOULS_TREE = new Tree() {
+            @Override
+            public void v(String tag, Throwable t, String[] compoundMessages,
+                    @Nullable String originalMessage, @Nullable Object... args) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.v(tag, t, compoundMessages, originalMessage, args);
+                }
+            }
+
+            @Override
+            public void v(String tag, String[] compoundMessages, @Nullable Object object) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.v(tag, compoundMessages, object);
+                }
+            }
+
+            @Override
+            public void d(String tag, Throwable t, String[] compoundMessages,
+                    @Nullable String originalMessage, @Nullable Object... args) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.d(tag, t, compoundMessages, originalMessage, args);
+                }
+            }
+
+            @Override
+            public void d(String tag, String[] compoundMessages, @Nullable Object object) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.d(tag, compoundMessages, object);
+                }
+            }
+
+            @Override
+            public void i(String tag, Throwable t, String[] compoundMessages,
+                    @Nullable String originalMessage, @Nullable Object... args) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.i(tag, t, compoundMessages, originalMessage, args);
+                }
+            }
+
+            @Override
+            public void i(String tag, String[] compoundMessages, @Nullable Object object) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.i(tag, compoundMessages, object);
+                }
+            }
+
+            @Override
+            public void w(String tag, Throwable t, String[] compoundMessages,
+                    @Nullable String originalMessage, @Nullable Object... args) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.w(tag, t, compoundMessages, originalMessage, args);
+                }
+            }
+
+            @Override
+            public void w(String tag, String[] compoundMessages, @Nullable Object object) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.w(tag, compoundMessages, object);
+                }
+            }
+
+            @Override
+            public void e(String tag, Throwable t, String[] compoundMessages,
+                    @Nullable String originalMessages, @Nullable Object... args) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.e(tag, t, compoundMessages, originalMessages, args);
+                }
+            }
+
+            @Override
+            public void e(String tag, String[] compoundMessages, @Nullable Object object) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.e(tag, compoundMessages, object);
+                }
+            }
+
+            @Override
+            public void wtf(String tag, Throwable t, String[] compoundMessages,
+                    @Nullable String originalMessages, @Nullable Object... args) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.wtf(tag, t, compoundMessages, originalMessages, args);
+                }
+            }
+
+            @Override
+            public void wtf(String tag, String[] compoundMessages, @Nullable Object object) {
+                Tree[] forest = forestAsArray;
+                for (Tree tree : forest) {
+                    tree.wtf(tag, compoundMessages, object);
+                }
+            }
+
+            @Override
+            protected void log(int priority, String tag, String message) {
+                throw new UnsupportedOperationException("not support log(int priority, String tag, String message) method");
+            }
+        };
+    }
 }

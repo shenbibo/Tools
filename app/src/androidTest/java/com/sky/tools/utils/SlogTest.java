@@ -3,6 +3,7 @@ package com.sky.tools.utils;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.sky.tools.log.LogcatTree;
+import com.sky.tools.log.Setting;
 import com.sky.tools.log.Slog;
 
 import org.junit.BeforeClass;
@@ -62,6 +63,13 @@ public class SlogTest {
         Slog.s(false).m(0).th(true).t("s(false).m(0).th(true)").i("s(false).m(0).th(true).tag");
     }
 
+    @Test
+    public void logWithMethodOffset(){
+        Slog.o(1).i("1 offset");
+        Slog.o(2).i("2 offset");
+        Slog.o(100).i("100 offset");
+    }
+
     //    @Test
     public void logCollectTest() {
         logWithSwitchSimpleMode();
@@ -77,13 +85,62 @@ public class SlogTest {
     public void xml() {}
 
     @Test
-    public void setting() {}
+    public void setting() {
+        Setting setting = Slog.getSetting();
+        Slog.i(setting.toString());
+
+        int count = 3;
+        setting.methodCount(count);
+        Slog.i("global methodCount set to %d", count);
+
+        int priority = Slog.WARN;
+        setting.logPriority(priority);
+        Slog.i("global logPriority set to %d", priority);
+
+        // reset to full
+        setting.logPriority(Slog.FULL);
+
+        int methodOffset = 1;
+        setting.methodOffset(methodOffset);
+        Slog.i("global methodOffset set to %d", methodOffset);
+
+        boolean showThreadInfo = false;
+        setting.showThreadInfo(showThreadInfo);
+        Slog.i("global showThreadInfo set to %b", showThreadInfo);
+
+
+        boolean simpleMode = true;
+        setting.simpleMode(simpleMode);
+        Slog.i("global simpleMode set to %b", simpleMode);
+
+        String prefixTag  = "new test Tag";
+        setting.prefixTag(prefixTag);
+        Slog.i("global prefixTag set to %s", prefixTag);
+
+        // after set all above param, now i user everytime setting
+        Slog.t("good").m(5).o(2).s(false).th(true).i("this is the old story!!!");
+    }
 
     @Test
-    public void longLogTest(){}
+    public void longLogTest(){
+        StringBuilder sb = new StringBuilder((int) (8192 / 0.75));
+        for (int i = 0; i < 8192; i++){
+            sb.append(i);
+        }
+        Slog.t("longLogTest").i(sb.toString());
+    }
     
     @Test
-    public void multiLineLogTest(){}
+    public void multiLineLogTest(){
+        StringBuilder sb = new StringBuilder((int) (8192 / 0.75));
+        for (int i = 0; i < 8192; i++){
+            if(i % 30 == 0){
+                sb.append("\n");
+            }
+            sb.append(i);
+        }
+        Slog.t("multiLineLogTest").i(sb.toString());
+    }
 
     @Test
     public void nullObject(){

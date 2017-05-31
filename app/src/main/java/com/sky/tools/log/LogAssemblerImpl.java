@@ -16,7 +16,7 @@ import static com.sky.tools.log.LogConstant.*;
  * [detail]
  * Created by Sky on 2017/5/25.
  */
-class LogControllerImpl extends LogController {
+class LogAssemblerImpl extends LogAssembler {
     /**
      * 最小的栈偏移值，因为该类本身和包裹它的类，所以默认偏移2
      */
@@ -126,7 +126,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public LogController t(String tag) {
+    public LogAssembler t(String tag) {
         if (tag != null) {
             localTag.set(tag);
         }
@@ -134,7 +134,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public LogController m(Integer methodCount) {
+    public LogAssembler m(Integer methodCount) {
         if (methodCount != null) {
             localMethodCount.set(methodCount);
         }
@@ -142,7 +142,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public LogController s(Boolean simpleMode) {
+    public LogAssembler s(Boolean simpleMode) {
         if (simpleMode != null) {
             localSimpleMode.set(simpleMode);
         }
@@ -150,7 +150,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public LogController th(Boolean showThreadInfo) {
+    public LogAssembler th(Boolean showThreadInfo) {
         if (showThreadInfo != null) {
             localShowThreadInfo.set(showThreadInfo);
         }
@@ -158,7 +158,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public LogController o(Integer methodOffset) {
+    public LogAssembler o(Integer methodOffset) {
         if (methodOffset != null) {
             localMethodOffset.set(methodOffset);
         }
@@ -299,7 +299,7 @@ class LogControllerImpl extends LogController {
             Object... args) {
         if (originalObject instanceof String) {
             if (originalObject == NULL_STRING) {
-                Log.i("LogController", "is null string");
+                Log.i("LogAssembler", "is null string");
             }
             dispatcher.log(priority, tag, t, compoundMessages, originalObject == NULL_STRING ? null : (String) originalObject,
                     args);

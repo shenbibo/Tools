@@ -58,7 +58,7 @@ public final class Slog {
      */
     public static final String DEFAULT_TAG = "Android";
 
-    private static LogController logController;
+    private static LogAssembler logAssembler;
     private static Setting setting;
     private static TreeManager treeManager;
 
@@ -161,57 +161,57 @@ public final class Slog {
      * 才打印，其他的值无效
      */
     public static void log(int priority, String tag, Throwable t, String message, Object... args) {
-        logController.log(priority, tag, t, message, args);
+        logAssembler.log(priority, tag, t, message, args);
     }
 
     /**
      * 打印对象
      */
     public static void object(int priority, String tag, Object object) {
-        logController.object(priority, tag, object);
+        logAssembler.object(priority, tag, object);
     }
 
     public static void json(String json) {
-        logController.json(json);
+        logAssembler.json(json);
     }
 
     public static void xml(String xml) {
-        logController.xml(xml);
+        logAssembler.xml(xml);
     }
 
     public static Setting init(Tree tree) {
         if (setting == null) {
             setting = new Setting();
 
-            LogManager logManager = LogFactory.createLogManager();
+            LogController logController = LogFactory.createLogManager();
 
-            logController = LogFactory.createLogController();
-            logController.init(Slog.class, setting, logManager);
+            logAssembler = LogFactory.createLogController();
+            logAssembler.init(Slog.class, setting, logController);
 
-            treeManager = logManager;
+            treeManager = logController;
             treeManager.plantTree(tree);
         }
         return setting;
     }
 
-    public static LogController t(String tag) {
-        return logController.t(tag);
+    public static LogAssembler t(String tag) {
+        return logAssembler.t(tag);
     }
 
-    public static LogController m(int methodCount) {
-        return logController.m(methodCount);
+    public static LogAssembler m(int methodCount) {
+        return logAssembler.m(methodCount);
     }
 
-    public static LogController o(int methodOffset) {
-        return logController.o(methodOffset);
+    public static LogAssembler o(int methodOffset) {
+        return logAssembler.o(methodOffset);
     }
 
-    public static LogController s(boolean simpleMode) {
-        return logController.s(simpleMode);
+    public static LogAssembler s(boolean simpleMode) {
+        return logAssembler.s(simpleMode);
     }
 
-    public static LogController th(boolean showThreadInfo) {
-        return logController.th(showThreadInfo);
+    public static LogAssembler th(boolean showThreadInfo) {
+        return logAssembler.th(showThreadInfo);
     }
 
     /**
