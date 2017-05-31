@@ -80,7 +80,7 @@ public final class Slog {
      * 打印对象如list,map,set array
      */
     public static void dO(Object object) {
-        o(DEBUG, null, object);
+        object(DEBUG, null, object);
     }
 
     /**
@@ -94,7 +94,7 @@ public final class Slog {
      * 打印对象如list,map,set array等
      */
     public static void iO(Object object) {
-        o(INFO, null, object);
+        object(INFO, null, object);
     }
 
     /**
@@ -167,8 +167,8 @@ public final class Slog {
     /**
      * 打印对象
      */
-    public static void o(int priority, String tag, Object object) {
-        logController.o(priority, tag, object);
+    public static void object(int priority, String tag, Object object) {
+        logController.object(priority, tag, object);
     }
 
     public static void json(String json) {
@@ -182,10 +182,13 @@ public final class Slog {
     public static Setting init(Tree tree) {
         if (setting == null) {
             setting = new Setting();
-            logController = LogFactory.createLogController();
+
             LogManager logManager = LogFactory.createLogManager();
-            treeManager = logManager;
+
+            logController = LogFactory.createLogController();
             logController.init(Slog.class, setting, logManager);
+
+            treeManager = logManager;
             treeManager.plantTree(tree);
         }
         return setting;

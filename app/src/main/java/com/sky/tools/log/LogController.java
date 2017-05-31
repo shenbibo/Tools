@@ -47,7 +47,7 @@ public abstract class LogController {
     public abstract void log(int priority, String tag, Throwable t, String normalMsg, @Nullable Object... args);
 
     /** 打印日志 */
-    public abstract void o(int priority, @Nullable String tag, @Nullable Object object);
+    public abstract void object(int priority, @Nullable String tag, @Nullable Object object);
 
     public abstract void json(String json);
 

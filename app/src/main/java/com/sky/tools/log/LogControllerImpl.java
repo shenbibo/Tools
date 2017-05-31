@@ -50,7 +50,7 @@ class LogControllerImpl extends LogController {
 
     @Override
     public void dO(Object object) {
-        o(DEBUG, null, object);
+        object(DEBUG, null, object);
     }
 
     @Override
@@ -60,7 +60,7 @@ class LogControllerImpl extends LogController {
 
     @Override
     public void iO(Object object) {
-        o(INFO, null, object);
+        object(INFO, null, object);
     }
 
     @Override
@@ -103,7 +103,7 @@ class LogControllerImpl extends LogController {
     }
 
     @Override
-    public void o(int priority, String tag, Object object) {
+    public void object(int priority, String tag, Object object) {
         if (object == null) {
             object = NULL_OBJECT;
         }
@@ -236,6 +236,7 @@ class LogControllerImpl extends LogController {
 
     @SuppressWarnings("StringBufferReplaceableByString")
     private void logHeaderContent(List<String> messagesList, int methodCount) {
+        // 获取当前线程信息和stack，组装线程数据
         Thread curThread = Thread.currentThread();
         StackTraceElement[] trace = curThread.getStackTrace();
         if (isShowThreadInfo()) {
@@ -243,22 +244,32 @@ class LogControllerImpl extends LogController {
             messagesList.add(getLineCompoundStr(threadInfo));
             logDivider(messagesList);
         }
-        String level = "";
-
-        int stackOffset = getStackOffset(trace);
 
         // 校正最终要输出的方法数目，不能比整个栈还长
+        int stackOffset = getStackOffset(trace);
         if (methodCount + stackOffset > trace.length) {
             methodCount = trace.length - stackOffset - 1;
         }
 
+        // 构造堆栈数据
+        String level = "";
         for (int i = methodCount; i > 0; i--) {
             int stackIndex = i + stackOffset;
             if (stackIndex >= trace.length) {
                 continue;
             }
+
             StringBuilder builder = new StringBuilder();
-            builder.append("║ ").append(level).append(getSimpleClassName(trace[stackIndex].getClassName())).append(".").append(trace[stackIndex].getMethodName()).append("(").append(trace[stackIndex].getFileName()).append(":").append(trace[stackIndex].getLineNumber()).append(")");
+            builder.append("║ ")
+                   .append(level)
+                   .append(getSimpleClassName(trace[stackIndex].getClassName()))
+                   .append(".")
+                   .append(trace[stackIndex].getMethodName())
+                   .append("(")
+                   .append(trace[stackIndex].getFileName())
+                   .append(":")
+                   .append(trace[stackIndex].getLineNumber())
+                   .append(")");
             level += "   ";
 
             messagesList.add(builder.toString());
@@ -284,12 +295,14 @@ class LogControllerImpl extends LogController {
         }
     }
 
-    private void dispatchLog(int priority, String tag, Throwable t, String[] compoundMessages, Object originalObject, Object... args) {
+    private void dispatchLog(int priority, String tag, Throwable t, String[] compoundMessages, Object originalObject,
+            Object... args) {
         if (originalObject instanceof String) {
             if (originalObject == NULL_STRING) {
                 Log.i("LogController", "is null string");
             }
-            dispatcher.log(priority, tag, t, compoundMessages, originalObject == NULL_STRING ? null : (String) originalObject, args);
+            dispatcher.log(priority, tag, t, compoundMessages, originalObject == NULL_STRING ? null : (String) originalObject,
+                    args);
         } else {
             dispatcher.log(priority, tag, compoundMessages, originalObject == NULL_OBJECT ? null : originalObject);
         }
