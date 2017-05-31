@@ -192,6 +192,18 @@ public class SlogTest {
     }
 
     /**
+     * 测试打印数组
+     * */
+    @Test
+    public void arrayLogTest(){
+        int[] intArray = new int[1024];
+        for (int i = 0; i < intArray.length; i++){
+            intArray[i] = i;
+        }
+        Slog.iO(intArray);
+    }
+
+    /**
      * 测试多线程设置tag的准确性
      */
     @Test

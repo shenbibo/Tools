@@ -8,7 +8,7 @@ import java.util.Collection;
  * Created by sky on 2017/5/28.
  */
 
-public class CollectionParse implements Parse<Collection> {
+public class CollectionParser implements Parser<Collection> {
     @Override
     public Class<Collection> getParseType() {
         return Collection.class;

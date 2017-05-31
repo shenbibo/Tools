@@ -1,6 +1,7 @@
 package com.sky.tools.log.parse;
 
-import com.sky.tools.log.ObjectParse;
+import com.sky.tools.log.ParseObject;
+import com.sky.tools.log.Slog;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
  * Created by sky on 2017/5/28.
  */
 
-public class ArrayParse implements Parse<Object[]> {
+public class ArrayParser implements Parser<Object[]> {
     @Override
     public Class<Object[]> getParseType() {
         return Object[].class;
@@ -27,8 +28,10 @@ public class ArrayParse implements Parse<Object[]> {
 
     private static String deepToString(Object[] a) {
         if (a == null) {
-            return "null";
+            return OBJECT_NULL_STRING;
         }
+
+        Slog.i("called the ArrayParser!!!!!");
 
         int bufLen = 20 * a.length;
         if (a.length != 0 && bufLen <= 0) {
@@ -83,12 +86,12 @@ public class ArrayParse implements Parse<Object[]> {
                             buf.append("[...]");
                         } else {
                             //                            deepToString((Object[]) element, buf, dejaVu);
-                            buf.append(ObjectParse.objectToString(element));
+                            buf.append(ParseObject.objectToString(element));
                         }
                     }
                 } else {  // element is non-null and not an array
                     //                    buf.append(element.toString());
-                    buf.append(ObjectParse.objectToString(element));
+                    buf.append(ParseObject.objectToString(element));
                 }
             }
             if (i == iMax) {

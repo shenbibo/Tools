@@ -2,7 +2,7 @@ package com.sky.tools.log;
 
 import android.support.annotation.NonNull;
 
-import com.sky.tools.log.parse.Parse;
+import com.sky.tools.log.parse.Parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,9 +46,9 @@ class Helper {
 
     /**
      * KEY = Object.getClass().getName();
-     * value = Parse.getClass();
+     * value = Parser.getClass();
      * */
-    private static final Map<String, Class<? extends Parse>> parseObjects = new ConcurrentHashMap<>();
+    private static final Map<String, Class<? extends Parser>> parseObjects = new ConcurrentHashMap<>();
 
     static String covertJson(String json) {
         if (isEmpty(json)) {
@@ -107,15 +107,15 @@ class Helper {
 
     private static String parseSpecificObject(Object object) {
         String message = object.toString();
-        Class<? extends Parse> clazz = parseObjects.get(object.getClass().getName());
+        Class<? extends Parser> clazz = parseObjects.get(object.getClass().getName());
         if(clazz == null){
             return message;
         }
 
         try {
             Method method = clazz.getMethod("parseToString", Object.class);
-            Parse parse = clazz.newInstance();
-            message = (String) method.invoke(parse, object);
+            Parser parser = clazz.newInstance();
+            message = (String) method.invoke(parser, object);
         } catch (Exception e) {
             e.printStackTrace();
         }

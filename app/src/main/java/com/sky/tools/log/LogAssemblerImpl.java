@@ -218,7 +218,8 @@ class LogAssemblerImpl extends LogAssembler {
             if (originalObject instanceof String) {
                 compoundMessage = formatMessage((String) originalObject, args);
             } else {
-                compoundMessage = parseObject(originalObject);
+//                compoundMessage = parseObject(originalObject);
+                compoundMessage = ParseObject.objectToString(originalObject);
             }
         }
 
@@ -286,7 +287,6 @@ class LogAssemblerImpl extends LogAssembler {
 
     private void logContent(List<String> messagesList, Throwable t, Object originalObject, Object... args) {
         String[] compoundMessages = compoundMessage(t, originalObject, args);
-        // TODO 需要确定如果字符串中没有换行符，解析出来的字符串是什么
         for (String compoundMessage : compoundMessages) {
             String[] splitMessages = compoundMessage.split(LINE_SEPARATOR);
             for (String splitMessage : splitMessages) {

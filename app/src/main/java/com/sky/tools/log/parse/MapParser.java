@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by sky on 2017/5/28.
  */
 
-public class MapParse implements Parse<Map> {
+public class MapParser implements Parser<Map> {
     @Override
     public Class<Map> getParseType() {
         return Map.class;

@@ -1,5 +1,7 @@
 package com.sky.tools.log;
 
+import com.sky.tools.log.parse.Parser;
+
 /**
  * 日志工具类
  * 使用本日志类必须先调用初始化方法{@link Slog#init(Tree)}
@@ -234,5 +236,20 @@ public final class Slog {
      */
     public static Setting getSetting() {
         return setting;
+    }
+
+    /**
+     * 添加对象解析器，每一个确切的类型，只能添加一个对象解析器，如果要添加的已经存在，则替换原来的旧的
+     */
+    public static void addObjectParser(Parser parserAdapter) {
+        ParseObject.addObjectParser(parserAdapter);
+    }
+
+    public static void removeObjectParser(Parser parserAdapter) {
+        ParseObject.removeObjectParser(parserAdapter);
+    }
+
+    public static void removeObjectParser(Class<? extends Parser> parserClass) {
+        ParseObject.removeObjectParser(parserClass);
     }
 }

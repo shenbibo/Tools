@@ -15,7 +15,7 @@ import static com.sky.tools.log.LogConstant.LINE_SEPARATOR;
  * [详述类的功能。]
  * Created by sky on 2017/5/27.
  */
-public class IntentParse implements Parse<Intent> {
+public class IntentParser implements Parser<Intent> {
     @SuppressLint("UseSparseArrays")
     private static Map<Integer, String> flagMap = new HashMap<>();
 
@@ -60,7 +60,7 @@ public class IntentParse implements Parse<Intent> {
         builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Flags", getFlags(intent.getFlags())));
         builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Categories", intent.getCategories()));
         builder.append(String.format("%s = %s" + LINE_SEPARATOR, "Extras",
-                new BundleParse().parseToString(intent.getExtras())));
+                new BundleParser().parseToString(intent.getExtras())));
         return builder.toString() + "]";
     }
 
