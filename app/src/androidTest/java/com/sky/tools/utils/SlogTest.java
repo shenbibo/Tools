@@ -1,5 +1,6 @@
 package com.sky.tools.utils;
 
+import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.orhanobut.logger.Logger;
@@ -12,6 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -22,6 +25,18 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(AndroidJUnit4.class)
 public class SlogTest {
     private static CountDownLatch countDownLatch;
+
+    private static Object[] objectsArray = new Object[]{
+            new boolean[]{false, true, true, false},
+            new String[][]{
+                    new String[]{"22", "23", "24"},
+                    new String[]{"123", "456", "789"}},
+            new int[][][]{new int[][]{
+                    new int[]{666, 555, 444},
+                    new int[]{111, 222, 333, 444}},
+                    new int[][]{
+                            new int[]{1, 2, 3, 4, 5, 6},
+                            new int[]{7878, 6565, 84155, 7542, 0}}}};
 
     @BeforeClass
     public static void init() {
@@ -145,6 +160,18 @@ public class SlogTest {
     }
 
     @Test
+    public void primitiveValueTest() {
+        Slog.dO(1);
+        Slog.dO(true);
+        Slog.dO('S');
+        Slog.dO(1.723);
+        Slog.dO(3.14f);
+        Slog.dO((byte) 8);
+        Slog.dO((short) 244);
+        Slog.dO(12345678912L);
+    }
+
+    @Test
     public void nullObject() {
         Slog.dO(null);
     }
@@ -221,19 +248,65 @@ public class SlogTest {
         Slog.iO(intArray);
 
         // 打印多维数组
-        Object[] objectsArray = new Object[]{
-                new boolean[]{false, true, true, false},
-                new String[][]{
-                        new String[]{"22", "23", "24"},
-                        new String[]{"123", "456", "789"}},
-                new int[][][]{new int[][]{
-                        new int[]{666, 555, 444},
-                        new int[]{111, 222, 333, 444}},
-                        new int[][]{
-                                new int[]{1, 2, 3, 4, 5, 6},
-                                new int[]{7878, 6565, 84155, 7542, 0}}}};
-
         Slog.iO(objectsArray);
+    }
+
+    @Test
+    public void listTest() {
+        // empty list test
+        List<Object> arrayList = new ArrayList<>();
+        Slog.dO(arrayList);
+
+        // string list
+        List<String> stringList = new ArrayList<>();
+        stringList.add("12345");
+        stringList.add("7845");
+        stringList.add("klslslg");
+        stringList.add("skjweot");
+        Slog.dO(stringList);
+
+        // int[] list
+        List<int[]> intArrayList = new LinkedList<>();
+        intArrayList.add(new int[]{1, 2, 3, 4});
+        intArrayList.add(new int[]{7, 83, 7893, 53});
+        intArrayList.add(new int[]{1887, 4562, 3456, 463});
+        intArrayList.add(new int[]{17986, 2789, 398, 4546});
+        Slog.dO(intArrayList);
+
+        // Object list
+        arrayList.add(new int[]{379856, 274589, 398, 4546});
+        arrayList.add(objectsArray);
+        arrayList.add(new Object());
+        Slog.dO(arrayList);
+    }
+
+    @Test
+    public void setTest(){
+        // empty list test
+        Set<Object> arrayList = new HashSet<>();
+        Slog.dO(arrayList);
+
+        // string list
+        Set<String> stringList = new CopyOnWriteArraySet<>();
+        stringList.add("12345");
+        stringList.add("7845");
+        stringList.add("klslslg");
+        stringList.add("skjweot");
+        Slog.dO(stringList);
+
+        // int[] list
+        Set<int[]> intArrayList = new LinkedHashSet<>();
+        intArrayList.add(new int[]{1, 2, 3, 4});
+        intArrayList.add(new int[]{7, 83, 7893, 53});
+        intArrayList.add(new int[]{1887, 4562, 3456, 463});
+        intArrayList.add(new int[]{17986, 2789, 398, 4546});
+        Slog.dO(intArrayList);
+
+        // Object list
+        arrayList.add(new int[]{379856, 274589, 398, 4546});
+        arrayList.add(objectsArray);
+        arrayList.add(new Object());
+        Slog.dO(arrayList);
     }
 
     /**

@@ -218,7 +218,6 @@ class LogAssemblerImpl extends LogAssembler {
             if (originalObject instanceof String) {
                 compoundMessage = formatMessage((String) originalObject, args);
             } else {
-//                compoundMessage = parseObject(originalObject);
                 compoundMessage = ParseObject.objectToString(originalObject);
             }
         }

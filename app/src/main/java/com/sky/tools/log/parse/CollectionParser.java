@@ -1,10 +1,16 @@
 package com.sky.tools.log.parse;
 
+import com.sky.tools.log.ParseObject;
+
 import java.util.Collection;
+import java.util.Iterator;
+
+import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
 
 /**
- * [一句话描述类的作用]
- * [详述类的功能。]
+ * Collection解析器
+ * <p>
+ * 已迭代的方式解析集合，并且递归解析其元素对象
  * Created by sky on 2017/5/28.
  */
 
@@ -18,6 +24,24 @@ public class CollectionParser implements Parser<Collection> {
 
     @Override
     public String parseToString(Collection collection) {
-        return null;
+        if (collection == null) {
+            return OBJECT_NULL_STRING;
+        }
+
+        Iterator it = collection.iterator();
+        if (!it.hasNext()) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (; ; ) {
+            Object object = it.next();
+            sb.append(object == collection ? "(this Collection)" : ParseObject.objectToString(object));
+            if (!it.hasNext()) {
+                return sb.append(']').toString();
+            }
+            sb.append(',').append(' ');
+        }
     }
 }
