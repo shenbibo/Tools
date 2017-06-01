@@ -16,22 +16,52 @@ import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
  */
 
 public class ArrayParser implements Parser<Object[]> {
+    public static final ArrayParser ARRAY_PARSER = new ArrayParser();
+
     @Override
     public Class<Object[]> getParseType() {
         return Object[].class;
     }
 
+    /**
+     * 如果要解析基本类型的数组请直接调用{@link ArrayParser#parseArrayToString(Object)}
+     *
+     * @throws ClassCastException 如果传入基本类型数组
+     */
     @Override
     public String parseToString(Object[] objects) {
-        return deepToString(objects);
+        return parseArrayToString(objects);
     }
 
+
+    /**
+     * @param object 如果 object 不是一个数组，则返回{@code object.toString()}
+     */
+    public static String parseArrayToString(Object object) {
+        if (object == null) {
+            return OBJECT_NULL_STRING;
+        }
+
+        Class clazz = object.getClass();
+
+        if (!clazz.isArray()) {
+            return object.toString();
+        }
+
+        if (!clazz.getComponentType().isPrimitive()) {
+            return deepToString((Object[]) object);
+        }
+
+        return primitiveArrayToString(object, clazz);
+    }
+
+    /**
+     * 拷贝自{@link Arrays#deepToString(Object[])}
+     */
     private static String deepToString(Object[] a) {
         if (a == null) {
             return OBJECT_NULL_STRING;
         }
-
-        Slog.i("called the ArrayParser!!!!!");
 
         int bufLen = 20 * a.length;
         if (a.length != 0 && bufLen <= 0) {
@@ -43,11 +73,6 @@ public class ArrayParser implements Parser<Object[]> {
     }
 
     private static void deepToString(Object[] a, StringBuilder buf, Set<Object[]> dejaVu) {
-        if (a == null) {
-            buf.append(OBJECT_NULL_STRING);
-            return;
-        }
-
         int iMax = a.length - 1;
         if (iMax == -1) {
             buf.append("[]");
@@ -65,32 +90,17 @@ public class ArrayParser implements Parser<Object[]> {
                 Class eClass = element.getClass();
 
                 if (eClass.isArray()) {
-                    if (eClass == byte[].class) {
-                        buf.append(Arrays.toString((byte[]) element));
-                    } else if (eClass == short[].class) {
-                        buf.append(Arrays.toString((short[]) element));
-                    } else if (eClass == int[].class) {
-                        buf.append(Arrays.toString((int[]) element));
-                    } else if (eClass == long[].class) {
-                        buf.append(Arrays.toString((long[]) element));
-                    } else if (eClass == char[].class) {
-                        buf.append(Arrays.toString((char[]) element));
-                    } else if (eClass == float[].class) {
-                        buf.append(Arrays.toString((float[]) element));
-                    } else if (eClass == double[].class) {
-                        buf.append(Arrays.toString((double[]) element));
-                    } else if (eClass == boolean[].class) {
-                        buf.append(Arrays.toString((boolean[]) element));
+                    if (eClass.getComponentType().isPrimitive()) {
+                        buf.append(primitiveArrayToString(element, eClass));
                     } else { // element is an array of object references
+                        //noinspection SuspiciousMethodCalls
                         if (dejaVu.contains(element)) {
                             buf.append("[...]");
                         } else {
-                            //                            deepToString((Object[]) element, buf, dejaVu);
                             buf.append(ParseObject.objectToString(element));
                         }
                     }
                 } else {  // element is non-null and not an array
-                    //                    buf.append(element.toString());
                     buf.append(ParseObject.objectToString(element));
                 }
             }
@@ -101,5 +111,27 @@ public class ArrayParser implements Parser<Object[]> {
         }
         buf.append(']');
         dejaVu.remove(a);
+    }
+
+    private static String primitiveArrayToString(Object object, Class objectClass) {
+        if (objectClass == byte[].class) {
+            return Arrays.toString((byte[]) object);
+        } else if (objectClass == short[].class) {
+            return Arrays.toString((short[]) object);
+        } else if (objectClass == int[].class) {
+            return (Arrays.toString((int[]) object));
+        } else if (objectClass == long[].class) {
+            return Arrays.toString((long[]) object);
+        } else if (objectClass == char[].class) {
+            return Arrays.toString((char[]) object);
+        } else if (objectClass == float[].class) {
+            return Arrays.toString((float[]) object);
+        } else if (objectClass == double[].class) {
+            return Arrays.toString((double[]) object);
+        } else if (objectClass == boolean[].class) {
+            return Arrays.toString((boolean[]) object);
+        } else {
+            throw new RuntimeException("object is not a primitive array");
+        }
     }
 }

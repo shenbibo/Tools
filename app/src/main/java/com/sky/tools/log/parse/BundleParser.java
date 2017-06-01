@@ -12,6 +12,7 @@ import static com.sky.tools.log.LogConstant.LINE_SEPARATOR;
  * Created by sky on 2017/5/27.
  */
 public class BundleParser implements Parser<Bundle> {
+    public static final BundleParser BUNDLE_PARSER = new BundleParser();
 
     @Override
     public Class<Bundle> getParseType() {

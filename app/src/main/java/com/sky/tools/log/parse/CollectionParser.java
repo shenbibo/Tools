@@ -9,6 +9,8 @@ import java.util.Collection;
  */
 
 public class CollectionParser implements Parser<Collection> {
+    public static final CollectionParser COLLECTION_PARSER = new CollectionParser();
+
     @Override
     public Class<Collection> getParseType() {
         return Collection.class;

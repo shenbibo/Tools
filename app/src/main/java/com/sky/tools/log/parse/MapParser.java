@@ -9,6 +9,8 @@ import java.util.Map;
  */
 
 public class MapParser implements Parser<Map> {
+    public static final MapParser MAP_PARSER  = new MapParser();
+
     @Override
     public Class<Map> getParseType() {
         return Map.class;

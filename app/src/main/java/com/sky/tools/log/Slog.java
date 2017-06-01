@@ -192,6 +192,8 @@ public final class Slog {
 
             treeManager = logController;
             treeManager.plantTree(tree);
+
+            ParseObject.init();
         }
         return setting;
     }

@@ -2,6 +2,7 @@ package com.sky.tools.utils;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.orhanobut.logger.Logger;
 import com.sky.tools.log.LogcatTree;
 import com.sky.tools.log.Setting;
 import com.sky.tools.log.Slog;
@@ -25,6 +26,7 @@ public class SlogTest {
     @BeforeClass
     public static void init() {
         Slog.init(new LogcatTree()).showThreadInfo(true).prefixTag("sky.test.tools");
+        Logger.init();
     }
 
     @Test
@@ -64,7 +66,7 @@ public class SlogTest {
     }
 
     @Test
-    public void logWithMethodOffset(){
+    public void logWithMethodOffset() {
         Slog.o(1).i("1 offset");
         Slog.o(2).i("2 offset");
         Slog.o(100).i("100 offset");
@@ -113,7 +115,7 @@ public class SlogTest {
         setting.simpleMode(simpleMode);
         Slog.i("global simpleMode set to %b", simpleMode);
 
-        String prefixTag  = "new test Tag";
+        String prefixTag = "new test Tag";
         setting.prefixTag(prefixTag);
         Slog.i("global prefixTag set to %s", prefixTag);
 
@@ -122,19 +124,19 @@ public class SlogTest {
     }
 
     @Test
-    public void longLogTest(){
+    public void longLogTest() {
         StringBuilder sb = new StringBuilder((int) (8192 / 0.75));
-        for (int i = 0; i < 8192; i++){
+        for (int i = 0; i < 8192; i++) {
             sb.append(i);
         }
         Slog.t("longLogTest").i(sb.toString());
     }
-    
+
     @Test
-    public void multiLineLogTest(){
+    public void multiLineLogTest() {
         StringBuilder sb = new StringBuilder((int) (8192 / 0.75));
-        for (int i = 0; i < 8192; i++){
-            if(i % 30 == 0){
+        for (int i = 0; i < 8192; i++) {
+            if (i % 30 == 0) {
                 sb.append("\n");
             }
             sb.append(i);
@@ -143,12 +145,12 @@ public class SlogTest {
     }
 
     @Test
-    public void nullObject(){
+    public void nullObject() {
         Slog.dO(null);
     }
 
     @Test
-    public void nullAndEmptyStringTest(){
+    public void nullAndEmptyStringTest() {
         Slog.i(null);
         Slog.i("");
     }
@@ -164,7 +166,7 @@ public class SlogTest {
         Slog.dO(Arrays.asList(name2));
 
         Map<String, String> map = new HashMap<>();
-        for(int i = 0; i < name.length; i++){
+        for (int i = 0; i < name.length; i++) {
             map.put(name[i], name2[i]);
         }
         Slog.i("map test");
@@ -193,14 +195,45 @@ public class SlogTest {
 
     /**
      * 测试打印数组
-     * */
+     */
     @Test
-    public void arrayLogTest(){
+    public void arrayLogTest() {
+        // 打印对象数组
+        Object[] objectArray = new Object[1024];
+        for (int i = 0; i < objectArray.length; i++) {
+            objectArray[i] = i;
+        }
+
+        Slog.iO(objectArray);
+
+        // 打印String
+        String[] stringArray = new String[1024];
+        for (int i = 1024; i < stringArray.length + 1024; i++) {
+            stringArray[i - 1024] = "" + i;
+        }
+        Slog.iO(stringArray);
+
+        // 打印int数组
         int[] intArray = new int[1024];
-        for (int i = 0; i < intArray.length; i++){
-            intArray[i] = i;
+        for (int i = 2048; i < intArray.length + 2048; i++) {
+            intArray[i - 2048] = i;
         }
         Slog.iO(intArray);
+
+        // 打印多维数组
+        Object[] objectsArray = new Object[]{
+                new boolean[]{false, true, true, false},
+                new String[][]{
+                        new String[]{"22", "23", "24"},
+                        new String[]{"123", "456", "789"}},
+                new int[][][]{new int[][]{
+                        new int[]{666, 555, 444},
+                        new int[]{111, 222, 333, 444}},
+                        new int[][]{
+                                new int[]{1, 2, 3, 4, 5, 6},
+                                new int[]{7878, 6565, 84155, 7542, 0}}}};
+
+        Slog.iO(objectsArray);
     }
 
     /**

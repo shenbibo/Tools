@@ -16,6 +16,8 @@ import static com.sky.tools.log.LogConstant.LINE_SEPARATOR;
  * Created by sky on 2017/5/27.
  */
 public class IntentParser implements Parser<Intent> {
+    public static final IntentParser INTENT_PARSER = new IntentParser();
+
     @SuppressLint("UseSparseArrays")
     private static Map<Integer, String> flagMap = new HashMap<>();
 

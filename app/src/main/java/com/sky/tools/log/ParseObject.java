@@ -7,6 +7,8 @@ import com.sky.tools.log.parse.IntentParser;
 import com.sky.tools.log.parse.MapParser;
 import com.sky.tools.log.parse.Parser;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
@@ -20,12 +22,14 @@ import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
 public final class ParseObject {
 
     private static final CopyOnWriteArrayList<Parser> OBJECT_PARSERS = new CopyOnWriteArrayList<>(new Parser[]{
-            new ArrayParser(),
-            new CollectionParser(),
-            new MapParser(),
-            new IntentParser(),
-            new BundleParser()});
+            ArrayParser.ARRAY_PARSER,
+            CollectionParser.COLLECTION_PARSER,
+            MapParser.MAP_PARSER,
+            IntentParser.INTENT_PARSER,
+            BundleParser.BUNDLE_PARSER});
 
+
+    static void init() {}
 
     /**
      * 每一个确切的类型，只能添加一个对象解析器，如果要添加的已经存在，则替换原来的旧的
@@ -76,17 +80,22 @@ public final class ParseObject {
         }
 
         Parser parser;
-        Class<?> clazz = object.getClass();
+        Class<?> objectClazz = object.getClass();
         // 先检测是否有确切的class类型的解析适配器
-        if ((parser = getActualParse(clazz)) != null) {
+        if ((parser = getActualParse(objectClazz)) != null) {
             //noinspection unchecked
             return parser.parseToString(object);
         }
 
         // 再检查是否有其超类的解析适配器
-        if ((parser = getAssignableParse(clazz)) != null) {
+        if ((parser = getAssignableParse(objectClazz)) != null) {
             //noinspection unchecked
             return parser.parseToString(object);
+        }
+
+        // 补充对基本数据类型的数组的支持
+        if (objectClazz.isArray()) {
+            return ArrayParser.parseArrayToString(object);
         }
 
         return object.toString();
