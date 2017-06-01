@@ -46,7 +46,7 @@ public class SlogTest {
     public static void init() {
         Slog.init(new LogcatTree()).showThreadInfo(true).prefixTag("sky.test.tools");
         Slog.addObjectParser(new StudentParser());
-//        Logger.init();
+        //        Logger.init();
     }
 
     @Test
@@ -101,7 +101,22 @@ public class SlogTest {
     }
 
     @Test
-    public void json() {}
+    public void json() {
+        // inval json
+        String inval1 = "";
+        String inval2 = "{}";
+        Slog.json(inval1);
+        Slog.json(inval2);
+
+        String json = "{'xyy1':[{'test1':'test1'},{'test2':'test2'}],'xyy2':{'test3':'test3','test4':'test4'}}";
+
+        Slog.json(json);
+
+        String jsonArray =
+                "{ 'employees': [ {'firstName':'John', 'lastName':'Doe'}, {'firstName':'Anna', 'lastName':'Smith'}, "
+                        + "{'firstName':'Peter', 'lastName':'Jones'}]}";
+        Slog.json(jsonArray);
+    }
 
     @Test
     public void xml() {}
