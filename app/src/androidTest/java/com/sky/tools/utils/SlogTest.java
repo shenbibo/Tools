@@ -1,9 +1,12 @@
 package com.sky.tools.utils;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.orhanobut.logger.Logger;
+import com.sky.tools.bean.Student;
+import com.sky.tools.bean.StudentParser;
 import com.sky.tools.log.LogcatTree;
 import com.sky.tools.log.Setting;
 import com.sky.tools.log.Slog;
@@ -13,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -41,7 +45,8 @@ public class SlogTest {
     @BeforeClass
     public static void init() {
         Slog.init(new LogcatTree()).showThreadInfo(true).prefixTag("sky.test.tools");
-        Logger.init();
+        Slog.addObjectParser(new StudentParser());
+//        Logger.init();
     }
 
     @Test
@@ -281,7 +286,7 @@ public class SlogTest {
     }
 
     @Test
-    public void setTest(){
+    public void setTest() {
         // empty list test
         Set<Object> arrayList = new HashSet<>();
         Slog.dO(arrayList);
@@ -307,6 +312,50 @@ public class SlogTest {
         arrayList.add(objectsArray);
         arrayList.add(new Object());
         Slog.dO(arrayList);
+
+        // add itself
+        //noinspection CollectionAddedToSelf
+        arrayList.add(arrayList);
+        Slog.dO(arrayList);
+    }
+
+    @Test
+    public void mapTest() {
+        // empty map
+        @SuppressLint("UseSparseArrays")
+        Map<Integer, Student> map = new HashMap<>();
+        Slog.dO(map);
+
+        // int map
+        Map<Integer, Integer> intMap = new ConcurrentHashMap<>();
+        intMap.put(1, 2);
+        intMap.put(1543, 2745867);
+        intMap.put(17687, 27678);
+        intMap.put(76781, 27678);
+        intMap.put(1786768, 26786);
+        Slog.dO(intMap);
+
+        // Object Map
+        Map<Object, String> objectStringMap = new LinkedHashMap<>();
+        objectStringMap.put(new Object(), "11223786");
+        objectStringMap.put(new Object(), "475775486");
+        objectStringMap.put(new Object(), "7856874757");
+        Slog.dO(objectStringMap);
+
+        // student Map
+        map.put(12345, new Student(12345, 54, "kdkk", true));
+        map.put(123456, new Student(123456, 56, "kdkk", true));
+        map.put(1234567, new Student(1234567, 15, "kdkk", true));
+        map.put(12345678, new Student(12345678, 25, "kdkk", true));
+        map.put(1234555, new Student(1234555, 35, "kdkk", true));
+        map.put(12345444, new Student(12345444, 45, "kdkk", true));
+        Slog.dO(map);
+
+        // map itself
+        Map map1 = new Hashtable<>();
+        //noinspection CollectionAddedToSelf,unchecked
+        map1.put(map1, map1);
+        Slog.dO(map1);
     }
 
     /**

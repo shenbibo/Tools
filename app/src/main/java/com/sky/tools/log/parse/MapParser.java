@@ -1,6 +1,12 @@
 package com.sky.tools.log.parse;
 
+import com.sky.tools.log.ParseObject;
+
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import static com.sky.tools.log.LogConstant.OBJECT_NULL_STRING;
 
 /**
  * [一句话描述类的作用]
@@ -9,7 +15,7 @@ import java.util.Map;
  */
 
 public class MapParser implements Parser<Map> {
-    public static final MapParser MAP_PARSER  = new MapParser();
+    public static final MapParser MAP_PARSER = new MapParser();
 
     @Override
     public Class<Map> getParseType() {
@@ -18,6 +24,28 @@ public class MapParser implements Parser<Map> {
 
     @Override
     public String parseToString(Map map) {
-        return null;
+        if (map == null) {
+            return OBJECT_NULL_STRING;
+        }
+
+        Iterator i = map.entrySet().iterator();
+        if (!i.hasNext()) {
+            return "{}";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        for (; ; ) {
+            Entry entry = (Entry) i.next();
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            sb.append(key == map ? "(this Map)" : ParseObject.objectToString(key));
+            sb.append('=');
+            sb.append(value == map ? "(this Map)" : ParseObject.objectToString(value));
+            if (!i.hasNext()) {
+                return sb.append('}').toString();
+            }
+            sb.append(',').append(' ');
+        }
     }
 }
