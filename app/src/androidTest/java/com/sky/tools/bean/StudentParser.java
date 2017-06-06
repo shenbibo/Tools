@@ -1,6 +1,7 @@
 package com.sky.tools.bean;
 
-import com.sky.tools.log.parse.Parser;
+
+import com.sky.slog.parse.Parser;
 
 /**
  * 一句话注释。

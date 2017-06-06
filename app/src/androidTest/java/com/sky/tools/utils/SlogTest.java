@@ -1,23 +1,30 @@
 package com.sky.tools.utils;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.orhanobut.logger.Logger;
+import com.sky.slog.LogcatTree;
+import com.sky.slog.Setting;
+import com.sky.slog.Slog;
 import com.sky.tools.bean.Student;
 import com.sky.tools.bean.StudentParser;
-import com.sky.tools.log.LogcatTree;
-import com.sky.tools.log.Setting;
-import com.sky.tools.log.Slog;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 
@@ -214,19 +221,19 @@ public class SlogTest {
 
     @Test
     public void primitiveValueTest() {
-        Slog.dO(1);
-        Slog.dO(true);
-        Slog.dO('S');
-        Slog.dO(1.723);
-        Slog.dO(3.14f);
-        Slog.dO((byte) 8);
-        Slog.dO((short) 244);
-        Slog.dO(12345678912L);
+        Slog.d(1);
+        Slog.d(true);
+        Slog.d('S');
+        Slog.d(1.723);
+        Slog.d(3.14f);
+        Slog.d((byte) 8);
+        Slog.d((short) 244);
+        Slog.d(12345678912L);
     }
 
     @Test
     public void nullObject() {
-        Slog.dO(null);
+        Slog.d(null);
     }
 
     @Test
@@ -239,24 +246,24 @@ public class SlogTest {
     public void object() {
         String[] name = {"sga", "gsadgsa", "sgdsfhds"};
         Slog.i("array test");
-        Slog.dO(name);
+        Slog.d(name);
 
         String[] name2 = {"wwt", "wetgety", "reyertu"};
         Slog.i("list test");
-        Slog.dO(Arrays.asList(name2));
+        Slog.d(Arrays.asList(name2));
 
         Map<String, String> map = new HashMap<>();
         for (int i = 0; i < name.length; i++) {
             map.put(name[i], name2[i]);
         }
         Slog.i("map test");
-        Slog.dO(map);
+        Slog.d(map);
 
         String[] name3 = {"wggsg", "hketydfhdsh", "7887reyertu"};
         Set<String> set = new HashSet<>();
         set.addAll(Arrays.asList(name3));
         Slog.i("set test");
-        Slog.dO(set);
+        Slog.d(set);
 
     }
 
@@ -284,31 +291,31 @@ public class SlogTest {
             objectArray[i] = i;
         }
 
-        Slog.iO(objectArray);
+        Slog.i(objectArray);
 
         // 打印String
         String[] stringArray = new String[1024];
         for (int i = 1024; i < stringArray.length + 1024; i++) {
             stringArray[i - 1024] = "" + i;
         }
-        Slog.iO(stringArray);
+        Slog.i(stringArray);
 
         // 打印int数组
         int[] intArray = new int[1024];
         for (int i = 2048; i < intArray.length + 2048; i++) {
             intArray[i - 2048] = i;
         }
-        Slog.iO(intArray);
+        Slog.i(intArray);
 
         // 打印多维数组
-        Slog.iO(objectsArray);
+        Slog.i(objectsArray);
     }
 
     @Test
     public void listTest() {
         // empty list test
         List<Object> arrayList = new ArrayList<>();
-        Slog.dO(arrayList);
+        Slog.d(arrayList);
 
         // string list
         List<String> stringList = new ArrayList<>();
@@ -316,7 +323,7 @@ public class SlogTest {
         stringList.add("7845");
         stringList.add("klslslg");
         stringList.add("skjweot");
-        Slog.dO(stringList);
+        Slog.d(stringList);
 
         // int[] list
         List<int[]> intArrayList = new LinkedList<>();
@@ -324,20 +331,20 @@ public class SlogTest {
         intArrayList.add(new int[]{7, 83, 7893, 53});
         intArrayList.add(new int[]{1887, 4562, 3456, 463});
         intArrayList.add(new int[]{17986, 2789, 398, 4546});
-        Slog.dO(intArrayList);
+        Slog.d(intArrayList);
 
         // Object list
         arrayList.add(new int[]{379856, 274589, 398, 4546});
         arrayList.add(objectsArray);
         arrayList.add(new Object());
-        Slog.dO(arrayList);
+        Slog.d(arrayList);
     }
 
     @Test
     public void setTest() {
         // empty list test
         Set<Object> arrayList = new HashSet<>();
-        Slog.dO(arrayList);
+        Slog.d(arrayList);
 
         // string list
         Set<String> stringList = new CopyOnWriteArraySet<>();
@@ -345,7 +352,7 @@ public class SlogTest {
         stringList.add("7845");
         stringList.add("klslslg");
         stringList.add("skjweot");
-        Slog.dO(stringList);
+        Slog.d(stringList);
 
         // int[] list
         Set<int[]> intArrayList = new LinkedHashSet<>();
@@ -353,18 +360,18 @@ public class SlogTest {
         intArrayList.add(new int[]{7, 83, 7893, 53});
         intArrayList.add(new int[]{1887, 4562, 3456, 463});
         intArrayList.add(new int[]{17986, 2789, 398, 4546});
-        Slog.dO(intArrayList);
+        Slog.d(intArrayList);
 
         // Object list
         arrayList.add(new int[]{379856, 274589, 398, 4546});
         arrayList.add(objectsArray);
         arrayList.add(new Object());
-        Slog.dO(arrayList);
+        Slog.d(arrayList);
 
         // add itself
         //noinspection CollectionAddedToSelf
         arrayList.add(arrayList);
-        Slog.dO(arrayList);
+        Slog.d(arrayList);
     }
 
     @Test
@@ -372,7 +379,7 @@ public class SlogTest {
         // empty map
         @SuppressLint("UseSparseArrays")
         Map<Integer, Student> map = new HashMap<>();
-        Slog.dO(map);
+        Slog.d(map);
 
         // int map
         Map<Integer, Integer> intMap = new ConcurrentHashMap<>();
@@ -381,14 +388,14 @@ public class SlogTest {
         intMap.put(17687, 27678);
         intMap.put(76781, 27678);
         intMap.put(1786768, 26786);
-        Slog.dO(intMap);
+        Slog.d(intMap);
 
         // Object Map
         Map<Object, String> objectStringMap = new LinkedHashMap<>();
         objectStringMap.put(new Object(), "11223786");
         objectStringMap.put(new Object(), "475775486");
         objectStringMap.put(new Object(), "7856874757");
-        Slog.dO(objectStringMap);
+        Slog.d(objectStringMap);
 
         // student Map
         map.put(12345, new Student(12345, 54, "kdkk", true));
@@ -397,13 +404,13 @@ public class SlogTest {
         map.put(12345678, new Student(12345678, 25, "kdkk", true));
         map.put(1234555, new Student(1234555, 35, "kdkk", true));
         map.put(12345444, new Student(12345444, 45, "kdkk", true));
-        Slog.dO(map);
+        Slog.d(map);
 
         // map itself
         Map map1 = new Hashtable<>();
         //noinspection CollectionAddedToSelf,unchecked
         map1.put(map1, map1);
-        Slog.dO(map1);
+        Slog.d(map1);
     }
 
     /**
